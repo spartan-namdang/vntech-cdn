@@ -1,0 +1,2259 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Content Delivery Networks</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="vendor/reveal.js/reset.css" />
+  <link rel="stylesheet" href="vendor/reveal.js/reveal.css" />
+  <link rel="stylesheet" href="css/deck.css" />
+  <script src="js/deck.js"></script>
+</head>
+<body>
+
+<!-- ======================================================================
+     ICON SPRITE: one set, 24×24 grid, stroke only. Reuse with
+     <svg class="icon"><use href="#i-name"/></svg>
+     ====================================================================== -->
+<svg class="sprite" xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true">
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></symbol>
+  <symbol id="i-server" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/></symbol>
+  <symbol id="i-edge" viewBox="0 0 24 24"><path d="M12 2.5l8.2 4.75v9.5L12 21.5l-8.2-4.75v-9.5z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+  <symbol id="i-pop" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h8"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2.5L4.5 14H11l-1 7.5L18.5 10H12z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.4 8-8 9-4.6-1-8-4-8-9V6z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 6.5v11M15 9.6c0-1.3-1.3-2.1-3-2.1s-3 .8-3 2.2c0 2.9 6 1.6 6 4.6 0 1.4-1.3 2.2-3 2.2s-3-.8-3-2.1"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16M14 6l6 6-6 6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 5l-3 14"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 16l-5-5-9 9"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6zM14 3v5h5"/></symbol>
+  <symbol id="i-type" viewBox="0 0 24 24"><path d="M5 7V5h14v2M12 5v14M9 19h6"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V5M7 9.5l5-5 5 5M5 20h14"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 11-2.6-5.9M20 4v5h-5"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5zM3 12.5l9 5 9-5M3 17l9 5 9-5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5L22 20.5H2zM12 10v5M12 17.8h.01"/></symbol>
+  <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4 18a9 9 0 1116 0M12 14l4-5"/></symbol>
+  <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="18.5" r="2.5"/><circle cx="18" cy="5.5" r="2.5"/><path d="M8.5 18.5H14a3.5 3.5 0 000-7h-4a3.5 3.5 0 010-7h5.5"/></symbol>
+  <symbol id="i-split" viewBox="0 0 24 24"><path d="M4 12h5l4-6h7M9 12l4 6h7M17 3l3 3-3 3M17 15l3 3-3 3"/></symbol>
+  <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.7 5.7l12.6 12.6"/></symbol>
+  <symbol id="i-bot" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M12 4v4M9 13h.01M15 13h.01M9.5 16.5h5"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20l1-5L16 4l4 4L9 19zM13.5 6.5l4 4"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.3 7-11.5a7 7 0 10-14 0C5 14.7 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+  <symbol id="i-qr" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v.01M21 18v3h-3M14 21v-1"/></symbol>
+</svg>
+
+<div class="reveal">
+<div class="slides">
+
+<!-- ======================================================================
+     COVER
+     ====================================================================== -->
+<section class="l-cover">
+  <p class="eyebrow">VNTech · Tech sharing</p>
+  <h1>Content Delivery Networks</h1>
+  <div class="cover-rule"></div>
+  <p class="cover-sub">How CDNs work, and where they go wrong</p>
+  <div class="cover-meta">
+    <span><small>Presenters</small><b>Nam Dang · Tuan Phan</b></span>
+    <span><small>Length</small><b>120 minutes</b></span>
+    <span><small>Agenda</small><b>10 sections</b></span>
+  </div>
+  <aside class="notes">
+    <p>Chào mọi người. Hôm nay Nam và Tuấn chia sẻ về CDN trong khoảng 120 phút.</p>
+    <p>Lộ trình gồm 10 phần: vì sao CDN tồn tại, cách nó hoạt động, caching, những gì đặt được sau CDN, protocol và network, security, edge computing, dùng trong thực tế, trade-off và pitfall, cuối cùng là checklist ra quyết định.</p>
+    <p>Phím tắt: S mở speaker view, T đổi theme sáng/tối, F toàn màn hình, O xem tổng quan.</p>
+  </aside>
+</section>
+
+<!-- ======================================================================
+     SECTION 1: WHY A CDN EXISTS (1.1 – 1.5)
+     ====================================================================== -->
+
+<!-- 1.1 -->
+<section class="l-figure" data-section="1 · Why a CDN exists">
+  <header class="s-head">
+    <p class="eyebrow">1.1 · The problem: physical distance</p>
+    <h2>Round trips, not bandwidth, decide time to first byte</h2>
+  </header>
+  <div class="s-body">
+    <div class="fig-row">
+      <figure class="fig">
+        <svg class="dg" viewBox="0 0 640 380" role="img" aria-label="Time to first byte: 600 ms from a far origin versus 60 ms from a nearby edge">
+          <text x="20" y="30" class="t-strong">Far origin · RTT 200 ms</text>
+          <rect class="seg seg-slow" x="20" y="46" width="160" height="64" rx="4"/>
+          <rect class="seg seg-slow" x="180" y="46" width="160" height="64" rx="4"/>
+          <rect class="seg seg-slow" x="340" y="46" width="160" height="64" rx="4"/>
+          <text x="100" y="84" text-anchor="middle" class="t-mono">TCP</text>
+          <text x="260" y="84" text-anchor="middle" class="t-mono">TLS 1.3</text>
+          <text x="420" y="84" text-anchor="middle" class="t-mono">HTTP</text>
+          <text x="516" y="89" class="t-num t-slow">600 ms</text>
+
+          <text x="20" y="176" class="t-strong">Nearby edge · RTT 20 ms</text>
+          <rect class="seg seg-fast" x="20" y="192" width="16" height="64" rx="3"/>
+          <rect class="seg seg-fast" x="36" y="192" width="16" height="64" rx="3"/>
+          <rect class="seg seg-fast" x="52" y="192" width="16" height="64" rx="3"/>
+          <text x="84" y="235" class="t-num t-fast">60 ms</text>
+          <text x="200" y="231" class="t-muted">same three round trips</text>
+
+          <path class="ln ln-axis" d="M20 304H500M20 298v12M180 298v12M340 298v12M500 298v12"/>
+          <text x="20" y="332" class="t-mono t-small t-muted">0</text>
+          <text x="180" y="332" text-anchor="middle" class="t-mono t-small t-muted">200 ms</text>
+          <text x="340" y="332" text-anchor="middle" class="t-mono t-small t-muted">400 ms</text>
+          <text x="500" y="332" text-anchor="middle" class="t-mono t-small t-muted">600 ms</text>
+          <text x="20" y="368" class="t-small t-muted">Time to first byte on a new HTTPS connection</text>
+        </svg>
+      </figure>
+      <div class="col">
+        <ul class="points">
+          <li>Light in fiber: about 200,000 km/s</li>
+          <li>HCMC to US West: 13,000 km</li>
+          <li>130 ms in theory, 180–220 real</li>
+          <li>Three round trips before first byte</li>
+          <li>Slow start: 14 KB, then doubling</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Bắt đầu từ vấn đề trước khi nói CDN là gì: khoảng cách vật lý.</p>
+    <p>Ánh sáng trong cáp quang đi khoảng 200.000 km/s. Từ TP.HCM sang bờ Tây nước Mỹ khoảng 13.000 km, tức một round trip mất 130 ms trên lý thuyết, thực tế 180 đến 220 ms vì đường cáp không thẳng và còn qua nhiều router.</p>
+    <p>Một kết nối HTTPS mới cần ít nhất ba round trip trước khi nhận byte đầu tiên: TCP handshake, TLS 1.3 handshake, rồi HTTP request. Origin ở xa với RTT 200 ms thì mất 600 ms; edge ở gần với RTT 20 ms thì chỉ 60 ms.</p>
+    <p>Sau byte đầu tiên, TCP slow start chỉ gửi khoảng 14 KB ở round trip đầu rồi gấp đôi dần, nên file càng lớn càng phải trả tiền khoảng cách thêm nhiều lần.</p>
+    <p>Ý chính: latency bằng số round trip nhân với khoảng cách. Tối ưu code server không rút ngắn được đường đi.</p>
+  </aside>
+</section>
+
+<!-- 1.2 -->
+<section class="l-figure" data-section="1 · Why a CDN exists">
+  <header class="s-head">
+    <p class="eyebrow">1.2 · What a CDN is</p>
+    <h2>A CDN is a caching reverse proxy, replicated close to users</h2>
+  </header>
+  <div class="s-body">
+    <div class="fig-row">
+      <!-- DIAGRAM: cdn-overview.png
+           Idea to convey: the origin stays in ONE place, while users everywhere talk to an edge near them.
+           Draw a simplified world map (or just three regions left to right: Asia, Europe, US).
+           Components:
+             - One ORIGIN server (purple), placed in the US West. Label: "Origin (one place)".
+             - Edge servers (teal hexagons) scattered over the map: at least Hanoi, Singapore, Frankfurt, one in the US.
+             - Two users (blue): "User in Hanoi" and "User in Frankfurt".
+           Arrows, in this order:
+             1. User in Hanoi -> edge in Hanoi: short solid blue arrow, label "~20 ms".
+             2. User in Frankfurt -> edge in Frankfurt: short solid blue arrow, label "~20 ms".
+             3. Each of those two edges -> origin: long thin dashed arrow, label "only on a cache MISS".
+             4. For contrast, one faded grey arrow from the Hanoi user straight to the origin, label "without a CDN: ~200 ms per round trip".
+           Emphasise: the short arrows (thick) versus the long ones (thin, dashed). Each edge has a small "cache" badge.
+           Small inset in a corner: "Cache next to the origin (Varnish, Nginx): less load, same distance". -->
+      <figure class="img-slot">
+        <img src="images/cdn-overview.png" alt="Users in Hanoi and Frankfurt each reach a nearby edge; the single origin is contacted only on a cache miss" />
+        <figcaption>
+          <svg class="icon icon-l"><use href="#i-image"/></svg>
+          <span class="slot-file">images/cdn-overview.png</span>
+          <span class="slot-desc">Map: one origin, many edges, users in Hanoi and Frankfurt each reaching a nearby edge</span>
+        </figcaption>
+      </figure>
+      <div class="col">
+        <ul class="points">
+          <li>Edge servers sit between users and origin</li>
+          <li>Each edge keeps copies, answers nearby</li>
+          <li>The origin stays in one place</li>
+          <li>Cache beside origin: less load, same distance</li>
+          <li>A CDN reduces both</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>CDN là một mạng phân tán gồm các edge server nằm giữa user và origin của mình.</p>
+    <p>Mỗi edge giữ bản sao nội dung và trả lời request từ vị trí gần user nhất. Origin vẫn chỉ ở một chỗ; user ở Hà Nội và user ở Frankfurt mỗi người nói chuyện với một edge gần họ.</p>
+    <p>So sánh với cache đặt cạnh origin như Varnish hay Nginx: loại đó giảm tải cho origin nhưng không giảm khoảng cách. CDN giảm được cả hai.</p>
+    <p>Định nghĩa gọn: CDN là một caching reverse proxy, được triển khai ở rất nhiều nơi, trả lời thay cho origin.</p>
+  </aside>
+</section>
+
+<!-- 1.3 -->
+<section class="l-cards" data-section="1 · Why a CDN exists">
+  <header class="s-head">
+    <p class="eyebrow">1.3 · What you gain</p>
+    <h2>Five benefits, and none of them is automatic</h2>
+  </header>
+  <div class="s-body">
+    <div class="cards c5">
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-bolt"/></svg>
+        <h3>Lower latency</h3>
+        <p>Tens of milliseconds, not hundreds</p>
+        <span class="chip is-need">needs cacheable content</span>
+      </div>
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-server"/></svg>
+        <h3>Less origin load</h3>
+        <p>90%+ of requests stop at the edge</p>
+        <span class="chip is-need">needs cacheable content</span>
+      </div>
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-refresh"/></svg>
+        <h3>Higher availability</h3>
+        <p>PoP failover; stale copies when origin is down</p>
+      </div>
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-coin"/></svg>
+        <h3>Lower bandwidth cost</h3>
+        <p>Fewer origin bytes, smaller payloads</p>
+      </div>
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-shield"/></svg>
+        <h3>Security</h3>
+        <p>Absorb DDoS, run a WAF, hide the origin</p>
+        <span class="chip is-need">needs a hidden origin</span>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>CDN mang lại năm lợi ích, nhưng mỗi cái đều có điều kiện đi kèm.</p>
+    <p>Một, latency thấp hơn: handshake và nội dung đến từ nơi cách vài chục ms thay vì vài trăm ms.</p>
+    <p>Hai, giảm tải origin: với site chủ yếu là static, hơn 90% request có thể dừng ở edge. [cần kiểm chứng: con số 90% là ước lượng chung, phụ thuộc từng site]</p>
+    <p>Ba, availability cao hơn: traffic tự chuyển khi một PoP hỏng, và edge có thể trả nội dung đã cache khi origin down. Phần 3.6 sẽ nói kỹ.</p>
+    <p>Bốn, giảm chi phí bandwidth: origin gửi ít byte hơn, phần còn lại được nén và tối ưu ảnh ở edge.</p>
+    <p>Năm, security: edge là nơi tự nhiên để hấp thụ DDoS, chạy WAF và giấu origin. Phần 6 nói kỹ.</p>
+    <p>Điều kiện: latency và offload chỉ có khi nội dung cacheable. Security chỉ có khi origin không bị gọi trực tiếp. Lợi ích không tự động đến.</p>
+  </aside>
+</section>
+
+<!-- 1.4 -->
+<section class="l-cards" data-section="1 · Why a CDN exists">
+  <header class="s-head">
+    <p class="eyebrow">1.4 · A short history</p>
+    <h2>The direction never changed: work keeps moving from origin to edge</h2>
+  </header>
+  <div class="s-body">
+    <div class="cards c3">
+      <div class="card">
+        <span class="card-kicker">Late 1990s</span>
+        <h3>Static files</h3>
+        <p>Akamai, 1998, from MIT: surviving flash crowds</p>
+        <p>Images, downloads, later video</p>
+      </div>
+      <div class="card fragment">
+        <span class="card-kicker">2000s and 2010s</span>
+        <h3>Dynamic acceleration and security</h3>
+        <p>CloudFront 2008, Cloudflare 2010, Fastly 2011</p>
+        <p>TLS, DDoS protection, WAF become standard</p>
+      </div>
+      <div class="card fragment">
+        <span class="card-kicker">From about 2017</span>
+        <h3>Edge compute</h3>
+        <p>Lambda@Edge, Cloudflare Workers</p>
+        <p>Your code runs at the edge</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Lịch sử CDN gói trong ba giai đoạn.</p>
+    <p>Cuối thập niên 1990: static file. Akamai ra đời năm 1998 từ MIT để giải bài toán flash crowd, tức traffic tăng đột biến. CDN lúc đó phân phối ảnh, file download, sau này là video.</p>
+    <p>(Bấm tiếp) Thập niên 2000 và 2010: dynamic acceleration và security. Tái sử dụng connection và routing tốt hơn giúp tăng tốc cả request không cache được. CloudFront ra năm 2008, Cloudflare 2010, Fastly 2011. TLS, chống DDoS và WAF trở thành tiêu chuẩn.</p>
+    <p>(Bấm tiếp) Từ khoảng 2017: edge compute. Lambda@Edge và Cloudflare Workers cho phép chạy code của mình ngay tại edge.</p>
+    <p>Hướng đi không đổi: ngày càng nhiều việc được chuyển từ origin ra edge.</p>
+  </aside>
+</section>
+
+<!-- 1.5 -->
+<section class="l-table" data-section="1 · Why a CDN exists">
+  <header class="s-head">
+    <p class="eyebrow">1.5 · Business impact</p>
+    <h2>Speed measurably affects revenue; how much differs for every product</h2>
+  </header>
+  <div class="s-body">
+    <table class="tbl">
+      <thead><tr><th>Source</th><th>Finding</th></tr></thead>
+      <tbody>
+        <tr><td>Amazon, 2006</td><td>Every 100 ms of added latency cost about 1% of sales</td></tr>
+        <tr><td>Google / DoubleClick, 2016</td><td>53% of mobile visits are abandoned when a page takes over 3 s</td></tr>
+        <tr><td>Google / SOASTA, 2017</td><td>Load time from 1 s to 3 s: bounce probability up 32%</td></tr>
+        <tr><td>Deloitte, 2020</td><td>0.1 s faster on mobile: retail conversions +8.4%, travel +10.1%</td></tr>
+      </tbody>
+    </table>
+    <ul class="points">
+      <li>A trend, not constants</li>
+      <li>Your number needs your own measurement</li>
+    </ul>
+  </div>
+  <aside class="notes">
+    <p>Tốc độ có ảnh hưởng đo được tới doanh thu. Vài nghiên cứu hay được trích dẫn:</p>
+    <p>Amazon 2006: mỗi 100 ms latency tăng thêm làm mất khoảng 1% doanh số. [cần kiểm chứng: số liệu từ một bài nói nội bộ của Amazon, không có báo cáo chính thức]</p>
+    <p>Google / DoubleClick 2016: 53% lượt truy cập mobile bị bỏ nếu trang tải lâu hơn 3 giây.</p>
+    <p>Google / SOASTA 2017: thời gian tải tăng từ 1 lên 3 giây làm xác suất bounce tăng 32%.</p>
+    <p>Deloitte 2020, báo cáo "Milliseconds Make Millions": nhanh hơn 0,1 giây trên mobile làm conversion của retail tăng 8,4% và travel tăng 10,1%.</p>
+    <p>Lưu ý: đây là các nghiên cứu cụ thể trong bối cảnh cụ thể. Dùng để thấy xu hướng, đừng coi là hằng số. Con số chính xác cho sản phẩm của mình chỉ có được khi tự đo.</p>
+  </aside>
+</section>
+
+<!-- ======================================================================
+     SECTION 2: HOW IT WORKS (2.1 – 2.6)
+     ====================================================================== -->
+
+<!-- 2.1 -->
+<section class="l-cards" data-section="2 · How it works">
+  <header class="s-head">
+    <p class="eyebrow">2.1 · Core parts</p>
+    <h2>The origin holds the master, edges hold copies, DNS points the way</h2>
+  </header>
+  <div class="s-body">
+    <div class="cards c4">
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-server"/></svg>
+        <h3>Origin</h3>
+        <p>Master copy: web server, load balancer, S3</p>
+      </div>
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-edge"/></svg>
+        <h3>Edge server</h3>
+        <p>Receives requests, checks its cache, responds</p>
+      </div>
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-pop"/></svg>
+        <h3>PoP</h3>
+        <p>One location, many edge servers</p>
+      </div>
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-compass"/></svg>
+        <h3>DNS</h3>
+        <p>First step; with routing, picks the PoP</p>
+      </div>
+    </div>
+    <div class="callout">
+      <svg class="icon"><use href="#i-pin"/></svg>
+      <p><b>Caches are per PoP:</b> Singapore HIT, Tokyo MISS</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Bốn thành phần cốt lõi.</p>
+    <p>Origin: nơi giữ bản gốc của nội dung. Có thể là web server, load balancer, hoặc object storage như S3.</p>
+    <p>Edge server: một máy của CDN, nhận request của user, kiểm tra cache rồi trả lời.</p>
+    <p>PoP, point of presence: một địa điểm vật lý, thường là data center, chứa nhiều edge server. Số lượng và vị trí PoP quyết định CDN đến gần user của mình tới mức nào.</p>
+    <p>DNS: bước đầu tiên của mọi request. Cùng với routing (slide 2.3), nó quyết định user tới PoP nào.</p>
+    <p>Điểm quan trọng: mỗi PoP có cache riêng. Object đã cache ở Singapore vẫn là MISS ở Tokyo.</p>
+  </aside>
+</section>
+
+<!-- 2.2 -->
+<section class="l-figure" data-section="2 · How it works">
+  <header class="s-head">
+    <p class="eyebrow">2.2 · Request lifecycle</p>
+    <h2>On a HIT the origin sees nothing; on a MISS the edge fetches once</h2>
+  </header>
+  <div class="s-body">
+    <div class="fig-row">
+      <!-- DIAGRAM: request-lifecycle.png
+           Idea to convey: the same request takes two very different paths. HIT stops at the edge; MISS goes to the origin once and is stored.
+           Draw a sequence diagram with four vertical lifelines, left to right:
+             "Browser" (blue), "DNS" (grey), "Edge" (teal), "Origin" (purple).
+           Messages, top to bottom, numbered to match the slide:
+             1. Browser -> DNS: "static.example.com ?"   DNS -> Browser: "CNAME to CDN -> edge IP"
+             2. Browser <-> Edge: "TCP + TLS handshake" (short, because the edge is near)
+             3. Browser -> Edge: "GET /app.js". On the Edge lifeline, a small box: "cache key = host + path + query".
+           Then split the lower half into two side-by-side frames:
+             Frame "HIT" (green border): Edge -> Browser: "200, Age: 120, X-Cache: Hit". The Origin lifeline is greyed out,
+               with the note "origin sees nothing".
+             Frame "MISS" (amber border): Edge -> Origin: "GET /app.js"; Origin -> Edge: "200 + Cache-Control: max-age=...";
+               on the Edge lifeline: "store"; Edge -> Browser: "200, X-Cache: Miss".
+           Optional thin third frame "EXPIRED" (grey): Edge -> Origin: "If-None-Match" ; Origin -> Edge: "304" (see 3.3).
+           Emphasise: the HIT frame is visibly shorter than the MISS frame. -->
+      <figure class="img-slot">
+        <img src="images/request-lifecycle.png" alt="Sequence diagram of a request: DNS, connect, cache lookup, then HIT at the edge or MISS to the origin" />
+        <figcaption>
+          <svg class="icon icon-l"><use href="#i-image"/></svg>
+          <span class="slot-file">images/request-lifecycle.png</span>
+          <span class="slot-desc">Sequence diagram: DNS, connect, lookup, then the HIT path next to the MISS path</span>
+        </figcaption>
+      </figure>
+      <div class="col">
+        <ol class="steps">
+          <li><b>DNS:</b> CNAME resolves to an edge IP</li>
+          <li><b>Connect:</b> TCP and TLS, nearby</li>
+          <li><b>Lookup:</b> key is host, path, query</li>
+          <li><b>Respond:</b> <code>Age</code>, <code>X-Cache</code> tell the story</li>
+        </ol>
+        <ul class="points">
+          <li>Cached but expired: revalidate (3.3)</li>
+          <li>First requester per PoP pays full price</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Vòng đời một request qua CDN có bốn bước.</p>
+    <p>Một, DNS: browser resolve static.example.com, đây là một CNAME trỏ tới CDN, và nhận về IP của một edge.</p>
+    <p>Hai, Connect: TCP và TLS handshake diễn ra với edge ở gần.</p>
+    <p>Ba, Lookup: edge tính cache key gồm host, path, query string rồi tra cache. Nếu HIT, tức có bản còn fresh, edge trả lời ngay và origin không hề thấy request. Nếu MISS, edge fetch từ origin, đọc Cache-Control để quyết định có lưu không và lưu bao lâu, rồi lưu lại.</p>
+    <p>Bốn, Respond: response mang theo header cho biết chuyện gì đã xảy ra, ví dụ Age và X-Cache.</p>
+    <p>Có trạng thái thứ ba: object đã cache nhưng hết hạn, edge sẽ revalidate với origin, slide 3.3 nói kỹ.</p>
+    <p>Người request đầu tiên ở mỗi PoP trả đủ giá. Những người sau được hưởng lợi cho tới khi object hết hạn hoặc bị evict.</p>
+  </aside>
+</section>
+
+<!-- 2.3 -->
+<section class="l-table" data-section="2 · How it works">
+  <header class="s-head">
+    <p class="eyebrow">2.3 · Reaching the nearest edge: GeoDNS vs Anycast</p>
+    <h2>GeoDNS picks the PoP at lookup time; Anycast lets routing pick it</h2>
+  </header>
+  <div class="s-body">
+    <table class="tbl">
+      <thead><tr><th></th><th>GeoDNS</th><th>Anycast</th></tr></thead>
+      <tbody>
+        <tr><th>How</th><td>DNS guesses location from the asker's IP. Each PoP has its own IP.</td><td>Every PoP announces the same IP over BGP. Routers deliver to the closest.</td></tr>
+        <tr><th>Decision layer</th><td>DNS</td><td>Routing (BGP)</td></tr>
+        <tr><th>Weakness</th><td>Sees the resolver, not the user. EDNS Client Subnet helps, when sent.</td><td>"Close" means few hops and carrier policy, not geography or speed.</td></tr>
+        <tr><th>When a PoP fails</th><td>Users move only after the DNS TTL expires</td><td>Route withdrawn; traffic shifts within seconds</td></tr>
+        <tr><th>Examples</th><td>Akamai, CloudFront (mostly)</td><td>Cloudflare</td></tr>
+      </tbody>
+    </table>
+    <p class="caption">Anycast also spreads attack traffic across PoPs (6.1)</p>
+  </div>
+  <aside class="notes">
+    <p>Làm sao user tới được edge gần nhất? Có hai cách.</p>
+    <p>GeoDNS: DNS của CDN nhìn IP của bên hỏi, đoán vị trí rồi trả về IP của PoP phù hợp. Mỗi PoP có IP riêng. Quyết định nằm ở tầng DNS. Điểm yếu: DNS chỉ thấy resolver chứ không thấy user, nên user dùng resolver ở nước ngoài có thể bị đưa tới sai chỗ. EDNS Client Subnet giúp được, nhưng không phải resolver nào cũng gửi. Khi một PoP hỏng, user chỉ chuyển đi sau khi TTL của DNS record hết.</p>
+    <p>Anycast: mọi PoP cùng quảng bá một IP qua BGP, router trên Internet đưa packet tới PoP gần nhất theo nghĩa network. Quyết định nằm ở tầng routing. Điểm yếu: "gần" trong BGP nghĩa là ít hop và theo policy của nhà mạng, chưa chắc gần về địa lý hay nhanh hơn, và khó điều khiển chính xác. Khi một PoP hỏng, nó rút route và traffic chuyển trong vài giây.</p>
+    <p>Ví dụ: Akamai và phần lớn CloudFront dùng GeoDNS; Cloudflare dùng Anycast. [cần kiểm chứng: cách phân loại vendor là đơn giản hóa, thực tế nhiều CDN kết hợp cả hai]</p>
+    <p>Anycast còn giúp security: traffic tấn công bị chia ra nhiều PoP thay vì dồn vào một chỗ, xem 6.1.</p>
+  </aside>
+</section>
+
+<!-- 2.4 -->
+<section class="l-two-col" data-section="2 · How it works">
+  <header class="s-head">
+    <p class="eyebrow">2.4 · Pull vs push</p>
+    <h2>Pull fetches on demand, push uploads in advance; most websites pull</h2>
+  </header>
+  <div class="s-body">
+    <div class="cols">
+      <div class="col">
+        <h3 class="col-title"><svg class="icon"><use href="#i-download"/></svg>Pull (the default)</h3>
+        <ul class="points">
+          <li>Edge fetches on the first request</li>
+          <li>No upload step, one source of truth</li>
+          <li>First request per PoP is slow</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3 class="col-title"><svg class="icon"><use href="#i-upload"/></svg>Push</h3>
+        <ul class="points">
+          <li>Upload before anyone asks</li>
+          <li>Fits installers, game patches, video</li>
+          <li>You own syncing and cleanup</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout">
+      <svg class="icon"><use href="#i-layers"/></svg>
+      <p><b>Hybrid:</b> deploy to S3 or R2, CDN pulls</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Ai đưa nội dung lên CDN, và khi nào?</p>
+    <p>Pull là mặc định: mình khai báo origin ở đâu. Ở request đầu tiên cho một file, edge tự fetch và cache lại. Không có bước upload, chỉ có một source of truth. Nhược điểm: request đầu tiên ở mỗi PoP sẽ chậm.</p>
+    <p>Push: mình upload nội dung lên storage của CDN trước khi có ai hỏi. Hợp với file lớn và nhu cầu dự đoán được như installer, game patch, video. Mình kiểm soát chính xác cái gì nằm ở đó, nhưng cũng tự lo việc đồng bộ và dọn dẹp.</p>
+    <p>Kiểu lai phổ biến: lúc deploy thì upload file lên object storage như S3 hay R2, rồi để CDN pull từ storage đó.</p>
+    <p>Hầu hết website dùng pull.</p>
+  </aside>
+</section>
+
+<!-- 2.5 -->
+<section class="l-figure" data-section="2 · How it works">
+  <header class="s-head">
+    <p class="eyebrow">2.5 · Tiered caching and origin shield</p>
+    <h2>One extra cache layer stops hundreds of PoPs from calling the origin</h2>
+  </header>
+  <div class="s-body">
+    <div class="fig-row">
+      <!-- DIAGRAM: tiered-caching.png
+           Idea to convey: without a middle layer every PoP calls the origin on expiry; with it, only a few upper-tier nodes do.
+           Draw two panels side by side (or stacked), same components in both.
+           Panel A, title "Without tiering":
+             - Top row: 8 to 10 small teal edge PoPs (write "hundreds of PoPs").
+             - Bottom: ONE purple origin.
+             - An amber MISS arrow from EVERY PoP straight to the origin. Label: "one expired object = hundreds of origin requests".
+             - The origin looks overloaded (thick amber outline).
+           Panel B, title "With an upper tier / origin shield":
+             - Same top row of edge PoPs.
+             - Middle row: 2 larger teal nodes labelled "Upper tier (a few)"; mark one "Origin shield: the only gateway".
+             - Bottom: the same single origin.
+             - Amber MISS arrows from the PoPs to the upper tier; ONE arrow from the upper tier to the origin.
+               Label: "only upper-tier misses reach the origin".
+           Under the panels, the path as text: User -> Edge PoP (hundreds) -> Upper tier (a few) -> Origin.
+           Emphasise: the arrow count into the origin, many versus one. -->
+      <figure class="img-slot">
+        <img src="images/tiered-caching.png" alt="Without tiering every PoP calls the origin; with an upper tier only a few nodes do" />
+        <figcaption>
+          <svg class="icon icon-l"><use href="#i-image"/></svg>
+          <span class="slot-file">images/tiered-caching.png</span>
+          <span class="slot-desc">Two panels: every PoP calling the origin, versus PoPs calling a small upper tier</span>
+        </figcaption>
+      </figure>
+      <div class="col">
+        <ul class="points">
+          <li>An edge MISS asks the upper tier first</li>
+          <li>Origin shield: one PoP is the only gateway</li>
+          <li>Higher hit ratio, fewer origin connections</li>
+          <li>Stampedes collapse at one point (3.8)</li>
+          <li>Cost: one extra hop, usually a fee</li>
+        </ul>
+        <div class="chips">
+          <span class="chip">CloudFront Origin Shield</span>
+          <span class="chip">Cloudflare Tiered Cache</span>
+          <span class="chip">Fastly shielding</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Nếu không có lớp ở giữa, một object hết hạn sẽ khiến hàng trăm PoP cùng gọi origin để lấy cùng một thứ.</p>
+    <p>Đường đi khi có tiered caching: User, tới Edge PoP (hàng trăm), tới Upper tier hay origin shield (chỉ vài node), rồi mới tới Origin. Edge bị MISS sẽ hỏi upper tier trước. Chỉ khi upper tier cũng MISS thì request mới tới origin.</p>
+    <p>Origin shield là trường hợp đặc biệt: chỉ định một PoP, thường gần origin, làm cổng duy nhất đi vào origin.</p>
+    <p>Kết quả: hit ratio tổng thể cao hơn, số connection tới origin giảm mạnh, và cache stampede (3.8) được gom về một điểm.</p>
+    <p>Chi phí: thêm một hop khi MISS, và thường phải trả thêm tiền.</p>
+    <p>Sản phẩm tương ứng: CloudFront Origin Shield, Cloudflare Tiered Cache, Fastly shielding.</p>
+  </aside>
+</section>
+
+<!-- 2.6 -->
+<section class="l-figure" data-section="2 · How it works">
+  <header class="s-head">
+    <p class="eyebrow">2.6 · ISP peering and embedded caches</p>
+    <h2>The last stretch belongs to the ISP; big CDNs connect directly or move in</h2>
+  </header>
+  <div class="s-body">
+    <div class="fig-row">
+      <!-- DIAGRAM: isp-embedded-cache.png
+           Idea to convey: three ways for content to reach a subscriber, each one shorter than the last.
+           Components, left to right: "CDN PoP" (teal), a cloud labelled "Transit providers", an "IXP" node,
+           a large rounded box "ISP network" containing "Embedded cache (e.g. Netflix Open Connect appliance)" (teal)
+           and, at its right edge, "User at home" (blue).
+           Draw three paths as three horizontal lanes, top to bottom:
+             Lane 1 "Via transit": CDN PoP -> Transit cloud -> ISP network -> User. Many hops, grey, label "slow, costly for the ISP".
+             Lane 2 "Peering": CDN PoP -> IXP -> ISP network -> User. Fewer hops, blue, label "direct link at an Internet exchange".
+             Lane 3 "Embedded cache": the cache INSIDE the ISP box -> User. Shortest, green, label "video served from inside your carrier".
+           Extra: a dashed arrow from "Netflix" into the embedded cache, labelled "filled during off-peak hours".
+           Emphasise: lane 3 never leaves the ISP box. -->
+      <figure class="img-slot">
+        <img src="images/isp-embedded-cache.png" alt="Three paths to a subscriber: via transit, via peering at an exchange, and from a cache embedded inside the ISP" />
+        <figcaption>
+          <svg class="icon icon-l"><use href="#i-image"/></svg>
+          <span class="slot-file">images/isp-embedded-cache.png</span>
+          <span class="slot-desc">Three lanes: via transit, via peering at an IXP, and from a cache inside the ISP</span>
+        </figcaption>
+      </figure>
+      <div class="col">
+        <ul class="points">
+          <li><b>Peering:</b> direct CDN-to-ISP links at exchanges</li>
+          <li>Fewer hops: faster, steadier, cheaper</li>
+          <li><b>Embedded caches</b> sit inside ISP data centers</li>
+          <li>Netflix Open Connect: free appliances, filled off-peak</li>
+          <li>ISPs agree: video skips expensive transit</li>
+          <li>Akamai, Google Global Cache: same idea</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Đoạn đường từ edge tới user vẫn phải đi qua mạng của ISP. CDN rút ngắn đoạn này bằng hai cách.</p>
+    <p>Peering: kết nối trực tiếp giữa CDN và ISP, thường tại các Internet exchange point. Ít hop hơn nên nhanh hơn, ổn định hơn và rẻ hơn cho cả hai bên.</p>
+    <p>Embedded cache: đặt cache server ngay trong data center của ISP.</p>
+    <p>Ví dụ Netflix Open Connect: Netflix tặng miễn phí appliance cho ISP. Vì catalog đã biết trước và độ phổ biến dự đoán được, nội dung được copy sẵn vào đó trong giờ thấp điểm. Khi mình bấm play, video đến từ ngay trong mạng của nhà mạng.</p>
+    <p>ISP đồng ý vì traffic video không còn đi qua đường transit đắt tiền của họ. Akamai và Google Global Cache cũng làm tương tự.</p>
+    <p>Ý chính: chặng cuối thuộc về ISP. CDN lớn rút ngắn nó bằng cách nối trực tiếp hoặc dọn hẳn vào trong.</p>
+  </aside>
+</section>
+
+<!-- ======================================================================
+     SECTION 3: CACHING (3.1 – 3.9; 3.1 is split in two slides)
+     ====================================================================== -->
+
+<!-- 3.1 (1/2) directives -->
+<section class="l-table" data-section="3 · Caching">
+  <header class="s-head">
+    <p class="eyebrow">3.1 · Cache-Control: the directives</p>
+    <h2><code>no-cache</code> means revalidate before use; <code>no-store</code> means do not keep</h2>
+  </header>
+  <div class="s-body">
+    <table class="tbl">
+      <thead><tr><th>Directive</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>max-age=N</code></td><td>Fresh for N seconds. Applies to every cache.</td></tr>
+        <tr><td><code>s-maxage=N</code></td><td>Same, for shared caches only (CDN, proxy), where it overrides <code>max-age</code></td></tr>
+        <tr><td><code>public</code></td><td>Any cache may store it, even a request with <code>Authorization</code></td></tr>
+        <tr><td><code>private</code></td><td>Only the user's browser may store it. The CDN may not.</td></tr>
+        <tr><td><code>no-cache</code></td><td>May be stored, but must be revalidated with the origin before each use</td></tr>
+        <tr><td><code>no-store</code></td><td>Must not be stored anywhere</td></tr>
+        <tr><td><code>immutable</code></td><td>Will never change. No revalidation, even on reload.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <aside class="notes">
+    <p>Cache-Control là response header nói cho mọi cache biết nó được phép làm gì. Bảy directive cần nhớ:</p>
+    <p>max-age=N: fresh trong N giây, áp dụng cho mọi cache.</p>
+    <p>s-maxage=N: giống max-age nhưng chỉ dành cho shared cache như CDN hay proxy, và ở đó nó ghi đè max-age. Đây chính là TTL dành riêng cho CDN.</p>
+    <p>public: cache nào cũng được lưu, kể cả trường hợp bình thường không được phép, ví dụ request có Authorization.</p>
+    <p>private: chỉ browser của user được lưu, CDN thì không.</p>
+    <p>no-cache: được lưu, nhưng phải revalidate với origin trước mỗi lần dùng. Tên dễ gây hiểu lầm nhất.</p>
+    <p>no-store: không được lưu ở bất kỳ đâu.</p>
+    <p>immutable: nội dung không bao giờ đổi, browser không cần revalidate kể cả khi reload.</p>
+    <p>Nhấn mạnh: no-cache nghĩa là "hỏi lại trước khi dùng", no-store mới là "không giữ".</p>
+  </aside>
+</section>
+
+<!-- 3.1 (2/2) examples -->
+<section class="l-code is-full" data-section="3 · Caching">
+  <header class="s-head">
+    <p class="eyebrow">3.1 · Cache-Control: three policies</p>
+    <h2>Always be explicit: without <code>Cache-Control</code>, each CDN applies its own defaults</h2>
+  </header>
+  <div class="s-body">
+    <div class="cols">
+      <pre><code class="language-yaml" data-trim>
+# Asset with a hash in its file name: cache for a year everywhere
+Cache-Control: public, max-age=31536000, immutable
+
+# HTML: browser always revalidates, CDN keeps it 60 seconds
+Cache-Control: max-age=0, s-maxage=60
+
+# Account page: nobody stores it
+Cache-Control: private, no-store
+      </code></pre>
+    </div>
+    <ul class="points">
+      <li><code>s-maxage</code> is the TTL for the CDN only</li>
+    </ul>
+  </div>
+  <aside class="notes">
+    <p>Ba policy mẫu dùng được cho phần lớn route.</p>
+    <p>Asset có hash trong tên file: cache một năm ở mọi nơi, kèm immutable. 31536000 giây là đúng một năm.</p>
+    <p>HTML: max-age=0 để browser luôn revalidate, s-maxage=60 để CDN giữ 60 giây.</p>
+    <p>Trang account: private, no-store, không ai được lưu.</p>
+    <p>Nếu origin không gửi Cache-Control, mỗi CDN sẽ áp default riêng của nó, và các default này khác nhau. Vì vậy luôn khai báo tường minh.</p>
+    <p>Nhắc lại: s-maxage là TTL chỉ dành cho CDN.</p>
+  </aside>
+</section>
+
+<!-- 3.2 -->
+<section class="l-two-col" data-section="3 · Caching">
+  <header class="s-head">
+    <p class="eyebrow">3.2 · Cache key</p>
+    <h2>Everything that changes the response belongs in the key, and nothing else</h2>
+  </header>
+  <div class="s-body">
+    <div class="cols">
+      <div class="col">
+        <h3 class="col-title"><svg class="icon"><use href="#i-split"/></svg>Too much in the key</h3>
+        <pre><code class="language-plaintext" data-trim>
+/app.js?utm_source=fb
+/app.js?utm_source=email
+        </code></pre>
+        <ul class="points">
+          <li>Same file, two cache entries</li>
+          <li>Tracking params, param order, cache-busters</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3 class="col-title"><svg class="icon"><use href="#i-alert"/></svg>Too little in the key</h3>
+        <pre><code class="language-plaintext" data-trim>
+key:      /api/home
+varies:   Accept-Language
+        </code></pre>
+        <ul class="points">
+          <li>Users get the wrong language</li>
+          <li>Worse: private data (9.2), poisoning (6.5)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout">
+      <svg class="icon"><use href="#i-key"/></svg>
+      <p><code>Vary</code> adds key parts. <code>Vary: Cookie</code> kills caching.</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Cache key là cách edge quyết định hai request có "giống nhau" hay không. Hai request cùng key nhận cùng một response đã cache. Mặc định key gồm host, path và query string.</p>
+    <p>Key chứa quá nhiều: /app.js?utm_source=fb và /app.js?utm_source=email là cùng một file nhưng thành hai cache entry. Tracking parameter, thứ tự parameter, và cache-buster ngẫu nhiên làm cache bị phân mảnh.</p>
+    <p>Key chứa quá ít: response phụ thuộc vào thứ nằm ngoài key. Ví dụ API đổi ngôn ngữ theo Accept-Language trong khi key chỉ có URL, kết quả là trả sai ngôn ngữ. Tệ hơn nữa là lộ dữ liệu của user khác (9.2) hoặc cache poisoning (6.5).</p>
+    <p>Vary là cách origin khai báo thêm thành phần của key. Vary: Accept-Encoding an toàn và phổ biến. Vary: User-Agent hoặc Vary: Cookie thì gần như tắt luôn cache vì giá trị quá đa dạng.</p>
+    <p>Nguyên tắc: mọi thứ làm thay đổi response phải nằm trong key, và không gì khác.</p>
+  </aside>
+</section>
+
+<!-- 3.3 -->
+<section class="l-code" data-section="3 · Caching">
+  <header class="s-head">
+    <p class="eyebrow">3.3 · TTL, freshness and revalidation</p>
+    <h2>Expired means "ask again", not "throw away"; a 304 keeps the old copy</h2>
+  </header>
+  <div class="s-body">
+    <div class="cols">
+      <ul class="points">
+        <li>Within the TTL, the cache answers alone</li>
+        <li>After it: stale, not deleted</li>
+        <li><code>ETag</code> returns in <code>If-None-Match</code></li>
+        <li><code>Last-Modified</code> in <code>If-Modified-Since</code></li>
+        <li>Unchanged: <code>304</code>, no body, clock resets</li>
+        <li>No TTL given: caches guess one</li>
+      </ul>
+      <pre><code class="language-http" data-trim>
+GET /logo.png HTTP/1.1
+If-None-Match: "a1b2c3"
+
+HTTP/1.1 304 Not Modified
+Cache-Control: max-age=3600
+ETag: "a1b2c3"
+      </code></pre>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>TTL là khoảng thời gian response được coi là fresh, lấy từ max-age hoặc s-maxage. Trong khoảng đó cache tự trả lời. Tuổi hiện tại nằm trong header Age.</p>
+    <p>Hết TTL thì response thành stale, chứ không bị xóa. Cache hỏi origin một câu rẻ hơn, dùng validator nó nhận được trước đó: ETag, gửi lại trong If-None-Match; hoặc Last-Modified, gửi lại trong If-Modified-Since. Last-Modified kém chính xác hơn vì độ phân giải chỉ tới một giây.</p>
+    <p>Xem ví dụ bên phải: edge hỏi lại với If-None-Match. Nếu nội dung không đổi, origin trả 304 Not Modified không có body, và đồng hồ được reset. Nếu đã đổi, origin trả 200 kèm nội dung mới.</p>
+    <p>Nếu origin không cho TTL, cache được phép tự đoán, thường là 10% khoảng thời gian tính từ Last-Modified.</p>
+    <p>Ý chính: hết hạn nghĩa là "hỏi lại", không phải "vứt đi". 304 nói rằng bản cũ vẫn dùng được.</p>
+  </aside>
+</section>
+
+<!-- 3.4 -->
+<section class="l-table" data-section="3 · Caching">
+  <header class="s-head">
+    <p class="eyebrow">3.4 · Invalidation</p>
+    <h2>The best invalidation is none at all: change the file name</h2>
+  </header>
+  <div class="s-body">
+    <table class="tbl">
+      <thead><tr><th>Strategy</th><th>How</th><th>Strength</th><th>Limit</th></tr></thead>
+      <tbody>
+        <tr><td>Purge</td><td>CDN API removes a URL, a pattern, or everything</td><td>Works for URLs that keep their name, such as HTML</td><td>Misses browser caches. A full purge sends a wave of misses to the origin.</td></tr>
+        <tr><td>Versioned names</td><td>Content hash in the name: <code>app.3f9a1c.js</code></td><td>No purge. One-year TTL. Covers browsers. Safe deploys and rollbacks.</td><td>Only for referenced resources. HTML still needs a fixed URL.</td></tr>
+        <tr><td>Cache tags</td><td>Label responses: <code>Surrogate-Key: product-123</code>, then purge by label</td><td>One call removes every page tied to an entity</td><td>Not on every CDN. The app must tag correctly.</td></tr>
+      </tbody>
+    </table>
+    <p class="caption"><b>Combine:</b> fingerprint assets, purge HTML, tag CMS content</p>
+  </div>
+  <aside class="notes">
+    <p>Ba chiến lược invalidation.</p>
+    <p>Purge: gọi API của CDN để xóa một URL, một pattern, hoặc toàn bộ. Dùng được cho URL giữ nguyên tên như HTML. Hạn chế: không với tới cache của browser; thời gian lan truyền từ dưới một giây đến vài phút tùy CDN; purge toàn bộ sẽ dồn một đợt miss về origin.</p>
+    <p>Versioned hay fingerprinted name: đưa content hash vào tên file, ví dụ app.3f9a1c.js. Nội dung mới thì tên mới. Không cần purge, TTL một năm, có tác dụng với cả cache của browser. Bản cũ và bản mới cùng tồn tại nên deploy và rollback đều an toàn. Hạn chế: chỉ dùng được cho resource được tham chiếu từ chỗ khác; bản thân HTML vẫn cần URL cố định.</p>
+    <p>Cache tag hay surrogate key: origin gắn nhãn cho response, ví dụ Surrogate-Key: product-123 category-7, rồi purge theo nhãn. Một lần gọi xóa mọi trang liên quan đến một entity. Hạn chế: không phải CDN nào cũng hỗ trợ, và application phải gắn tag cho đúng.</p>
+    <p>Thực tế dùng cả ba: fingerprint cho asset, TTL ngắn cộng purge cho HTML, tag cho nội dung từ CMS hay database.</p>
+    <p>Cách invalidate tốt nhất là không cần invalidate: đổi tên file khi nội dung đổi.</p>
+  </aside>
+</section>
+
+<!-- 3.5 -->
+<section class="l-table" data-section="3 · Caching">
+  <header class="s-head">
+    <p class="eyebrow">3.5 · The three cache layers</p>
+    <h2>The farther a cache is from you, the harder it is to fix</h2>
+  </header>
+  <div class="s-body">
+    <table class="tbl">
+      <thead><tr><th>Layer</th><th>Where</th><th>Who controls it</th><th>Can it be purged?</th></tr></thead>
+      <tbody>
+        <tr><td>Browser</td><td>The user's device. Private to one person.</td><td>You, indirectly, through <code>max-age</code></td><td><span class="t-bad">No.</span> Wait, or change the URL.</td></tr>
+        <tr><td>CDN</td><td>Edge servers. Shared by everyone.</td><td>You, through <code>s-maxage</code> and CDN configuration</td><td><span class="t-good">Yes,</span> by purge</td></tr>
+        <tr><td>Origin and app</td><td>Nginx, Varnish, Redis, in-process caches</td><td>Entirely you</td><td><span class="t-good">Yes,</span> in your own code</td></tr>
+      </tbody>
+    </table>
+    <ul class="points">
+      <li>"Still the old version"? Find the layer first</li>
+      <li>Fixed URLs: <code>max-age=0, s-maxage=3600</code></li>
+    </ul>
+  </div>
+  <aside class="notes">
+    <p>Có ba lớp cache, và mỗi lớp do một bên kiểm soát.</p>
+    <p>Browser: nằm trên thiết bị của user, riêng cho một người. Mình chỉ kiểm soát gián tiếp qua max-age. Không purge được: sau khi đã gửi max-age một năm thì chỉ còn cách chờ hoặc đổi URL.</p>
+    <p>CDN: các edge server, dùng chung cho mọi người. Mình kiểm soát qua s-maxage và cấu hình CDN. Purge được.</p>
+    <p>Origin và application: reverse proxy như Nginx, Varnish; Redis; cache trong process. Hoàn toàn do mình kiểm soát và xóa được bằng code của mình.</p>
+    <p>Request đi qua các lớp theo đúng thứ tự đó, và response sai có thể bị giữ ở bất kỳ lớp nào. Khi ai đó nói "vẫn thấy bản cũ", việc đầu tiên là tìm xem lớp nào đang trả về nó.</p>
+    <p>Với URL cố định, giữ TTL của browser ngắn và TTL của CDN dài hơn: max-age=0, s-maxage=3600.</p>
+    <p>Cache càng xa mình thì càng khó sửa. Cache của browser không purge được.</p>
+  </aside>
+</section>
+
+<!-- 3.6 -->
+<section class="l-code is-full" data-section="3 · Caching">
+  <header class="s-head">
+    <p class="eyebrow">3.6 · Serving stale on purpose</p>
+    <h2>Two directives trade a little freshness for steady speed and failure tolerance</h2>
+  </header>
+  <div class="s-body">
+    <div class="cols">
+      <pre><code class="language-yaml" data-trim>
+Cache-Control: max-age=60, stale-while-revalidate=300, stale-if-error=86400
+      </code></pre>
+    </div>
+    <table class="tbl">
+      <thead><tr><th>Response age</th><th>What the cache does</th></tr></thead>
+      <tbody>
+        <tr><td>0 to 60 s</td><td><span class="t-good">Fresh.</span> Served from cache.</td></tr>
+        <tr><td>60 to 360 s</td><td>Stale copy served at once, refreshed in the background. No user waits.</td></tr>
+        <tr><td>After 360 s</td><td>Waits for the origin. If the origin fails, the stale copy is still served, up to a day.</td></tr>
+      </tbody>
+    </table>
+    <ul class="points">
+      <li>Support differs per CDN and browser: check</li>
+    </ul>
+  </div>
+  <aside class="notes">
+    <p>Đôi khi mình chủ động cho phép trả nội dung stale. Có hai directive.</p>
+    <p>stale-while-revalidate=300: trong 300 giây sau khi hết hạn, cache trả ngay bản stale và refresh ở background. Không user nào phải chờ origin.</p>
+    <p>stale-if-error=86400: nếu origin trả 5xx hoặc không kết nối được, cache được phép trả bản stale tối đa một ngày sau khi hết hạn.</p>
+    <p>Đọc bảng theo tuổi của response: từ 0 đến 60 giây là fresh, trả từ cache. Từ 60 đến 360 giây: trả ngay bản stale, refresh ngầm. Sau 360 giây: phải chờ origin; nếu origin lỗi thì vẫn trả bản stale.</p>
+    <p>Mức hỗ trợ khác nhau giữa các CDN và browser. Đọc tài liệu của vendor trước khi dựa vào chúng.</p>
+    <p>Hai directive này đổi một chút freshness lấy tốc độ ổn định và khả năng chịu lỗi origin.</p>
+  </aside>
+</section>
+
+<!-- 3.7 -->
+<section class="l-two-col" data-section="3 · Caching">
+  <header class="s-head">
+    <p class="eyebrow">3.7 · Cache hit ratio</p>
+    <h2>A low hit ratio almost always means short TTLs or a fragmented key</h2>
+  </header>
+  <div class="s-body">
+    <div class="cols is-wide-right">
+      <div class="col">
+        <ul class="points">
+          <li>Hits ÷ (hits + misses)</li>
+          <li>Measure by requests and by bytes</li>
+          <li>95% of requests can be 60% of bytes</li>
+          <li>Egress cost follows the byte figure</li>
+          <li>Static assets: above 95%</li>
+          <li>Averages hide problems: split by path</li>
+        </ul>
+      </div>
+      <div class="col">
+        <table class="tbl is-wrap-first">
+          <thead><tr><th>Cause</th><th>Fix</th></tr></thead>
+          <tbody>
+            <tr><td>TTL too short</td><td>Raise it; fingerprints make long TTLs safe</td></tr>
+            <tr><td>Fragmented cache key</td><td>Drop tracking params, sort queries, trim <code>Vary</code></td></tr>
+            <tr><td><code>Set-Cookie</code>, or no <code>Cache-Control</code></td><td>Strip cookies on static paths; declare the policy</td></tr>
+            <tr><td>Traffic thin over many PoPs</td><td>Enable tiered caching (2.5)</td></tr>
+            <tr><td>Frequent or full purges</td><td>Purge selectively; use cache tags</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Cache hit ratio bằng số hit chia cho tổng hit và miss. Có hai cách đo: theo request và theo byte. Một site có thể đạt 95% theo request nhưng chỉ 60% theo byte nếu các file lớn bị miss. Chi phí egress của origin đi theo con số tính theo byte.</p>
+    <p>Static asset nên nằm trên 95%. [cần kiểm chứng: 95% là ngưỡng kinh nghiệm, không phải chuẩn chính thức]</p>
+    <p>Các nguyên nhân thường gặp khiến ratio thấp và cách sửa, ở bảng bên phải:</p>
+    <p>TTL quá ngắn: tăng lên, dùng fingerprint để TTL dài vẫn an toàn.</p>
+    <p>Cache key bị phân mảnh: bỏ tracking parameter, sort query string, bỏ Vary không cần thiết.</p>
+    <p>Có Set-Cookie hoặc thiếu Cache-Control: bỏ cookie ở các path static, khai báo policy rõ ràng.</p>
+    <p>Traffic dàn mỏng trên nhiều PoP: bật tiered caching (2.5).</p>
+    <p>Purge thường xuyên hoặc purge toàn bộ: purge có chọn lọc, dùng cache tag.</p>
+    <p>Con số trung bình che giấu vấn đề. Hãy tách theo path hoặc content type.</p>
+  </aside>
+</section>
+
+<!-- 3.8 -->
+<section class="l-figure" data-section="3 · Caching">
+  <header class="s-head">
+    <p class="eyebrow">3.8 · Cache stampede</p>
+    <h2>One hot object expiring can take down the origin; the edge merges the requests</h2>
+  </header>
+  <div class="s-body">
+    <div class="fig-row">
+      <!-- DIAGRAM: cache-stampede.png
+           Idea to convey: at the moment a hot object expires, thousands of identical requests hit the origin, unless the edge collapses them into one.
+           Draw two panels, left "Stampede" and right "Request collapsing", same components in both:
+             a crowd of users on the left (blue, write "thousands of requests"), one Edge in the middle (teal) with a cache
+             badge reading "expired", one Origin on the right (purple).
+           Panel "Stampede":
+             - Many blue arrows users -> edge.
+             - The SAME number of amber arrows edge -> origin, all labelled "MISS".
+             - Origin drawn in red with the label "overloaded" (red is the error colour).
+             - Caption: "also called thundering herd, dogpile".
+           Panel "Request collapsing":
+             - The same many blue arrows users -> edge.
+             - On the edge, a small queue box: "hold the others".
+             - ONE amber arrow edge -> origin: "1 request".
+             - One green arrow back, fanning out to all users: "answer all from one response".
+             - Origin drawn calm (purple).
+           Emphasise: the arrow count between edge and origin, many versus one. -->
+      <figure class="img-slot">
+        <img src="images/cache-stampede.png" alt="A stampede sends every request to the origin; request collapsing sends one and answers all of them" />
+        <figcaption>
+          <svg class="icon icon-l"><use href="#i-image"/></svg>
+          <span class="slot-file">images/cache-stampede.png</span>
+          <span class="slot-desc">Two panels: thousands of misses hitting the origin, versus one collapsed request</span>
+        </figcaption>
+      </figure>
+      <div class="col">
+        <ul class="points">
+          <li>Thousands MISS together, all reach origin</li>
+          <li class="fragment"><b>Collapsing:</b> one origin request, the rest wait</li>
+          <li class="fragment"><code>stale-while-revalidate</code>: nobody waits</li>
+          <li class="fragment">Origin shield gathers stampedes</li>
+          <li class="fragment">Random TTL jitter spreads expiry</li>
+          <li class="fragment">Pitfall: uncacheable responses must bypass</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Tình huống: một object rất hot hết hạn. Trước khi bản mới về tới, hàng nghìn request cùng thấy MISS và cùng đi tới origin. Hiện tượng này còn gọi là thundering herd hay dogpile.</p>
+    <p>(Bấm tiếp) Request collapsing, hay coalescing: edge chỉ gửi một request tới origin, giữ các request còn lại, rồi trả lời tất cả bằng response duy nhất đó.</p>
+    <p>(Bấm tiếp) Các lớp phòng thủ khác: stale-while-revalidate để không ai phải chờ; origin shield để gom stampede về một chỗ; thêm một chút ngẫu nhiên vào TTL để các object không hết hạn cùng lúc.</p>
+    <p>(Bấm tiếp) Pitfall: nếu response hóa ra không cache được, các request đang xếp hàng không được lợi gì và sẽ đi tới origin lần lượt từng cái một. Vì vậy hãy cho nội dung không cache được bypass cache ngay từ đầu.</p>
+    <p>Ý chính: một object hot hết hạn có thể làm sập origin. Edge gộp các request trùng nhau thành một.</p>
+  </aside>
+</section>
+
+<!-- 3.9 -->
+<section class="l-two-col" data-section="3 · Caching">
+  <header class="s-head">
+    <p class="eyebrow">3.9 · Negative caching</p>
+    <h2>Errors are cached too: a brief 404 during a deploy can outlive its cause</h2>
+  </header>
+  <div class="s-body">
+    <div class="cols">
+      <div class="col">
+        <h3 class="col-title is-bad"><svg class="icon"><use href="#i-alert"/></svg>The deploy pitfall</h3>
+        <ol class="steps">
+          <li>New HTML references <code>app.9d2e.js</code></li>
+          <li class="fragment">Not uploaded yet: the <code>404</code> gets cached</li>
+          <li class="fragment">File exists now; users still get the error</li>
+        </ol>
+      </div>
+      <div class="col fragment">
+        <h3 class="col-title is-good"><svg class="icon"><use href="#i-check"/></svg>Prevention</h3>
+        <ul class="points is-good">
+          <li>Upload assets before HTML (8.2)</li>
+          <li>Short error TTLs; seconds for <code>5xx</code></li>
+          <li>Explicit <code>Cache-Control</code> on error responses</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Negative caching: lỗi cũng tốn tài nguyên để tạo ra. Một URL không tồn tại bị bot quét thì nếu không cache, lần nào cũng chạm origin. Nhiều CDN mặc định cache 404 trong thời gian ngắn.</p>
+    <p>Pitfall khi deploy: HTML mới tham chiếu app.9d2e.js trước khi file được upload.</p>
+    <p>(Bấm tiếp) User đầu tiên nhận 404 và CDN cache luôn cái 404 đó.</p>
+    <p>(Bấm tiếp) Giờ file đã tồn tại, nhưng user vẫn tiếp tục nhận lỗi cho tới khi TTL của lỗi hết.</p>
+    <p>(Bấm tiếp) Phòng tránh: upload asset trước HTML (xem 8.2). Giữ TTL của lỗi thật ngắn, vài giây đến một phút. Đặt Cache-Control tường minh trên response lỗi.</p>
+    <p>Cẩn thận hơn với 5xx: cache vài giây giúp origin đang quá tải có thời gian hồi phục, nhưng TTL dài sẽ kéo dài sự cố ngay cả khi origin đã khỏe lại.</p>
+  </aside>
+</section>
+
+<!-- ======================================================================
+     SECTION 4: WHAT YOU CAN PUT BEHIND A CDN (4.1 – 4.7)
+     ====================================================================== -->
+
+<!-- 4.1 -->
+<section class="l-cards" data-section="4 · What you can put behind a CDN">
+  <header class="s-head">
+    <p class="eyebrow">4.1 · Static assets</p>
+    <h2>Identical for every user and rarely changing: put this on the CDN first</h2>
+  </header>
+  <div class="s-body">
+    <div class="cards c4">
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-code"/></svg>
+        <h3>JS and CSS</h3>
+        <p>Hashed names: one year, <code>immutable</code></p>
+      </div>
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-image"/></svg>
+        <h3>Images</h3>
+        <p>Most page weight; optimize at edge (4.5)</p>
+      </div>
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-type"/></svg>
+        <h3>Fonts</h3>
+        <p>Cross-domain fonts need a CORS header</p>
+      </div>
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-download"/></svg>
+        <h3>Downloads</h3>
+        <p>Large files need range requests to resume</p>
+      </div>
+    </div>
+    <div class="callout">
+      <svg class="icon"><use href="#i-pin"/></svg>
+      <p><b>Use a cookie-free path:</b> <code>/assets/*</code>, <code>static.example.com</code></p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Static asset là thứ đầu tiên nên đưa lên CDN: giống nhau với mọi user và hiếm khi thay đổi.</p>
+    <p>JS và CSS: build tool sinh tên file có hash, nên cache một năm kèm immutable.</p>
+    <p>Ảnh: thường chiếm phần lớn dung lượng trang. Cache dài, và tối ưu thêm ở edge, xem 4.5.</p>
+    <p>Font: cache dài. Font load từ domain khác cần CORS header Access-Control-Allow-Origin, nếu không browser sẽ từ chối.</p>
+    <p>File download: installer, PDF, file nén. File lớn cần hỗ trợ range request để tải tiếp được khi bị ngắt.</p>
+    <p>Nên phục vụ asset từ một path hoặc subdomain không có cookie, như /assets/* hay static.example.com, để rule cache đơn giản và không bao giờ đụng tới nội dung dynamic.</p>
+  </aside>
+</section>
+
+<!-- 4.2 -->
+<section class="l-two-col" data-section="4 · What you can put behind a CDN">
+  <header class="s-head">
+    <p class="eyebrow">4.2 · API responses</p>
+    <h2>A one-second TTL removes almost all origin load; the risk is in the cache key</h2>
+  </header>
+  <div class="s-body">
+    <div class="cols is-wide-left">
+      <div class="col">
+        <ul class="points">
+          <li>Cacheable when many users share it</li>
+          <li><code>GET</code> and <code>HEAD</code> only</li>
+          <li>Key: query, language, version, tenant</li>
+          <li><code>Authorization</code> blocks shared caching by default</li>
+          <li>Keep that guard unless truly user-independent</li>
+          <li>Pairs with <code>stale-while-revalidate</code>, cache tags</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="stat">
+          <span class="stat-num">1,000 to 1</span>
+          <span class="stat-label">requests per second at the origin, for a hot endpoint with a 1-second TTL. This is micro-caching.</span>
+        </div>
+        <div class="chips">
+          <span class="chip">product lists</span>
+          <span class="chip">articles</span>
+          <span class="chip">configuration</span>
+          <span class="chip">popular searches</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>API cũng cache được khi response giống nhau cho nhiều user: danh sách sản phẩm, bài viết, configuration, các search phổ biến.</p>
+    <p>Chỉ GET và HEAD. Đây là các safe method. POST, PUT, DELETE luôn đi tới origin.</p>
+    <p>TTL ngắn vẫn có lời. Ở 1.000 request mỗi giây, TTL 1 giây cắt tải origin xuống còn 1 request mỗi giây. Đây gọi là micro-caching. [cần kiểm chứng: con số 1 request/giây là cho một cache; thực tế mỗi PoP có cache riêng nên origin sẽ nhận nhiều hơn]</p>
+    <p>Key phải cẩn thận: query string, ngôn ngữ, API version, tenant. Thiếu một cái là trả sai dữ liệu.</p>
+    <p>Request có Authorization mặc định không được shared cache lưu, trừ khi response có public, s-maxage hoặc must-revalidate. Giữ hàng rào này, trừ khi response thật sự không phụ thuộc vào user.</p>
+    <p>Kết hợp tốt với stale-while-revalidate và cache tag.</p>
+  </aside>
+</section>
+
+<!-- 4.3 -->
+<section class="l-figure" data-section="4 · What you can put behind a CDN">
+  <header class="s-head">
+    <p class="eyebrow">4.3 · Dynamic acceleration</p>
+    <h2>Uncacheable requests still get faster: handshakes nearby, a warm long leg</h2>
+  </header>
+  <div class="s-body">
+    <div class="fig-row">
+      <figure class="fig">
+        <svg class="dg" viewBox="0 0 640 380" role="img" aria-label="Direct to origin takes three long round trips, 600 ms. Through the edge takes three short ones and one long one, about 250 ms.">
+          <text x="20" y="30" class="t-strong">Direct to origin · 3 long round trips</text>
+          <rect class="seg seg-slow" x="20" y="46" width="160" height="64" rx="4"/>
+          <rect class="seg seg-slow" x="180" y="46" width="160" height="64" rx="4"/>
+          <rect class="seg seg-slow" x="340" y="46" width="160" height="64" rx="4"/>
+          <text x="100" y="84" text-anchor="middle" class="t-mono">TCP</text>
+          <text x="260" y="84" text-anchor="middle" class="t-mono">TLS 1.3</text>
+          <text x="420" y="84" text-anchor="middle" class="t-mono">HTTP</text>
+          <text x="516" y="89" class="t-num t-slow">600 ms</text>
+
+          <text x="20" y="176" class="t-strong">Through the edge · 3 short, 1 long</text>
+          <rect class="seg seg-fast" x="20" y="192" width="16" height="64" rx="3"/>
+          <rect class="seg seg-fast" x="36" y="192" width="16" height="64" rx="3"/>
+          <rect class="seg seg-fast" x="52" y="192" width="16" height="64" rx="3"/>
+          <rect class="seg seg-slow" x="68" y="192" width="160" height="64" rx="4"/>
+          <text x="148" y="230" text-anchor="middle" class="t-mono">warm leg</text>
+          <text x="244" y="235" class="t-num t-fast">~250 ms</text>
+
+          <path class="ln ln-axis" d="M20 304H500M20 298v12M180 298v12M340 298v12M500 298v12"/>
+          <text x="20" y="332" class="t-mono t-small t-muted">0</text>
+          <text x="180" y="332" text-anchor="middle" class="t-mono t-small t-muted">200 ms</text>
+          <text x="340" y="332" text-anchor="middle" class="t-mono t-small t-muted">400 ms</text>
+          <text x="500" y="332" text-anchor="middle" class="t-mono t-small t-muted">600 ms</text>
+          <text x="20" y="368" class="t-small t-muted">Same example as 1.1: origin RTT 200 ms, edge RTT 20 ms</text>
+        </svg>
+      </figure>
+      <div class="col">
+        <ul class="points">
+          <li>Handshakes happen with a nearby edge</li>
+          <li>Edge reuses warm origin connections (5.2)</li>
+          <li>Public routing follows policy and cost</li>
+          <li>CDNs use backbones or measure paths</li>
+          <li>Farther users gain more</li>
+        </ul>
+        <div class="chips">
+          <span class="chip">Cloudflare Argo Smart Routing</span>
+          <span class="chip">Akamai SureRoute</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Nội dung không cache được vẫn nhanh hơn khi đi qua CDN, nhờ ba cơ chế.</p>
+    <p>Handshake ngắn: TCP và TLS handshake của user diễn ra với edge ở gần thay vì origin ở xa.</p>
+    <p>Tái sử dụng connection: edge giữ sẵn các connection mở tới origin (5.2). Request của mình đi trên một connection đã handshake xong và đã qua slow start.</p>
+    <p>Routing tốt hơn: Internet công cộng route theo policy và chi phí của nhà mạng, không theo tốc độ. CDN lớn dùng private backbone hoặc đo liên tục để tìm đường nhanh nhất. Ví dụ: Cloudflare Argo Smart Routing, Akamai SureRoute.</p>
+    <p>So với ví dụ ở 1.1: thay vì ba round trip dài, giờ là ba round trip ngắn tới edge cộng một round trip dài do edge thực hiện trên connection đã warm. Khoảng 250 ms thay vì 600 ms. [cần kiểm chứng: 250 ms là ước lượng từ ví dụ 3 × 20 ms + 200 ms]</p>
+    <p>User càng xa origin thì lợi càng nhiều.</p>
+  </aside>
+</section>
+
+<!-- 4.4 -->
+<section class="l-code" data-section="4 · What you can put behind a CDN">
+  <header class="s-head">
+    <p class="eyebrow">4.4 · Compression at the edge</p>
+    <h2>Compressing text is nearly free, and the edge does it on the origin's behalf</h2>
+  </header>
+  <div class="s-body">
+    <div class="cols">
+      <ul class="points">
+        <li>Text shrinks to 20–30% of its size</li>
+        <li><b>gzip:</b> supported everywhere, fast</li>
+        <li><b>Brotli:</b> 15–20% smaller, HTTPS only</li>
+        <li>Edge compresses, caches each variant</li>
+        <li>Skip JPEG, PNG, video, zip</li>
+        <li>Static assets: top Brotli level at build</li>
+      </ul>
+      <div class="col">
+        <pre><code class="language-http" data-trim>
+GET /app.js HTTP/1.1
+Accept-Encoding: gzip, br
+
+HTTP/1.1 200 OK
+Content-Encoding: br
+Vary: Accept-Encoding
+        </code></pre>
+        <div class="chips">
+          <span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JS</span><span class="chip">JSON</span><span class="chip">SVG</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Nội dung dạng text như HTML, CSS, JS, JSON, SVG thường nén còn 20 đến 30% kích thước gốc. Browser gửi Accept-Encoding: gzip, br và server trả lời với Content-Encoding.</p>
+    <p>gzip: được hỗ trợ ở mọi nơi, nhanh.</p>
+    <p>Brotli (br): nhỏ hơn gzip khoảng 15 đến 20% với text, mọi browser hiện đại đều hỗ trợ, nhưng chỉ qua HTTPS.</p>
+    <p>Edge có thể nén thay cho origin và cache từng variant, tiết kiệm CPU của origin và đảm bảo nén đúng.</p>
+    <p>Đừng nén các định dạng vốn đã nén: JPEG, PNG, video, zip.</p>
+    <p>Mức cao nhất của Brotli quá chậm để nén on-the-fly. Với static asset, hãy nén ở mức cao nhất ngay lúc build.</p>
+  </aside>
+</section>
+
+<!-- 4.5 -->
+<section class="l-code" data-section="4 · What you can put behind a CDN">
+  <header class="s-head">
+    <p class="eyebrow">4.5 · Image optimization</p>
+    <h2>Keep one original; the edge makes a variant per device, from a fixed list</h2>
+  </header>
+  <div class="s-body">
+    <div class="cols">
+      <ul class="points">
+        <li><b>Resize:</b> size in the URL, with <code>srcset</code></li>
+        <li><b>Convert:</b> <code>Accept</code> picks AVIF, WebP or JPEG</li>
+        <li>WebP: 25–35% smaller than JPEG</li>
+        <li>Adjust quality, strip metadata</li>
+        <li>Each variant is cached: pay once</li>
+      </ul>
+      <div class="col">
+        <pre><code class="language-plaintext" data-trim>
+/photos/hero.jpg?width=400&amp;format=auto
+        </code></pre>
+        <div class="callout is-error">
+          <svg class="icon"><use href="#i-alert"/></svg>
+          <p><b>Pitfall:</b> <code>width=401</code>, <code>402</code>, <code>403</code>... Allow fixed sizes only.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Ý tưởng: chỉ lưu một ảnh gốc chất lượng cao và để edge biến đổi theo từng request, như URL ví dụ: width=400, format=auto.</p>
+    <p>Resize: điện thoại không cần ảnh 4.000 px. Kích thước đặt trong URL, kết hợp với srcset.</p>
+    <p>Convert: edge đọc header Accept của browser và trả AVIF hoặc WebP nếu được hỗ trợ, còn không thì JPEG. WebP thường nhỏ hơn JPEG 25 đến 35% ở cùng chất lượng, AVIF còn nhỏ hơn nữa. [cần kiểm chứng: 25–35% là số Google công bố, thực tế tùy loại ảnh]</p>
+    <p>Ngoài ra còn điều chỉnh quality và bỏ metadata.</p>
+    <p>Mỗi kết quả được cache, nên chi phí xử lý chỉ trả một lần cho mỗi variant.</p>
+    <p>Pitfall: kích thước tùy ý như width=401, 402, 403 tạo ra vô số variant, vừa tốn tiền vừa làm loãng cache. Chỉ cho phép một danh sách kích thước cố định.</p>
+  </aside>
+</section>
+
+<!-- 4.6 -->
+<section class="l-two-col" data-section="4 · What you can put behind a CDN">
+  <header class="s-head">
+    <p class="eyebrow">4.6 · Video streaming</p>
+    <h2>Streaming video is a large number of small static files, which CDNs serve best</h2>
+  </header>
+  <div class="s-body">
+    <div class="cols is-wide-right">
+      <div class="col">
+        <ul class="points">
+          <li>Segments of a few seconds, plus a manifest</li>
+          <li>HLS (<code>.m3u8</code>) and MPEG-DASH (<code>.mpd</code>)</li>
+          <li>Adaptive bitrate: quality picked per segment</li>
+          <li>Range requests: seek and resume un-cut files</li>
+        </ul>
+      </div>
+      <div class="col">
+        <table class="tbl">
+          <thead><tr><th></th><th>Manifest</th><th>Segment</th></tr></thead>
+          <tbody>
+            <tr><th>Video on demand</th><td>Long TTL</td><td>Long TTL, <code>immutable</code></td></tr>
+            <tr><th>Live</th><td>Very short TTL: new segments keep arriving</td><td>Long TTL: a published segment never changes</td></tr>
+          </tbody>
+        </table>
+        <pre><code class="language-http" data-trim>
+GET /movie.mp4 HTTP/1.1
+Range: bytes=0-1048575
+
+HTTP/1.1 206 Partial Content
+        </code></pre>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Streaming hiện đại không gửi một file lớn. Video được cắt thành các segment dài vài giây, mỗi segment là một file HTTP bình thường, kèm một manifest liệt kê chúng. Hai chuẩn: HLS (.m3u8, của Apple) và MPEG-DASH (.mpd).</p>
+    <p>Mỗi video được encode ở nhiều mức chất lượng. Player đo network và chọn mức cho từng segment. Đây là adaptive bitrate.</p>
+    <p>Về TTL, xem bảng: với video on demand, cả manifest và segment đều TTL dài, segment thêm immutable. Với live, manifest TTL rất ngắn, một đến vài giây, vì segment mới liên tục xuất hiện; còn segment TTL dài vì segment đã publish thì không bao giờ đổi.</p>
+    <p>Range request dùng cho file lớn không cắt sẵn như MP4 hay file download. Client gửi Range: bytes=0-1048575 và nhận 206 Partial Content. Người xem tua được, download resume được. CDN thường cache file lớn theo từng chunk.</p>
+    <p>Ý chính: video streaming thực chất là rất nhiều file static nhỏ, đúng thứ CDN phục vụ tốt nhất.</p>
+  </aside>
+</section>
+
+<!-- 4.7 -->
+<section class="l-cards" data-section="4 · What you can put behind a CDN">
+  <header class="s-head">
+    <p class="eyebrow">4.7 · Mixing cached and personalized content</p>
+    <h2>Separate the shared part from the personal part, so the shared part can be cached</h2>
+  </header>
+  <div class="s-body">
+    <p class="lead">A product page: 95% shared, 5% personal</p>
+    <div class="cards c3">
+      <div class="card">
+        <span class="card-kicker">At the edge, by tags</span>
+        <h3>ESI (Edge Side Includes)</h3>
+        <p>Edge caches the shell, assembles fragments per request</p>
+        <span class="chip">Akamai · Fastly · Varnish</span>
+      </div>
+      <div class="card">
+        <span class="card-kicker">At the edge, by code</span>
+        <h3>Edge function</h3>
+        <p>Cached shell, personal part injected into the stream</p>
+        <span class="chip">section 7</span>
+      </div>
+      <div class="card">
+        <span class="card-kicker">In the browser</span>
+        <h3>Client-side fill</h3>
+        <p>JavaScript calls a separate uncached API</p>
+        <span class="chip">simplest, most common</span>
+      </div>
+    </div>
+    <pre><code class="language-xml" data-trim>
+&lt;esi:include src="/fragments/cart-summary" /&gt;
+    </code></pre>
+  </div>
+  <aside class="notes">
+    <p>Một trang sản phẩm giống nhau 95% với mọi người và chỉ 5% là cá nhân: tên user, số món trong giỏ hàng. Nếu coi cả trang là private thì không cache được gì.</p>
+    <p>Có ba cách tách phần chung khỏi phần riêng.</p>
+    <p>ESI, Edge Side Includes: trang chứa các placeholder tag như dòng code bên dưới. Edge cache phần shell và ráp các fragment theo từng request, mỗi fragment có TTL riêng. Akamai, Fastly và Varnish hỗ trợ ở các mức độ khác nhau.</p>
+    <p>Composition bằng edge code: một edge function (phần 7) lấy shell từ cache, gọi API cho phần cá nhân rồi chèn vào HTML đang được stream.</p>
+    <p>Composition ở browser: cache trang không có dữ liệu cá nhân, JavaScript gọi một API riêng không cache để điền vào. Đây là cách đơn giản và phổ biến nhất.</p>
+  </aside>
+</section>
+
+<!-- ======================================================================
+     SECTION 5: PROTOCOLS AND NETWORK (5.1 – 5.2)
+     ====================================================================== -->
+
+<!-- 5.1 -->
+<section class="l-figure is-stacked" data-section="5 · Protocols and network">
+  <header class="s-head">
+    <p class="eyebrow">5.1 · TLS termination at the edge</p>
+    <h2>HTTPS has two legs, user to edge and edge to origin; both must be encrypted</h2>
+  </header>
+  <div class="s-body">
+    <div class="fig-row">
+      <figure class="fig">
+        <svg class="dg" viewBox="0 0 1150 178" role="img" aria-label="User connects to the edge over TLS; the edge decrypts and opens a second TLS connection to the origin">
+          <path class="ln-req" d="M222 62H470M678 62H926"/>
+          <path class="ln-req" d="M460 54l10 8-10 8M916 54l10 8-10 8"/>
+          <circle class="mask" cx="346" cy="62" r="21"/>
+          <circle class="mask" cx="802" cy="62" r="21"/>
+          <use href="#i-lock" x="334" y="50" width="24" height="24" class="ic ic-hit"/>
+          <use href="#i-lock" x="790" y="50" width="24" height="24" class="ic ic-hit"/>
+          <text x="346" y="28" text-anchor="middle" class="t-strong">Leg 1 · TLS</text>
+          <text x="346" y="108" text-anchor="middle" class="t-small t-muted">handshake with a nearby server</text>
+          <text x="802" y="28" text-anchor="middle" class="t-strong">Leg 2 · TLS</text>
+          <text x="802" y="108" text-anchor="middle" class="t-small t-muted">verify the origin certificate</text>
+
+          <rect class="box box-user" x="22" y="20" width="200" height="84" rx="12"/>
+          <use href="#i-user" x="40" y="50" width="24" height="24" class="ic ic-user"/>
+          <text x="78" y="58" class="t-strong">User</text>
+          <text x="78" y="80" class="t-small t-muted">browser</text>
+
+          <rect class="box box-edge" x="474" y="20" width="204" height="84" rx="12"/>
+          <use href="#i-edge" x="492" y="50" width="24" height="24" class="ic ic-edge"/>
+          <text x="530" y="58" class="t-strong">Edge</text>
+          <text x="530" y="80" class="t-small t-muted">your certificate</text>
+          <text x="576" y="136" text-anchor="middle" class="t-small t-edge">decrypts here:</text>
+          <text x="576" y="158" text-anchor="middle" class="t-small t-edge">the CDN sees all traffic</text>
+
+          <rect class="box box-origin" x="930" y="20" width="200" height="84" rx="12"/>
+          <use href="#i-server" x="948" y="50" width="24" height="24" class="ic ic-origin"/>
+          <text x="986" y="58" class="t-strong">Origin</text>
+          <text x="986" y="80" class="t-small t-muted">its own certificate</text>
+        </svg>
+      </figure>
+      <ul class="points">
+        <li>Edge holds the certificate, does the handshake</li>
+        <li>TLS 1.3 and session resumption built in</li>
+        <li>CDN issues, renews, distributes certificates</li>
+        <li>You prove domain ownership, usually by DNS</li>
+        <li>Encrypting only leg 1: false safety</li>
+        <li>Expired origin certificate: a familiar <code>502</code></li>
+      </ul>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Kết nối HTTPS của user kết thúc tại edge. Edge giữ certificate của domain, thực hiện handshake, giải mã request, rồi mở một kết nối thứ hai tới origin.</p>
+    <p>Lợi ích: handshake diễn ra với server ở gần; TLS 1.3 và session resumption có sẵn; origin không phải gánh hàng nghìn handshake từ client.</p>
+    <p>Quản lý certificate do CDN lo: cấp, gia hạn, và phân phối tới mọi PoP. Mình chỉ cần chứng minh quyền sở hữu domain, thường bằng một DNS record.</p>
+    <p>Ba điều cần biết. Một, CDN nhìn thấy toàn bộ traffic ở dạng đã giải mã. Đó là mức độ tin tưởng mình đặt vào vendor. Hai, chặng edge tới origin cũng phải được mã hóa và có verify certificate. Chỉ mã hóa chặng user tới edge tạo cảm giác an toàn giả. Ba, origin vẫn cần certificate riêng và phải tự gia hạn. Certificate origin hết hạn là một nguyên nhân quen thuộc của lỗi 502.</p>
+    <p>Ý chính: HTTPS có hai chặng, và cả hai đều phải được mã hóa.</p>
+  </aside>
+</section>
+
+<!-- 5.2 -->
+<section class="l-figure" data-section="5 · Protocols and network">
+  <header class="s-head">
+    <p class="eyebrow">5.2 · Persistent connections to the origin</p>
+    <h2>The longest leg reuses warm connections; keep the origin's keep-alive timeout longer</h2>
+  </header>
+  <div class="s-body">
+    <div class="fig-row">
+      <!-- DIAGRAM: connection-pool.png
+           Idea to convey: thousands of short user connections end at the edge; only a few long-lived, warm connections cross the long distance to the origin.
+           Components, left to right:
+             - A column of many users (blue), label "thousands of users".
+             - One Edge (teal) in the middle, containing a small box "keep-alive pool".
+             - One Origin (purple) far to the right. Make the edge-to-origin gap visibly LONGER than the user-to-edge gap.
+           Arrows:
+             1. Users -> Edge: many thin short blue lines, label "many short connections (TCP + TLS each)".
+             2. Edge -> Origin: only 3 or 4 thick parallel lines, label "few persistent connections: no handshake, congestion window already open".
+             3. Show requests from different users (small coloured dots) travelling on the same thick line.
+           Second small panel underneath, "The pitfall", as a timeline with two bars:
+             - "Origin keep-alive timeout: 60 s" (short bar) and "CDN keep-alive timeout: 120 s" (longer bar). Use these as example values.
+             - At 60 s the origin closes the connection (red X). At 75 s the edge sends a request on it -> red "502".
+             - Fix note in green: "origin and load balancer timeout > CDN timeout".
+           Emphasise: few thick lines on the long leg; the red 502 in the pitfall panel. -->
+      <figure class="img-slot">
+        <img src="images/connection-pool.png" alt="Many short user connections end at the edge; a few persistent warm connections carry all requests to the origin" />
+        <figcaption>
+          <svg class="icon icon-l"><use href="#i-image"/></svg>
+          <span class="slot-file">images/connection-pool.png</span>
+          <span class="slot-desc">Many short user connections into the edge, a few warm ones to the origin, plus the timeout pitfall</span>
+        </figcaption>
+      </figure>
+      <div class="col">
+        <ul class="points">
+          <li>A keep-alive pool carries many users' requests</li>
+          <li>No handshakes on the longest leg</li>
+          <li>Warm: already past slow start</li>
+          <li>Origin sees few stable connections</li>
+          <li class="fragment">Pitfall: shorter origin timeout, random <code>502</code> errors</li>
+          <li class="fragment">Fix: origin and LB timeout above the CDN's</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Edge không mở connection mới tới origin cho từng request. Nó giữ một pool các keep-alive connection và gửi request của nhiều user qua đó.</p>
+    <p>Nhờ vậy không có TCP hay TLS handshake trên chặng dài nhất. Các connection đã warm: TCP congestion window đã lớn lên qua giai đoạn slow start, nên response lớn về nhanh hơn. Origin thì thấy vài connection ổn định từ CDN thay vì hàng nghìn connection ngắn từ khắp nơi.</p>
+    <p>(Bấm tiếp) Pitfall vận hành: nếu keep-alive timeout của origin ngắn hơn của CDN, origin đóng một connection mà edge vẫn tưởng còn dùng được. Request tiếp theo trên connection đó sẽ fail, và user nhận lỗi 502 ngẫu nhiên, rất khó tái hiện.</p>
+    <p>(Bấm tiếp) Cách sửa: đặt timeout ở origin và load balancer dài hơn timeout của CDN.</p>
+  </aside>
+</section>
+
+<!-- ======================================================================
+     SECTION 6: SECURITY (6.1 – 6.5)
+     ====================================================================== -->
+
+<!-- 6.1 -->
+<section class="l-table" data-section="6 · Security">
+  <header class="s-head">
+    <p class="eyebrow">6.1 · DDoS absorption</p>
+    <h2>The CDN takes the blow for the origin, as long as nobody can call the origin directly</h2>
+  </header>
+  <div class="s-body">
+    <table class="tbl">
+      <thead><tr><th>Layer attacked</th><th>Example</th><th>How the CDN helps</th></tr></thead>
+      <tbody>
+        <tr><td>Network (L3/L4)</td><td>SYN floods, UDP amplification</td><td>Very large total capacity. Anycast splits the attack across PoPs near its sources. Junk packets are dropped at the edge.</td></tr>
+        <tr><td>Application (L7)</td><td>HTTP floods</td><td>Cached content is answered at almost no cost. Uncacheable endpoints (search, login) still reach the origin: add rate limiting and a WAF (6.2).</td></tr>
+      </tbody>
+    </table>
+    <div class="callout is-error">
+      <svg class="icon"><use href="#i-alert"/></svg>
+      <p><b>Precondition:</b> the origin's real address is unreachable (6.3)</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Tấn công DDoS tìm cách làm cạn bandwidth, connection hoặc CPU của mình. CDN giúp thế nào tùy vào tầng bị tấn công.</p>
+    <p>Tầng network, L3/L4, ví dụ SYN flood hay UDP amplification: tổng capacity của CDN rất lớn, và với Anycast thì đợt tấn công bị chia ra các PoP gần nguồn phát. Packet rác bị drop ngay tại edge.</p>
+    <p>Tầng application, L7, ví dụ HTTP flood: request tới nội dung đã cache được trả lời với chi phí gần như bằng không. Nhưng request tới endpoint không cache được như search hay login vẫn tới origin, nên cần thêm rate limiting và WAF, slide 6.2.</p>
+    <p>Điều kiện tiên quyết: attacker không biết hoặc không tới được địa chỉ thật của origin. Nếu tới được, họ chỉ việc đi vòng qua CDN. Slide 6.3 nói cách bảo vệ.</p>
+  </aside>
+</section>
+
+<!-- 6.2 -->
+<section class="l-cards" data-section="6 · Security">
+  <header class="s-head">
+    <p class="eyebrow">6.2 · WAF, rate limiting and bot management</p>
+    <h2>Blocked at the edge, bad requests cost the origin nothing; run new rules in log mode first</h2>
+  </header>
+  <div class="s-body">
+    <div class="cards c3">
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-shield"/></svg>
+        <h3>WAF</h3>
+        <p>Rules for SQL injection, XSS, path traversal</p>
+        <p>Often the fastest temporary patch</p>
+      </div>
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-gauge"/></svg>
+        <h3>Rate limiting</h3>
+        <p>Caps per IP, token or path</p>
+        <p>Protects login and search</p>
+      </div>
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-bot"/></svg>
+        <h3>Bot management</h3>
+        <p>Humans, good bots, bad bots</p>
+        <p>Fingerprints, JS challenges, behavior models</p>
+      </div>
+    </div>
+    <div class="callout">
+      <svg class="icon"><use href="#i-alert"/></svg>
+      <p>All three can block real users: log-only first</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Ba công cụ lọc request xấu trước khi chúng tốn tài nguyên của mình.</p>
+    <p>WAF, Web Application Firewall: kiểm tra từng request theo các rule cho những kiểu tấn công đã biết như SQL injection, XSS, path traversal. Vendor cung cấp các rule set được bảo trì sẵn, mình thêm rule riêng. Khi có lỗ hổng mới công bố, một rule WAF thường là bản vá tạm nhanh nhất.</p>
+    <p>Rate limiting: giới hạn số request theo IP, theo token hoặc theo path trong một khoảng thời gian. Bảo vệ các endpoint đắt như login và search.</p>
+    <p>Bot management: phân biệt người thật, bot tốt (search engine) và bot xấu (scraping, dò password, gom hàng tồn kho), dựa trên TLS fingerprint, browser fingerprint, JavaScript challenge và mô hình hành vi.</p>
+    <p>Cả ba đều có thể chặn nhầm user thật. Bật rule mới ở chế độ log-only, xem nó sẽ chặn những gì, rồi mới enforce.</p>
+  </aside>
+</section>
+
+<!-- 6.3 -->
+<section class="l-cards" data-section="6 · Security">
+  <header class="s-head">
+    <p class="eyebrow">6.3 · Protecting the origin</p>
+    <h2>If the origin can be reached from the Internet, the CDN protects nothing</h2>
+  </header>
+  <div class="s-body">
+    <div class="cards c3">
+      <div class="card">
+        <span class="card-kicker">Layer 1</span>
+        <h3>Hide the IP</h3>
+        <p>No leaks: old DNS, subdomains, MX, email headers</p>
+        <span class="chip is-need">weak alone</span>
+      </div>
+      <div class="card fragment">
+        <span class="card-kicker">Layer 2</span>
+        <h3>Allowlist CDN ranges</h3>
+        <p>Firewall accepts only the CDN's published ranges</p>
+        <span class="chip is-need">ranges shared by all customers</span>
+      </div>
+      <div class="card fragment">
+        <span class="card-kicker">Layer 3</span>
+        <h3>Prove it is your config</h3>
+        <p>Secret header, or a client certificate (mTLS)</p>
+        <span class="chip">closes the allowlist gap</span>
+      </div>
+    </div>
+    <div class="callout fragment">
+      <svg class="icon"><use href="#i-lock"/></svg>
+      <p><b>Stronger:</b> no public address (Cloudflare Tunnel, S3 OAC)</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Mọi lớp bảo vệ ở edge đều vô nghĩa nếu ai đó gửi được request thẳng tới origin. Dùng ba lớp cùng nhau.</p>
+    <p>Lớp một, giấu IP: đừng để lộ qua DNS record cũ, subdomain trỏ thẳng, MX record hay email header. Một mình lớp này thì yếu, vì IP vẫn có thể bị dò ra.</p>
+    <p>(Bấm tiếp) Lớp hai, allowlist dải IP của CDN: firewall của origin chỉ nhận các dải IP mà CDN công bố. Nhưng các dải này dùng chung cho mọi khách hàng của CDN đó, nên người khác có thể trỏ account CDN của họ vào origin của mình.</p>
+    <p>(Bấm tiếp) Lớp ba, chứng minh request đến từ cấu hình của mình: edge thêm một secret header mà origin bắt buộc phải có, hoặc trình client certificate (mTLS). Lớp này bịt lỗ hổng của allowlist.</p>
+    <p>(Bấm tiếp) Lựa chọn mạnh hơn: origin không có địa chỉ public. Nó tự kết nối ra CDN qua tunnel, ví dụ Cloudflare Tunnel; hoặc với S3 thì chỉ CloudFront được đọc thông qua Origin Access Control.</p>
+  </aside>
+</section>
+
+<!-- 6.4 -->
+<section class="l-code" data-section="6 · Security">
+  <header class="s-head">
+    <p class="eyebrow">6.4 · Private content: signed URLs and signed cookies</p>
+    <h2>The app grants access with a signature and the edge verifies it; the origin is not asked</h2>
+  </header>
+  <div class="s-body">
+    <div class="cols">
+      <ul class="points">
+        <li><b>Signed URL:</b> expiry plus signature</li>
+        <li><b>Signed cookie:</b> covers a group of paths</li>
+        <li>Holding the URL is access: expire fast</li>
+        <li>Keep signature params out of the key</li>
+        <li>Protect and rotate signing keys</li>
+      </ul>
+      <div class="col">
+        <pre><code class="language-plaintext" data-trim>
+https://cdn.example.com/reports/q3.pdf
+    ?Expires=1767225600
+    &amp;Signature=kX9vQ2...
+    &amp;Key-Pair-Id=K2JCJMDEHXQW5F
+        </code></pre>
+        <p class="caption">Private content stays cacheable: paid video, user documents</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Nội dung private như video trả phí hay tài liệu của user vẫn phục vụ được qua CDN và vẫn cache được. Vấn đề là kiểm tra quyền truy cập mà không phải hỏi origin ở mỗi request.</p>
+    <p>Signed URL: sau khi xác thực user, application cấp một URL có thời hạn và một chữ ký tạo bằng secret key. Edge giữ key tương ứng và verify cả hai. Ví dụ bên phải theo kiểu CloudFront: Expires, Signature, Key-Pair-Id.</p>
+    <p>Signed cookie: cùng ý tưởng, nhưng chữ ký nằm trong cookie và bao phủ một nhóm path. Dùng để cấp quyền cho nhiều file cùng lúc, ví dụ các segment của một video HLS.</p>
+    <p>Lưu ý: ai cầm URL thì có quyền truy cập cho tới khi hết hạn, nên giữ thời hạn ngắn. Các parameter chữ ký phải nằm ngoài cache key, nếu không mỗi user tạo ra một bản copy riêng của cùng một file. Signing key cần được bảo vệ và có quy trình rotate.</p>
+  </aside>
+</section>
+
+<!-- 6.5 -->
+<section class="l-two-col" data-section="6 · Security">
+  <header class="s-head">
+    <p class="eyebrow">6.5 · Attacks on the cache itself</p>
+    <h2>Both attacks exploit one gap: cache and origin read the same request differently</h2>
+  </header>
+  <div class="s-body">
+    <div class="cols">
+      <div class="col">
+        <h3 class="col-title is-bad"><svg class="icon"><use href="#i-alert"/></svg>Cache poisoning</h3>
+        <pre><code class="language-http" data-trim>
+GET / HTTP/1.1
+X-Forwarded-Host: evil.example
+        </code></pre>
+        <ul class="points">
+          <li>A harmful response, cached for everyone</li>
+          <li>Cause: an unkeyed input</li>
+          <li>Defense: key such headers, or strip them</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3 class="col-title is-bad"><svg class="icon"><use href="#i-alert"/></svg>Web cache deception</h3>
+        <pre><code class="language-http" data-trim>
+GET /account/profile.css HTTP/1.1
+Cookie: session=victim
+        </code></pre>
+        <ul class="points">
+          <li>A victim's private page, cached</li>
+          <li>Cause: CDN trusts the <code>.css</code> suffix</li>
+          <li>Defense: <code>404</code> odd paths, <code>private, no-store</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Hai kiểu tấn công nhắm vào chính cache.</p>
+    <p>Cache poisoning: attacker khiến cache lưu một response độc hại, rồi response đó được phục vụ cho mọi người. Nguyên nhân là unkeyed input: một phần của request làm thay đổi response nhưng không nằm trong cache key. Ví dụ: application dựng URL của script từ header X-Forwarded-Host. Attacker gửi X-Forwarded-Host: evil.example. Response load script từ host đó và được cache dưới key của trang chủ. Phòng thủ: đừng tin các header mà client tự đặt được. Hoặc đưa chúng vào key, hoặc strip ở edge.</p>
+    <p>Web cache deception thì ngược lại: attacker khiến cache lưu response private của nạn nhân. Attacker dụ nạn nhân đang đăng nhập bấm vào /account/profile.css. Origin bỏ qua phần đuôi lạ và trả về trang account. CDN thấy .css, coi là static và cache lại. Attacker mở cùng URL đó và đọc dữ liệu. Phòng thủ: trả 404 cho path không tồn tại; gửi Cache-Control: private, no-store trên các trang private; cache dựa vào response header chứ không dựa vào extension trong URL.</p>
+    <p>Cả hai khai thác cùng một khe hở: cache và origin hiểu cùng một request theo hai cách khác nhau.</p>
+  </aside>
+</section>
+
+<!-- ======================================================================
+     SECTION 7: EDGE COMPUTING (7.1 – 7.2; each split in two slides)
+     ====================================================================== -->
+
+<!-- 7.1 (1/2) platforms -->
+<section class="l-table" data-section="7 · Edge computing">
+  <header class="s-head">
+    <p class="eyebrow">7.1 · Running code at the edge: platforms</p>
+    <h2>Edge code runs close to users and before the cache, in a constrained runtime</h2>
+  </header>
+  <div class="s-body">
+    <table class="tbl">
+      <thead><tr><th>Platform</th><th>Runtime</th><th>Runs where</th><th>Character</th></tr></thead>
+      <tbody>
+        <tr><td>Cloudflare Workers</td><td>V8 isolates: JavaScript, WebAssembly</td><td>Every PoP</td><td>Near-instant start, no container. Web-standard APIs. CPU per request is limited.</td></tr>
+        <tr><td>Lambda@Edge</td><td>Node.js, Python</td><td>Regional edge caches, fewer locations</td><td>Network calls, longer run time. Cold starts. Slow deploys from <code>us-east-1</code>.</td></tr>
+        <tr><td>CloudFront Functions</td><td>Restricted JavaScript</td><td>Every edge location</td><td>Under 1 ms, cheap. Header and URL work only, no network calls.</td></tr>
+        <tr><td>Fastly Compute</td><td>WebAssembly: Rust, JavaScript, Go</td><td>Every PoP</td><td>Wasm sandbox, fast start</td></tr>
+      </tbody>
+    </table>
+    <p class="caption"><b>Isolates:</b> no full Node.js, no file system</p>
+  </div>
+  <aside class="notes">
+    <p>Edge compute chạy code của mình ngay trong PoP, nằm giữa request và response: gần user, và trước khi request chạm tới cache hay origin.</p>
+    <p>Bốn nền tảng chính.</p>
+    <p>Cloudflare Workers: V8 isolate, chạy JavaScript và WebAssembly ở mọi PoP. Khởi động gần như tức thì, không có container, dùng API chuẩn web như fetch. CPU cho mỗi request bị giới hạn.</p>
+    <p>Lambda@Edge: Node.js và Python, chạy ở regional edge cache nên ít địa điểm hơn. Mạnh hơn: gọi network được, chạy lâu hơn. Nhưng có cold start và deploy chậm vì phải replicate từ us-east-1.</p>
+    <p>CloudFront Functions: JavaScript bị giới hạn, chạy ở mọi edge location. Rất nhẹ, dưới 1 ms, rẻ. Chỉ xử lý header và URL, không gọi network.</p>
+    <p>Fastly Compute: WebAssembly, viết bằng Rust, JavaScript hoặc Go, chạy ở mọi PoP, sandbox Wasm, khởi động nhanh.</p>
+    <p>Mô hình isolate đổi tính tương thích lấy tốc độ: không có đầy đủ Node.js API, không có file system, giới hạn memory và CPU chặt.</p>
+  </aside>
+</section>
+
+<!-- 7.1 (2/2) hook points -->
+<section class="l-figure" data-section="7 · Edge computing">
+  <header class="s-head">
+    <p class="eyebrow">7.1 · Running code at the edge: CloudFront hook points</p>
+    <h2>Viewer-request code runs on every request; origin-request code runs only on a MISS</h2>
+  </header>
+  <div class="s-body">
+    <div class="fig-row">
+      <!-- DIAGRAM: cloudfront-hooks.png
+           Idea to convey: there are four places to attach code around the cache, and where you attach decides how often the code runs.
+           Components on one horizontal line: "Viewer" (blue, left), "Edge cache" (teal, centre, draw it as a box with a cache badge),
+           "Origin" (purple, right).
+           Arrows and the four hooks, drawn as numbered circles sitting on the arrows:
+             Top lane, left to right (the request):
+               (1) "Viewer request" on the arrow Viewer -> Edge cache. Sub-label: "before the cache lookup, runs on EVERY request".
+               (2) "Origin request" on the arrow Edge cache -> Origin. Sub-label: "only on a MISS".
+             Bottom lane, right to left (the response):
+               (3) "Origin response" on the arrow Origin -> Edge cache. Sub-label: "result is cached".
+               (4) "Viewer response" on the arrow Edge cache -> Viewer.
+           Inside the Edge cache box, a small fork: "HIT: return to viewer, hooks 2 and 3 are skipped" (green)
+           versus "MISS: go on to the origin" (amber).
+           Emphasise: hooks 1 and 4 (every request) in a bold outline; hooks 2 and 3 (MISS only) in a lighter outline. -->
+      <figure class="img-slot">
+        <img src="images/cloudfront-hooks.png" alt="Four CloudFront hook points around the edge cache: viewer request, origin request, origin response, viewer response" />
+        <figcaption>
+          <svg class="icon icon-l"><use href="#i-image"/></svg>
+          <span class="slot-file">images/cloudfront-hooks.png</span>
+          <span class="slot-desc">Viewer, edge cache and origin with the four hook points numbered on the arrows</span>
+        </figcaption>
+      </figure>
+      <div class="col">
+        <ol class="steps">
+          <li><b>Viewer request:</b> before the cache lookup</li>
+          <li><b>Origin request:</b> only on a MISS</li>
+          <li><b>Origin response</b></li>
+          <li><b>Viewer response</b></li>
+        </ol>
+        <ul class="points">
+          <li>Origin-request results are cached</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>CloudFront có bốn hook point để gắn code.</p>
+    <p>Viewer request: chạy trước khi tra cache. Origin request: chỉ chạy khi MISS. Origin response: khi response từ origin về tới edge. Viewer response: ngay trước khi trả cho user.</p>
+    <p>Chỗ gắn code quyết định code chạy thường xuyên tới mức nào. Code ở viewer request chạy trên mọi request, nên phải thật nhẹ. Code ở origin request chỉ chạy khi MISS, và kết quả của nó được cache lại.</p>
+    <p>Kết luận của phần này: edge code chạy gần user và trước cache, đổi lại là một runtime bị giới hạn.</p>
+  </aside>
+</section>
+
+<!-- 7.2 (1/2) uses -->
+<section class="l-cards" data-section="7 · Edge computing">
+  <header class="s-head">
+    <p class="eyebrow">7.2 · Typical uses</p>
+    <h2>Work suits the edge when it can be decided from the request alone</h2>
+  </header>
+  <div class="s-body">
+    <div class="cards c5">
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-route"/></svg>
+        <h3>Redirects</h3>
+        <p>Thousands of rules, no origin trip</p>
+      </div>
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-pen"/></svg>
+        <h3>Header rewrites</h3>
+        <p>Add HSTS, CSP; tidy the cache key</p>
+      </div>
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-key"/></svg>
+        <h3>Auth checks</h3>
+        <p>Verify a JWT; gated content stays cacheable</p>
+      </div>
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-split"/></svg>
+        <h3>A/B tests</h3>
+        <p>Group by cookie, in the key; no flicker</p>
+      </div>
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-globe"/></svg>
+        <h3>Geo responses</h3>
+        <p>Country from IP: language, currency, blocking</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Năm use case điển hình của edge code.</p>
+    <p>Redirect: hàng nghìn rule redirect được xử lý ở edge, không cần đi tới origin.</p>
+    <p>Header rewrite: thêm security header như HSTS, CSP vào mọi response, hoặc chuẩn hóa request header để cache key gọn hơn.</p>
+    <p>Auth check: verify chữ ký JWT ngay ở edge. Request không hợp lệ bị từ chối ngay. Nội dung cần đăng nhập vẫn cache được vì quyền truy cập được kiểm tra trước cache.</p>
+    <p>A/B test: edge gán nhóm theo cookie và đưa nhóm vào cache key. Cả hai phiên bản đều được cache, và trang không bị nháy như khi test ở client.</p>
+    <p>Geo-based response: edge biết quốc gia của user từ IP, nên chọn được ngôn ngữ, tiền tệ, hoặc chặn theo khu vực.</p>
+    <p>Điểm chung: một việc hợp với edge khi nó quyết định được chỉ từ request.</p>
+  </aside>
+</section>
+
+<!-- 7.2 (2/2) code -->
+<section class="l-code is-full" data-section="7 · Edge computing">
+  <header class="s-head">
+    <p class="eyebrow">7.2 · Typical uses: a Cloudflare Worker</p>
+    <h2>A dozen lines redirect by country and add a security header</h2>
+  </header>
+  <div class="s-body">
+    <div class="cols">
+      <pre><code class="language-javascript" data-trim>
+export default {
+  async fetch(request) {
+    const url = new URL(request.url);
+    const country = request.cf?.country;
+
+    if (url.pathname === "/" &amp;&amp; country === "VN") {
+      return Response.redirect(`${url.origin}/vi/`, 302);
+    }
+
+    const upstream = await fetch(request);
+    const response = new Response(upstream.body, upstream);
+    response.headers.set("Strict-Transport-Security", "max-age=31536000");
+    return response;
+  },
+};
+      </code></pre>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Một Cloudflare Worker làm hai việc trong số các use case vừa nói.</p>
+    <p>Phần đầu: lấy URL và quốc gia của user từ request.cf.country. Nếu user vào trang chủ từ Việt Nam thì redirect 302 sang /vi/. Đây là geo-based redirect, quyết định hoàn toàn ở edge.</p>
+    <p>Phần sau: với các request còn lại, fetch từ upstream (cache hoặc origin), tạo response mới từ body đó và thêm header Strict-Transport-Security. Đây là header rewrite.</p>
+    <p>Chú ý: toàn bộ logic chỉ dùng thông tin có sẵn trong request, không cần database hay state.</p>
+  </aside>
+</section>
+
+<!-- ======================================================================
+     SECTION 8: USING IT IN PRACTICE (8.1 – 8.6)
+     ====================================================================== -->
+
+<!-- 8.1 -->
+<section class="l-two-col" data-section="8 · Using it in practice">
+  <header class="s-head">
+    <p class="eyebrow">8.1 · Basic setup</p>
+    <h2>Three steps: point DNS at the CDN, declare the origin, set cache rules per path</h2>
+  </header>
+  <div class="s-body">
+    <pre><code class="language-plaintext" data-trim>
+static.example.com.   CNAME   d111abc.cloudfront.net.
+    </code></pre>
+    <div class="cols is-wide-right">
+      <div class="col">
+        <ol class="steps">
+          <li><b>Point DNS:</b> CNAME to the CDN hostname</li>
+          <li><b>Configure origin:</b> address, HTTPS, <code>Host</code>, auth (6.3)</li>
+          <li><b>Set cache rules</b> per path</li>
+        </ol>
+        <ul class="points">
+          <li>Apex domain: ALIAS or CNAME flattening</li>
+          <li>Let the origin decide; keep CDN rules minimal</li>
+        </ul>
+      </div>
+      <div class="col">
+        <table class="tbl">
+          <thead><tr><th>Path</th><th>Policy</th></tr></thead>
+          <tbody>
+            <tr><td><code>/assets/*</code></td><td>Long cache. Cookies and query string out of the key.</td></tr>
+            <tr><td><code>/api/*</code></td><td>No cache, or a short TTL for selected GETs. Forward <code>Authorization</code>.</td></tr>
+            <tr><td><code>/*</code> (HTML)</td><td>Short TTL. Respect <code>Cache-Control</code> from the origin.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Setup cơ bản gồm ba bước.</p>
+    <p>Một, trỏ DNS: CDN cấp cho mình một hostname, ví dụ d111abc.cloudfront.net. Tạo CNAME từ domain của mình tới đó, tức là giao quyết định "IP nào" cho DNS của CDN. Lưu ý apex domain như example.com không đặt được CNAME, nên cần ALIAS record hoặc CNAME flattening.</p>
+    <p>Hai, cấu hình origin: địa chỉ, protocol (HTTPS), header Host mà edge gửi, timeout, và cách origin xác thực edge (6.3). Đăng ký domain của mình với CDN và gắn TLS certificate.</p>
+    <p>Ba, đặt cache rule theo path, như bảng: /assets/* cache dài, bỏ cookie và query string khỏi cache key. /api/* không cache, hoặc TTL ngắn cho một số GET chọn lọc, và forward Authorization. /* tức HTML: TTL ngắn, tôn trọng Cache-Control từ origin.</p>
+    <p>Nguyên tắc: để origin quyết định qua Cache-Control và giữ rule ở CDN ở mức tối thiểu. Policy nằm cùng với code thì dễ review hơn.</p>
+  </aside>
+</section>
+
+<!-- 8.2 -->
+<section class="l-code" data-section="8 · Using it in practice">
+  <header class="s-head">
+    <p class="eyebrow">8.2 · Deploy flow</p>
+    <h2>Assets change name, so cache them for a year; HTML keeps its name, so always revalidate</h2>
+  </header>
+  <div class="s-body">
+    <pre><code class="language-yaml" data-trim>
+# Asset: name contains a content hash and never changes
+/assets/app.3f9a1c.js    Cache-Control: public, max-age=31536000, immutable
+
+# HTML: fixed URL, always revalidated
+/index.html              Cache-Control: no-cache
+    </code></pre>
+    <div class="cols">
+      <ol class="steps">
+        <li>Upload the new assets first</li>
+        <li class="fragment">Then update the HTML</li>
+        <li class="fragment">Keep old assets for a few days</li>
+      </ol>
+      <ul class="points fragment">
+        <li>New HTML, new names: nothing to purge</li>
+        <li>Swap steps 1 and 2: cached <code>404</code> (3.9)</li>
+        <li>CDN-cached HTML: short <code>s-maxage</code>, then purge</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Deploy flow chuẩn dựa trên hai policy ở trên: asset có content hash trong tên, không bao giờ đổi, nên cache một năm và immutable. HTML có URL cố định nên dùng no-cache, tức luôn revalidate.</p>
+    <p>HTML là entry point duy nhất và tham chiếu asset bằng tên có hash. Deploy mới nghĩa là HTML mới trỏ tới tên mới. User nhận được ngay, và không có gì phải purge.</p>
+    <p>Thứ tự deploy rất quan trọng. Bước một: upload asset mới trước. Lúc này chưa có gì tham chiếu tới chúng.</p>
+    <p>(Bấm tiếp) Bước hai: sau đó mới cập nhật HTML.</p>
+    <p>(Bấm tiếp) Bước ba: giữ asset cũ thêm vài ngày. User đang dùng HTML cũ vẫn load các chunk cũ khi chuyển trang.</p>
+    <p>(Bấm tiếp) Đảo bước một và hai sẽ gây ra lỗi 404 bị cache như đã nói ở 3.9. Nếu muốn cache cả HTML ở CDN, dùng s-maxage ngắn và purge HTML ở cuối bước deploy.</p>
+  </aside>
+</section>
+
+<!-- 8.3 -->
+<section class="l-table" data-section="8 · Using it in practice">
+  <header class="s-head">
+    <p class="eyebrow">8.3 · Debugging with response headers</p>
+    <h2><code>Age</code> and the cache-status header answer first: cache or origin?</h2>
+  </header>
+  <div class="s-body">
+    <table class="tbl">
+      <thead><tr><th>Header</th><th>Tells you</th></tr></thead>
+      <tbody>
+        <tr><td><code>Age</code></td><td>Seconds in cache. Present and rising between calls means a HIT.</td></tr>
+        <tr><td><code>X-Cache</code></td><td>CloudFront: <code>Hit</code>, <code>Miss</code>, <code>RefreshHit from cloudfront</code>. Fastly: <code>HIT</code>, <code>MISS</code>.</td></tr>
+        <tr><td><code>CF-Cache-Status</code></td><td>Cloudflare: <code>HIT</code> <code>MISS</code> <code>EXPIRED</code> <code>REVALIDATED</code> <code>STALE</code> <code>BYPASS</code> <code>DYNAMIC</code></td></tr>
+        <tr><td><code>Cache-Control</code>, <code>ETag</code>, <code>Vary</code></td><td>The policy the origin declared. Compare with the actual behavior.</td></tr>
+        <tr><td><code>CF-Ray</code>, <code>X-Amz-Cf-Pop</code>, <code>X-Served-By</code></td><td>Which PoP answered, usually an airport code: SIN, HKG, NRT</td></tr>
+      </tbody>
+    </table>
+    <p class="caption"><code>DYNAMIC</code> never tried; <code>BYPASS</code> was told; <code>EXPIRED</code> refetched</p>
+    <p class="caption"><b>Check order:</b> status, <code>Cache-Control</code>, <code>Set-Cookie</code>, <code>Vary</code>, CDN rules</p>
+  </div>
+  <aside class="notes">
+    <p>Khi debug, response header trả lời câu hỏi đầu tiên: response này đến từ cache hay từ origin?</p>
+    <p>Age: số giây response đã nằm trong cache. Có Age và nó tăng dần giữa các lần gọi nghĩa là HIT.</p>
+    <p>X-Cache: CloudFront trả "Hit from cloudfront", "Miss from cloudfront", "RefreshHit from cloudfront". Fastly cũng dùng HIT và MISS.</p>
+    <p>CF-Cache-Status của Cloudflare: HIT, MISS, EXPIRED, REVALIDATED, STALE, BYPASS, DYNAMIC.</p>
+    <p>Cache-Control, ETag, Vary: policy mà origin đã khai báo. So sánh với hành vi thực tế.</p>
+    <p>CF-Ray, X-Amz-Cf-Pop, X-Served-By: PoP nào đã trả lời, thường kèm mã sân bay như SIN, HKG, NRT.</p>
+    <p>Ba giá trị dễ hiểu nhầm: DYNAMIC nghĩa là Cloudflare mặc định không cache loại nội dung này, ví dụ HTML, và chưa từng thử cache. BYPASS nghĩa là có thứ gì đó bảo nó đừng cache, thường là Cache-Control: private hoặc Set-Cookie. EXPIRED nghĩa là đã cache, đã hết hạn và vừa được fetch lại.</p>
+    <p>Thứ tự kiểm tra khi một thứ không được cache: cache status, rồi Cache-Control và Set-Cookie từ origin, rồi Vary, cuối cùng là rule của CDN.</p>
+  </aside>
+</section>
+
+<!-- 8.4 -->
+<section class="l-table" data-section="8 · Using it in practice">
+  <header class="s-head">
+    <p class="eyebrow">8.4 · What to monitor</p>
+    <h2>Four numbers: how much is cached, how long users wait, origin spared, error source</h2>
+  </header>
+  <div class="s-body">
+    <table class="tbl">
+      <thead><tr><th>Metric</th><th>Meaning</th><th>Signal to watch</th></tr></thead>
+      <tbody>
+        <tr><td>Cache hit ratio</td><td>Share of requests and of bytes served from cache</td><td>Sudden drop after a deploy: the cache key or headers changed</td></tr>
+        <tr><td>TTFB</td><td>Time to first byte, from the user side: p50, p95, p99, by region</td><td>High p95 in one region: no PoP nearby, or all misses there</td></tr>
+        <tr><td>Origin offload</td><td>Share of requests or bytes that never reach the origin</td><td>The number that drives origin load and cost</td></tr>
+        <tr><td>Error rate</td><td>4xx and 5xx, split by origin errors and edge errors (502, 503, 504)</td><td>Rising edge 5xx: origin slow, overloaded, or misconfigured</td></tr>
+      </tbody>
+    </table>
+    <ul class="points">
+      <li>Also: egress volume, origin latency, purge count</li>
+      <li>CDN metrics show the edge; RUM shows users</li>
+    </ul>
+  </div>
+  <aside class="notes">
+    <p>Bốn metric cần theo dõi.</p>
+    <p>Cache hit ratio: tỉ lệ request và tỉ lệ byte được phục vụ từ cache. Tín hiệu: tụt đột ngột sau một lần deploy nghĩa là cache key hoặc header đã thay đổi.</p>
+    <p>TTFB: time to first byte, đo từ phía user. Xem p50, p95, p99 và theo region. Tín hiệu: p95 cao ở một region nghĩa là không có PoP gần đó, hoặc region đó toàn miss.</p>
+    <p>Origin offload: tỉ lệ request hoặc byte không bao giờ tới origin. Đây là con số quyết định tải và chi phí của origin.</p>
+    <p>Error rate: 4xx và 5xx, tách thành lỗi do origin trả về và lỗi do edge sinh ra (502, 503, 504). Tín hiệu: 5xx của edge tăng nghĩa là origin chậm, quá tải, hoặc connection cấu hình sai.</p>
+    <p>Ngoài ra theo dõi egress volume vì nó quy ra tiền, origin latency nhìn từ edge, và số lần purge.</p>
+    <p>Log và metric của CDN cho thấy những gì edge thấy. Real user monitoring (RUM) cho thấy trải nghiệm thật của user, gồm cả DNS và chặng network cuối. Số liệu CDN đẹp không đảm bảo trải nghiệm nhanh.</p>
+  </aside>
+</section>
+
+<!-- 8.5 -->
+<section class="l-table" data-section="8 · Using it in practice">
+  <header class="s-head">
+    <p class="eyebrow">8.5 · Vendor overview</p>
+    <h2>Choose by where your users are, what you already run, and how fast you must purge</h2>
+  </header>
+  <div class="s-body">
+    <table class="tbl">
+      <thead><tr><th>Vendor</th><th>Strengths</th><th>Edge compute</th><th>Good fit</th></tr></thead>
+      <tbody>
+        <tr><td>Cloudflare</td><td>Wide Anycast network. Free plan, unmetered bandwidth. Security, DNS, CDN in one.</td><td>Workers</td><td>Any size; one integrated platform, quick setup</td></tr>
+        <tr><td>Amazon CloudFront</td><td>Deep AWS integration: S3, ALB, ACM, WAF, IAM. No transfer fee from AWS origins.</td><td>Lambda@Edge, CloudFront Functions</td><td>Systems already on AWS</td></tr>
+        <tr><td>Fastly</td><td>Programmable config (VCL). Near-instant purge. Surrogate keys. Real-time logs.</td><td>Compute (Wasm)</td><td>Fast-changing content: news, e-commerce</td></tr>
+        <tr><td>Akamai</td><td>Oldest, largest network, deep inside ISPs. Strong in media and enterprise.</td><td>EdgeWorkers</td><td>Large enterprises, global video. More complex contracts.</td></tr>
+      </tbody>
+    </table>
+    <p class="caption"><b>Also:</b> Google Cloud CDN, Azure Front Door, Bunny</p>
+    <p class="caption">Features and prices change often: check before quoting</p>
+  </div>
+  <aside class="notes">
+    <p>Tổng quan bốn vendor lớn.</p>
+    <p>Cloudflare: mạng Anycast rộng, có free plan với bandwidth không tính phí, gộp security, DNS và CDN trong một sản phẩm. Edge compute là Workers. Hợp với dự án mọi quy mô muốn một nền tảng tích hợp và setup nhanh.</p>
+    <p>Amazon CloudFront: tích hợp sâu với AWS như S3, ALB, ACM, WAF, IAM. Không tính phí transfer từ origin trên AWS tới CloudFront. Edge compute là Lambda@Edge và CloudFront Functions. Hợp với hệ thống đã ở trên AWS.</p>
+    <p>Fastly: cấu hình lập trình được bằng VCL, purge gần như tức thì, surrogate key, log real-time. Edge compute là Compute chạy Wasm. Hợp với nội dung thay đổi liên tục cần purge nhanh như tin tức, e-commerce.</p>
+    <p>Akamai: mạng lâu đời và lớn nhất, nằm sâu trong mạng các ISP. Mạnh về media và doanh nghiệp lớn. Edge compute là EdgeWorkers. Hợp với enterprise lớn và phân phối video toàn cầu, nhưng hợp đồng và cấu hình phức tạp hơn.</p>
+    <p>Ngoài ra còn Google Cloud CDN, Azure Front Door, Bunny CDN. Các nền tảng như Vercel và Netlify cũng đóng vai trò CDN cho user của họ.</p>
+    <p>Tiêu chí thực tế: user của mình ở đâu và vendor có PoP tốt ở đó không, mình đang chạy trên cloud nào, cần purge nhanh cỡ nào, có cần edge compute không, và mô hình giá nào hợp với traffic. Không vendor nào tốt nhất cho mọi trường hợp. Tính năng và giá thay đổi thường xuyên, kiểm tra trang của vendor trước khi trích dẫn.</p>
+  </aside>
+</section>
+
+<!-- 8.6 -->
+<section class="l-two-col" data-section="8 · Using it in practice">
+  <header class="s-head">
+    <p class="eyebrow">8.6 · Multi-CDN and failover</p>
+    <h2>Multi-CDN buys availability with complexity; worth it only when downtime is very expensive</h2>
+  </header>
+  <div class="s-body">
+    <div class="cols">
+      <div class="col">
+        <h3 class="col-title is-good"><svg class="icon"><use href="#i-check"/></svg>Why and how</h3>
+        <ul class="points is-good">
+          <li>Survive one vendor's outage (9.4)</li>
+          <li>Regional strengths, price leverage</li>
+          <li>DNS steers by weight, region or RUM</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3 class="col-title is-bad"><svg class="icon"><use href="#i-coin"/></svg>The cost</h3>
+        <ul class="points is-bad">
+          <li>Only features every CDN supports</li>
+          <li>Config, certificates, WAF, purges in sync</li>
+          <li>Colder caches, logs to merge</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout">
+      <svg class="icon"><use href="#i-layers"/></svg>
+      <p><b>Lighter option:</b> one active CDN, one preconfigured standby</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Multi-CDN nghĩa là dùng hai nhà cung cấp trở lên, điều hướng bằng DNS.</p>
+    <p>Vì sao: không phụ thuộc vào một vendor khi nó gặp sự cố (9.4); mỗi CDN mạnh ở những khu vực khác nhau; và có thế mạnh hơn khi đàm phán giá.</p>
+    <p>Cách làm: một dịch vụ DNS trả về CDN A hoặc CDN B theo trọng số, theo region, hoặc theo hiệu năng đo từ user thật. Health check sẽ ngừng trả về CDN đang lỗi. TTL của DNS record phải ngắn để việc chuyển đổi có hiệu lực nhanh.</p>
+    <p>Chi phí thì đáng kể. Chỉ dùng được những tính năng mà mọi CDN trong bộ đều hỗ trợ: edge code, cache tag, hành vi cache key đều khác nhau. Configuration, certificate và WAF rule phải đồng bộ ở mọi nơi, purge phải tới được tất cả. Traffic bị chia nên mỗi CDN có cache nguội hơn và hit ratio thấp hơn. Log và metric ở các định dạng khác nhau và phải gộp lại.</p>
+    <p>Lựa chọn nhẹ hơn: active và standby. Một CDN nhận toàn bộ traffic, CDN thứ hai được cấu hình sẵn và chỉ dùng khi cái đầu hỏng.</p>
+  </aside>
+</section>
+
+<!-- ======================================================================
+     SECTION 9: TRADE-OFFS AND PITFALLS (9.1 – 9.4)
+     ====================================================================== -->
+
+<!-- 9.1 -->
+<section class="l-two-col" data-section="9 · Trade-offs and pitfalls">
+  <header class="s-head">
+    <p class="eyebrow">9.1 · Freshness vs speed</p>
+    <h2>Decide up front how stale each content type may be; the TTL is that number</h2>
+  </header>
+  <div class="s-body">
+    <div class="cols is-wide-left">
+      <div class="col">
+        <ul class="points">
+          <li>A cache promises: no asking for N seconds</li>
+          <li>Versioned URLs: cache indefinitely (3.4)</li>
+          <li>Short TTL with <code>stale-while-revalidate</code> (3.6)</li>
+          <li>Event-driven purge for long TTLs</li>
+          <li>A CDN purge never reaches the browser</li>
+        </ul>
+      </div>
+      <div class="col">
+        <table class="tbl">
+          <thead><tr><th>Content</th><th>Stale by</th><th>Acceptable?</th></tr></thead>
+          <tbody>
+            <tr><td>Logo</td><td>a week</td><td><span class="t-good">Fine</span></td></tr>
+            <tr><td>Price</td><td>5 minutes</td><td>Depends on the business</td></tr>
+            <tr><td>Account balance</td><td>1 second</td><td><span class="t-bad">No</span></td></tr>
+          </tbody>
+        </table>
+        <p class="caption">Layers add up: browser 5 min + CDN 5</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Mỗi cache là một lời hứa: trong N giây tới, tôi sẽ không hỏi lại. Nếu nội dung đổi trong khoảng đó, user thấy bản cũ.</p>
+    <p>Câu hỏi cần trả lời là mỗi loại nội dung được phép cũ tới mức nào. Logo cũ một tuần thì không sao. Giá cũ năm phút thì tùy business. Số dư tài khoản cũ một giây là không chấp nhận được.</p>
+    <p>Các công cụ thu hẹp trade-off: Versioned URL, để nội dung coi như không bao giờ đổi và cache được vô thời hạn (3.4). TTL ngắn kèm stale-while-revalidate, để giới hạn độ cũ mà vẫn nhanh (3.6). Purge theo event, cho TTL dài nhưng được xóa ngay khi dữ liệu đổi.</p>
+    <p>Độ cũ cộng dồn qua các lớp. Năm phút ở browser cộng năm phút ở CDN có thể thành mười phút. Và purge ở CDN không với tới browser.</p>
+    <p>Ý chính: với mỗi loại nội dung, quyết định trước nó được phép cũ bao lâu. TTL chính là con số đó.</p>
+  </aside>
+</section>
+
+<!-- 9.2 -->
+<section class="l-two-col" data-section="9 · Trade-offs and pitfalls">
+  <header class="s-head">
+    <p class="eyebrow">9.2 · Accidentally caching private data</p>
+    <h2>Default to caching nothing behind login; caching must be a deliberate choice per route</h2>
+  </header>
+  <div class="s-body">
+    <div class="cols">
+      <div class="col">
+        <h3 class="col-title is-bad"><svg class="icon"><use href="#i-alert"/></svg>How it happens</h3>
+        <ul class="points is-bad">
+          <li>"Cache everything" covers <code>/account</code>, <code>/api/me</code></li>
+          <li>A cached <code>Set-Cookie</code> hands out a session</li>
+          <li>Per-user response, URL-only cache key</li>
+        </ul>
+      </div>
+      <div class="col fragment">
+        <h3 class="col-title is-good"><svg class="icon"><use href="#i-check"/></svg>Prevention</h3>
+        <ul class="points is-good">
+          <li>Behind login: <code>private, no-store</code></li>
+          <li>Never cache <code>Set-Cookie</code> responses</li>
+          <li>Split public and private by path or host</li>
+          <li>Test one URL with two accounts</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout is-error">
+      <svg class="icon"><use href="#i-alert"/></svg>
+      <p><b>Steam, 2015:</b> 34,000 users saw others' accounts</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Đây là lỗi CDN nghiêm trọng nhất: user A thấy dữ liệu của user B.</p>
+    <p>Nó xảy ra thế nào: một rule "cache everything" phủ path quá rộng và bao luôn /account hay /api/me. Một response có Set-Cookie bị cache, người vào sau nhận session cookie của người trước. Một API trả dữ liệu theo user dựa vào cookie hoặc token, nhưng cache key chỉ có URL. Hoặc một trang dùng chung lại nhúng thứ gì đó cá nhân, như tên trên header hay CSRF token.</p>
+    <p>Case thật: ngày 25 tháng 12 năm 2015, một thay đổi cấu hình cache được triển khai trong lúc Steam đang bị tấn công denial-of-service đã khiến user thấy trang account của người khác, gồm email và lịch sử mua hàng. Khoảng 34.000 user bị ảnh hưởng.</p>
+    <p>(Bấm tiếp) Phòng tránh: default an toàn là mọi response sau login đều gửi Cache-Control: private, no-store. Không bao giờ cache response có Set-Cookie. Tách nội dung public và private theo path hoặc hostname. Test với hai account: gọi cùng một URL bằng A, rồi bằng B, và kiểm tra B nhận được gì.</p>
+    <p>Ý chính: mặc định không cache gì sau login. Cache phải là lựa chọn có chủ đích cho từng route.</p>
+  </aside>
+</section>
+
+<!-- 9.3 -->
+<section class="l-cards" data-section="9 · Trade-offs and pitfalls">
+  <header class="s-head">
+    <p class="eyebrow">9.3 · When a CDN does not help</p>
+    <h2>A CDN helps when content is shareable and users are far; without both, little speed gain</h2>
+  </header>
+  <div class="s-body">
+    <div class="cards c4">
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-pin"/></svg>
+        <h3>Users near the origin</h3>
+        <p>Same city as the server: RTT already low</p>
+      </div>
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-user"/></svg>
+        <h3>Fully personalized</h3>
+        <p>Dashboard, inbox: nothing shared, nothing cacheable</p>
+      </div>
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-upload"/></svg>
+        <h3>Write-heavy</h3>
+        <p><code>POST</code>, <code>PUT</code>, uploads always reach the origin</p>
+      </div>
+      <div class="card">
+        <svg class="icon icon-l"><use href="#i-globe"/></svg>
+        <h3>Low, spread traffic</h3>
+        <p>Nearly all MISS, slower by an extra hop</p>
+      </div>
+    </div>
+    <div class="callout">
+      <svg class="icon"><use href="#i-shield"/></svg>
+      <p><b>Other reasons remain:</b> DDoS, WAF, TLS, acceleration (4.3)</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Có bốn trường hợp CDN không giúp tăng tốc.</p>
+    <p>User tập trung ở một region, gần origin: ví dụ tool nội bộ cho nhân viên ở một thành phố, server cũng ở thành phố đó. RTT vốn đã thấp.</p>
+    <p>Nội dung cá nhân hóa hoàn toàn: mỗi response khác nhau theo user, như dashboard hay inbox. Không có gì dùng chung nên không có gì cache được.</p>
+    <p>Traffic nặng về ghi: POST, PUT, upload, transaction. Chúng luôn đi tới origin.</p>
+    <p>Traffic thấp và dàn trải: mỗi PoP có cache riêng và sẽ evict object ít được dùng. Nếu mỗi URL chỉ được request vài lần một ngày từ nhiều nơi, gần như mọi thứ đều MISS, mà còn chậm hơn vì thêm một hop.</p>
+    <p>CDN vẫn có thể đáng dùng ở các trường hợp này vì lý do khác: chống DDoS, WAF, quản lý TLS, dynamic acceleration (4.3). Hãy rõ ràng về lý do.</p>
+    <p>Nếu "làm cho nhanh hơn" là lý do duy nhất và traffic rơi vào các trường hợp trên, CDN chỉ thêm chi phí, độ phức tạp và thêm một thứ có thể hỏng.</p>
+  </aside>
+</section>
+
+<!-- 9.4 -->
+<section class="l-two-col" data-section="9 · Trade-offs and pitfalls">
+  <header class="s-head">
+    <p class="eyebrow">9.4 · The CDN as a single point of failure</p>
+    <h2>A CDN is one more component every request must cross; know your plan for when it fails</h2>
+  </header>
+  <div class="s-body">
+    <div class="cols">
+      <div class="col">
+        <h3 class="col-title is-bad"><svg class="icon"><use href="#i-alert"/></svg>Fastly, 8 June 2021</h3>
+        <div class="stat-row">
+          <div class="stat is-error">
+            <span class="stat-num">85%</span>
+            <span class="stat-label">of Fastly's network returned errors</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">49 min</span>
+            <span class="stat-label">to restore most of the network</span>
+          </div>
+        </div>
+        <ul class="points is-bad">
+          <li>May: a latent bug ships</li>
+          <li>June: one valid config change triggers it</li>
+        </ul>
+        <div class="chips">
+          <span class="chip">Amazon</span><span class="chip">Reddit</span><span class="chip">The New York Times</span><span class="chip">The Guardian</span><span class="chip">gov.uk</span>
+        </div>
+      </div>
+      <div class="col">
+        <h3 class="col-title"><svg class="icon"><use href="#i-shield"/></svg>Options</h3>
+        <ul class="points">
+          <li>Multi-CDN (8.6), if downtime costs enough</li>
+          <li>A rehearsed DNS switch to origin or standby</li>
+          <li>DNS hosted apart from the CDN</li>
+          <li>Or accept the risk, consciously</li>
+          <li><code>stale-if-error</code> covers origin failure only</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Đặt CDN ở phía trước nghĩa là mọi request đều đi qua nó. Khi nó hỏng, site của mình hỏng theo, kể cả khi origin vẫn khỏe.</p>
+    <p>Fastly, ngày 8 tháng 6 năm 2021: một bản cập nhật phần mềm deploy từ tháng 5 mang theo một bug tiềm ẩn. Gần một tháng sau, một thay đổi cấu hình hoàn toàn hợp lệ của một khách hàng đã kích hoạt nó. Khoảng 85% mạng của Fastly trả về lỗi. Amazon, Reddit, The New York Times, The Guardian, trang của chính phủ Anh và nhiều site khác cùng sập. Fastly phát hiện trong vòng một phút và khôi phục phần lớn mạng trong 49 phút.</p>
+    <p>Bài học: hạ tầng tập trung thì sự cố cũng tập trung. Cloudflare và Akamai cũng từng có sự cố toàn cầu tương tự.</p>
+    <p>Các lựa chọn giảm rủi ro: Multi-CDN (8.6), nếu downtime đủ đắt. Một kế hoạch đã diễn tập để chuyển DNS thẳng về origin hoặc sang CDN dự phòng; origin phải chịu được tải khi không có cache phía trước. Đặt DNS ở nhà cung cấp khác với CDN, để vẫn đổi được record khi CDN gặp sự cố. Hoặc chấp nhận rủi ro một cách có ý thức: với nhiều sản phẩm, uptime của một CDN lớn vẫn tốt hơn thứ họ tự xây được.</p>
+    <p>Lưu ý: stale-if-error bảo vệ khi origin hỏng, không bảo vệ khi chính CDN hỏng.</p>
+  </aside>
+</section>
+
+<!-- ======================================================================
+     SECTION 10: CLOSING (10.1 split in two slides, Kahoot, closing)
+     ====================================================================== -->
+
+<!-- 10.1 (1/2) questions -->
+<section class="l-bullets" data-section="10 · Closing">
+  <header class="s-head">
+    <p class="eyebrow">10.1 · Decision checklist: six questions</p>
+    <h2>For each kind of content, answer six questions in order</h2>
+  </header>
+  <div class="s-body">
+    <ol class="steps">
+      <li><b>Same for every user?</b> Else <code>private</code>, or split</li>
+      <li><b>How stale may it be?</b> That's the TTL</li>
+      <li><b>How does the cache learn of changes?</b></li>
+      <li><b>What does the response depend on?</b> The key</li>
+      <li><b>What if the origin is down?</b></li>
+      <li><b>How will you verify it?</b></li>
+    </ol>
+  </div>
+  <aside class="notes">
+    <p>Checklist ra quyết định. Với mỗi loại nội dung, trả lời lần lượt sáu câu hỏi.</p>
+    <p>Một, nó có giống nhau với mọi user không? Nếu không, giữ nó ngoài shared cache bằng private hoặc no-store, hoặc tách phần chung khỏi phần riêng.</p>
+    <p>Hai, nó được phép cũ tới mức nào? Câu trả lời chính là TTL. Hãy hỏi business owner thay vì đoán.</p>
+    <p>Ba, khi nó thay đổi, cache biết bằng cách nào? Versioned file name, purge, cache tag, hoặc đơn giản là chờ TTL hết.</p>
+    <p>Bốn, response phụ thuộc vào cái gì trong request? Đó chính là cache key.</p>
+    <p>Năm, nếu origin down thì sao? Quyết định xem có được trả nội dung stale không.</p>
+    <p>Sáu, mình sẽ verify bằng cách nào? Kiểm tra header nào, theo dõi metric nào.</p>
+  </aside>
+</section>
+
+<!-- 10.1 (2/2) defaults -->
+<section class="l-table" data-section="10 · Closing">
+  <header class="s-head">
+    <p class="eyebrow">10.1 · Decision checklist: defaults per content type</p>
+    <h2>Most content fits one of six default policies</h2>
+  </header>
+  <div class="s-body">
+    <table class="tbl">
+      <thead><tr><th>Content type</th><th>Cache for</th><th>Invalidate by</th></tr></thead>
+      <tbody>
+        <tr><td>Hashed assets (JS, CSS, fonts)</td><td>1 year, <code>immutable</code></td><td>Nothing. New content gets a new file name.</td></tr>
+        <tr><td>User-uploaded images and media</td><td>Long</td><td>A new URL per version</td></tr>
+        <tr><td>HTML</td><td>Browser always revalidates. CDN: 0 to a few minutes.</td><td>Purge on deploy</td></tr>
+        <tr><td>Public API</td><td>Seconds to minutes, with <code>stale-while-revalidate</code></td><td>TTL expiry, or cache tags</td></tr>
+        <tr><td>Per-user data</td><td><span class="t-bad">Not cached at the CDN</span></td><td>Not applicable</td></tr>
+        <tr><td>Error responses</td><td>A few seconds</td><td>TTL expiry</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <aside class="notes">
+    <p>Bảng default cho từng loại nội dung, dùng làm điểm xuất phát.</p>
+    <p>Asset có hash (JS, CSS, font): cache 1 năm, immutable. Không cần invalidate, nội dung mới có tên file mới.</p>
+    <p>Ảnh và media do user upload: cache dài, mỗi version một URL mới.</p>
+    <p>HTML: browser luôn revalidate, CDN giữ từ 0 đến vài phút. Invalidate bằng purge khi deploy.</p>
+    <p>Public API: vài giây đến vài phút, kèm stale-while-revalidate. Invalidate bằng TTL hết hạn hoặc cache tag.</p>
+    <p>Dữ liệu theo user: không cache ở CDN.</p>
+    <p>Response lỗi: vài giây, chờ TTL hết.</p>
+  </aside>
+</section>
+
+<!-- KAHOOT ===============================================================
+     Set the join link and the PIN here. This is the only place to edit.
+       data-kahoot-url   e.g. https://kahoot.it/?pin=1234567
+       data-kahoot-pin   e.g. 1234567
+     While data-kahoot-url is empty the slide shows a placeholder, not a QR.
+     ====================================================================== -->
+<section class="l-qr" data-section="10 · Closing" data-kahoot-url="" data-kahoot-pin="">
+  <header class="s-head">
+    <p class="eyebrow">Quiz</p>
+    <h2>Join the Kahoot</h2>
+  </header>
+  <div class="s-body">
+    <div class="qr-row">
+      <div class="qr-panel is-empty">
+        <canvas width="10" height="10" aria-label="QR code that opens the Kahoot"></canvas>
+        <div class="qr-empty">
+          <svg class="icon icon-l"><use href="#i-qr"/></svg>
+          <span class="slot-file">QR code not set yet</span>
+          <span>Fill <code>data-kahoot-url</code> on this slide in index.html</span>
+        </div>
+      </div>
+      <div class="qr-info">
+        <div>
+          <p class="qr-label">Scan the code, or open</p>
+          <p class="qr-host">kahoot.it</p>
+        </div>
+        <div>
+          <p class="qr-label">Game PIN</p>
+          <p class="qr-pin is-empty">PIN shown on the day</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Giờ là phần quiz. Mọi người quét QR trên màn hình, hoặc mở kahoot.it rồi nhập Game PIN.</p>
+    <p>Chờ khoảng một phút cho mọi người vào đủ rồi mới bắt đầu. QR luôn là đen trên nền trắng nên quét được ở cả hai theme.</p>
+    <p>Ghi chú cho người trình bày: link và PIN đặt ở thuộc tính data-kahoot-url và data-kahoot-pin của slide này trong index.html.</p>
+  </aside>
+</section>
+
+<!-- CLOSING -->
+<section class="l-statement" data-section="10 · Closing">
+  <header class="s-head">
+    <p class="eyebrow">Closing · Three root questions</p>
+  </header>
+  <div class="s-body">
+    <ol class="statement">
+      <li>Can it be shared?</li>
+      <li>How stale is acceptable?</li>
+      <li>How will the cache learn that it changed?</li>
+    </ol>
+    <p class="lead">Thank you. Questions?</p>
+    <p class="caption">Nam Dang · Tuan Phan</p>
+  </div>
+  <aside class="notes">
+    <p>Nếu chỉ nhớ một điều từ buổi hôm nay, hãy nhớ ba câu hỏi gốc cho mọi loại nội dung.</p>
+    <p>Một: nó có chia sẻ được giữa các user không? Hai: chấp nhận cũ tới mức nào? Ba: cache sẽ biết nội dung đã thay đổi bằng cách nào?</p>
+    <p>Trả lời được ba câu này là thiết kế được cache policy cho phần lớn hệ thống.</p>
+    <p>Cảm ơn mọi người. Mời mọi người đặt câu hỏi.</p>
+  </aside>
+</section>
+
+</div><!-- /.slides -->
+</div><!-- /.reveal -->
+
+<script src="vendor/reveal.js/reveal.js"></script>
+<script src="vendor/reveal.js/plugin/notes.js"></script>
+<script src="vendor/reveal.js/plugin/highlight.js"></script>
+<script src="vendor/qrcode/qrcode.js"></script>
+<script>Deck.init();</script>
+</body>
+</html>
