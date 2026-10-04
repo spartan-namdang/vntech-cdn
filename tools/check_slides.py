@@ -165,7 +165,7 @@ def main():
     readme = IMAGES_README.read_text(encoding="utf-8") if IMAGES_README.exists() else ""
     print(f"\nImage slots: {len(slots)}")
     for name in slots:
-        has_spec = re.search(r"<!-- DIAGRAM: " + re.escape(name) + r"\b.*?-->\s*<figure class=\"img-slot\">\s*<img src=\"images/" + re.escape(name), html, re.S)
+        has_spec = re.search(r"<!-- DIAGRAM: " + re.escape(name) + r"\b.*?-->\s*<figure class=\"img-slot(?: is-bare)?\">\s*<img src=\"images/" + re.escape(name), html, re.S)
         listed = name in readme
         exists = (ROOT / "deck" / "images" / name).exists()
         print(f"  {name:28} spec={'yes' if has_spec else 'NO'}  listed={'yes' if listed else 'NO'}  file={'present' if exists else 'not drawn yet'}")

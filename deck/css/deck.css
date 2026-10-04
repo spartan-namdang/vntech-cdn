@@ -32,6 +32,7 @@
 
   /* spacing, radii, rules */
   --sp-1: 6px; --sp-2: 12px; --sp-3: 18px; --sp-4: 26px; --sp-5: 40px; --sp-6: 64px;
+  --pad-x: 36px;
   --radius-s: 6px; --radius-m: 12px; --radius-pill: 999px;
   --rule-w: 1.5px;
   --icon-stroke: 1.75;
@@ -112,7 +113,6 @@ html, body, .reveal-viewport { background: var(--bg); }
 }
 .reveal .slides { text-align: left; }
 .reveal .progress { color: var(--accent); height: 4px; background: var(--surface-2); }
-.reveal .controls { color: var(--accent); }
 .reveal .slide-number {
   right: var(--sp-4); bottom: var(--sp-3);
   background: transparent;
@@ -127,7 +127,7 @@ html, body, .reveal-viewport { background: var(--bg); }
   box-sizing: border-box;
   width: 1280px;
   height: 720px;
-  padding: 46px var(--sp-6) 58px;
+  padding: 46px var(--pad-x) 58px;
   flex-direction: column;
   gap: var(--sp-4);
 }
@@ -152,7 +152,7 @@ html, body, .reveal-viewport { background: var(--bg); }
 .s-body { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: var(--sp-3); }
 .s-foot {
   position: absolute;
-  left: var(--sp-6); bottom: 20px;
+  left: var(--pad-x); bottom: 20px;
   display: flex; align-items: center; gap: var(--sp-2);
   font-family: var(--font-mono);
   font-size: var(--fs-eyebrow);
@@ -272,6 +272,7 @@ html, body, .reveal-viewport { background: var(--bg); }
 .img-slot .slot-desc { font-size: var(--fs-caption); color: var(--slot-muted); max-width: 24em; line-height: 1.35; }
 .img-slot .icon { color: var(--slot-muted); }
 .img-slot.is-loaded { border: var(--rule-w) solid var(--rule); }
+.img-slot.is-loaded.is-bare { border: 0; border-radius: 0; background: none; }
 .img-slot.is-loaded img { display: block; }
 .img-slot.is-loaded figcaption { display: none; }
 
