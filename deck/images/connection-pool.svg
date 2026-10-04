@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <title>Connection pool: many short user connections, few persistent origin connections</title>
+  <defs>
+    <marker id="ah-grey" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#6b7280"/>
+    </marker>
+    <marker id="ah-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#c0211f"/>
+    </marker>
+
+    <!-- User: blue circle with person -->
+    <g id="user">
+      <circle r="26" fill="#ffffff" stroke="#1746c9" stroke-width="3.5"/>
+      <circle cx="0" cy="-6" r="7" fill="none" stroke="#1746c9" stroke-width="3"/>
+      <path d="M-13 14 A13 11 0 0 1 13 14" fill="none" stroke="#1746c9" stroke-width="3" stroke-linecap="round"/>
+    </g>
+  </defs>
+
+  <!-- ===== Top panel: normal operation ===== -->
+  <rect x="15" y="15" width="1170" height="545" rx="22" fill="#f4f6fa" stroke="#d6dbe4" stroke-width="2"/>
+  <text x="40" y="58" font-size="24" font-weight="700" letter-spacing="3" fill="#6b7280">NORMAL OPERATION</text>
+
+  <!-- Users -->
+  <g>
+    <use href="#user" x="90" y="200"/>
+    <use href="#user" x="90" y="262"/>
+    <use href="#user" x="90" y="324"/>
+    <use href="#user" x="90" y="386"/>
+    <use href="#user" x="90" y="448"/>
+    <!-- request colours -->
+    <circle cx="112" cy="182" r="8" fill="#c2255c" stroke="#ffffff" stroke-width="2.5"/>
+    <circle cx="112" cy="244" r="8" fill="#c99a00" stroke="#ffffff" stroke-width="2.5"/>
+    <circle cx="112" cy="306" r="8" fill="#4dabf7" stroke="#ffffff" stroke-width="2.5"/>
+    <circle cx="112" cy="368" r="8" fill="#1e3a8a" stroke="#ffffff" stroke-width="2.5"/>
+    <circle cx="112" cy="430" r="8" fill="#495057" stroke="#ffffff" stroke-width="2.5"/>
+    <text x="160" y="518" text-anchor="middle" font-size="24" font-weight="600" fill="#1746c9">thousands of users</text>
+  </g>
+
+  <!-- Users -> Edge: many thin short lines -->
+  <g fill="none" stroke="#1746c9" stroke-width="2.5" stroke-linecap="round">
+    <path d="M118 200 L328 230"/>
+    <path d="M118 200 L328 280"/>
+    <path d="M118 262 L328 250"/>
+    <path d="M118 262 L328 330"/>
+    <path d="M118 324 L328 300"/>
+    <path d="M118 324 L328 360"/>
+    <path d="M118 386 L328 345"/>
+    <path d="M118 386 L328 410"/>
+    <path d="M118 448 L328 395"/>
+    <path d="M118 448 L328 440"/>
+  </g>
+  <text x="40" y="106" font-size="24" font-weight="700" fill="#1746c9">many short connections</text>
+  <text x="40" y="136" font-size="22" fill="#1746c9">(TCP + TLS each)</text>
+
+  <!-- Edge -->
+  <rect x="330" y="170" width="180" height="320" rx="20" fill="#e3f1f2" stroke="#0b6f7c" stroke-width="4"/>
+  <text x="420" y="214" text-anchor="middle" font-size="28" font-weight="700" fill="#0b6f7c">Edge</text>
+  <rect x="348" y="260" width="144" height="150" rx="14" fill="#ffffff" stroke="#0b6f7c" stroke-width="3" stroke-dasharray="9 6"/>
+  <text x="420" y="328" text-anchor="middle" font-size="24" font-weight="600" fill="#0b6f7c">keep-alive</text>
+  <text x="420" y="358" text-anchor="middle" font-size="24" font-weight="600" fill="#0b6f7c">pool</text>
+
+  <!-- Edge -> Origin: few thick persistent lines, shared by many users' requests -->
+  <g stroke="#0b6f7c" stroke-width="12" stroke-linecap="butt">
+    <path d="M492 290 H1010"/>
+    <path d="M492 320 H1010"/>
+    <path d="M492 350 H1010"/>
+    <path d="M492 380 H1010"/>
+  </g>
+  <g stroke="#ffffff" stroke-width="2.5">
+    <circle cx="600" cy="290" r="8" fill="#c2255c"/>
+    <circle cx="860" cy="290" r="8" fill="#c99a00"/>
+    <circle cx="700" cy="320" r="8" fill="#4dabf7"/>
+    <circle cx="940" cy="320" r="8" fill="#1e3a8a"/>
+    <circle cx="640" cy="350" r="8" fill="#c99a00"/>
+    <circle cx="820" cy="350" r="8" fill="#495057"/>
+    <circle cx="730" cy="380" r="8" fill="#c2255c"/>
+    <circle cx="920" cy="380" r="8" fill="#4dabf7"/>
+  </g>
+  <text x="760" y="260" text-anchor="middle" font-size="22" font-style="italic" fill="#374151">many users' requests share each line</text>
+
+  <!-- Long leg dimension -->
+  <path d="M520 196 H1000" fill="none" stroke="#6b7280" stroke-width="2.5" marker-start="url(#ah-grey)" marker-end="url(#ah-grey)"/>
+  <text x="760" y="180" text-anchor="middle" font-size="22" font-weight="600" fill="#6b7280">long distance, high latency</text>
+
+  <!-- Labels under the thick lines -->
+  <text x="760" y="448" text-anchor="middle" font-size="24" font-weight="700" fill="#0b6f7c">few persistent connections:</text>
+  <text x="760" y="480" text-anchor="middle" font-size="22" fill="#0b6f7c">no handshake,</text>
+  <text x="760" y="508" text-anchor="middle" font-size="22" fill="#0b6f7c">congestion window already open</text>
+
+  <!-- Origin -->
+  <rect x="1010" y="240" width="150" height="190" rx="20" fill="#efe7f8" stroke="#6d35b5" stroke-width="4"/>
+  <g fill="none" stroke="#6d35b5" stroke-width="3">
+    <ellipse cx="1085" cy="285" rx="22" ry="9"/>
+    <path d="M1063 285 V312 A22 9 0 0 0 1107 312 V285"/>
+    <path d="M1063 298.500 A22 9 0 0 0 1107 298.500"/>
+  </g>
+  <text x="1085" y="370" text-anchor="middle" font-size="28" font-weight="700" fill="#6d35b5">Origin</text>
+
+  <!-- ===== Bottom panel: the pitfall ===== -->
+  <rect x="15" y="580" width="1170" height="305" rx="22" fill="#f4f6fa" stroke="#d6dbe4" stroke-width="2"/>
+  <text x="40" y="620" font-size="24" font-weight="700" letter-spacing="3" fill="#6b7280">THE PITFALL</text>
+
+  <!-- Event markers -->
+  <text x="590" y="662" text-anchor="end" font-size="22" font-weight="700" fill="#c0211f">60 s: origin closes it</text>
+  <text x="735" y="662" font-size="22" font-weight="700" fill="#c0211f">75 s: edge sends a request on it</text>
+
+  <!-- Timeline bars (100 px = 12 s) -->
+  <rect x="100" y="685" width="500" height="34" rx="8" fill="#6d35b5"/>
+  <text x="116" y="709" font-size="21" font-weight="600" fill="#ffffff">Origin keep-alive timeout: 60 s</text>
+  <rect x="100" y="735" width="1000" height="34" rx="8" fill="#0b6f7c"/>
+  <text x="116" y="759" font-size="21" font-weight="600" fill="#ffffff">CDN keep-alive timeout: 120 s</text>
+
+  <!-- 60 s: origin closes (red X) -->
+  <path d="M600 668 V685" stroke="#c0211f" stroke-width="3"/>
+  <circle cx="600" cy="702" r="16" fill="#c0211f" stroke="#ffffff" stroke-width="3"/>
+  <path d="M593 695 L607 709 M607 695 L593 709" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- 75 s: edge request lands on the dead connection -> 502 -->
+  <path d="M725 668 V780" fill="none" stroke="#c0211f" stroke-width="3" stroke-dasharray="8 6" marker-end="url(#ah-red)"/>
+  <rect x="685" y="784" width="80" height="38" rx="10" fill="#c0211f"/>
+  <text x="725" y="812" text-anchor="middle" font-size="26" font-weight="700" fill="#ffffff">502</text>
+  <text x="782" y="811" font-size="22" fill="#c0211f">request on a dead connection</text>
+
+  <!-- Fix -->
+  <rect x="40" y="835" width="1120" height="38" rx="10" fill="#e6f4ec" stroke="#12733b" stroke-width="2"/>
+  <text x="600" y="862" text-anchor="middle" font-size="24" font-weight="700" fill="#12733b">Fix: origin and load balancer timeout &gt; CDN timeout</text>
+</svg>

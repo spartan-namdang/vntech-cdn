@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <title>Cache stampede: every miss hits the origin, versus request collapsing sending one request for everyone</title>
+  <defs>
+    <marker id="ah-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1746c9"/></marker>
+    <marker id="ah-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#9a5200"/></marker>
+    <marker id="ah-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#12733b"/></marker>
+    <g id="user">
+      <circle cx="0" cy="0" r="19" fill="#e8eefc" stroke="#1746c9" stroke-width="3"/>
+      <circle cx="0" cy="-6" r="6" fill="#1746c9"/>
+      <path d="M-11 12 A11 9 0 0 1 11 12 Z" fill="#1746c9"/>
+    </g>
+  </defs>
+  <rect width="1200" height="900" fill="#ffffff"/>
+  <!-- ===== Panel: stampede ===== -->
+  <rect x="10" y="10" width="1180" height="430" rx="20" fill="#f7f8fa" stroke="#d3d8e0" stroke-width="2.5"/>
+  <text x="38" y="56" font-size="34" font-weight="700" fill="#1f2937">Stampede</text>
+  <use href="#user" x="130" y="140"/>
+  <use href="#user" x="130" y="185"/>
+  <use href="#user" x="130" y="230"/>
+  <use href="#user" x="130" y="275"/>
+  <use href="#user" x="130" y="320"/>
+  <text x="130" y="372" font-size="22" font-weight="700" fill="#1746c9" text-anchor="middle">thousands of requests</text>
+  <rect x="440" y="140" width="210" height="180" rx="16" fill="#e3f1f2" stroke="#0b6f7c" stroke-width="4"/>
+  <text x="545" y="170" font-size="28" font-weight="700" fill="#0b6f7c" text-anchor="middle">Edge</text>
+  <rect x="470" y="182" width="150" height="32" rx="16" fill="#fdf1e0" stroke="#9a5200" stroke-width="2.5" stroke-dasharray="6 5"/>
+  <text x="545" y="205" font-size="21" font-weight="600" fill="#9a5200" text-anchor="middle">cache: expired</text>
+  <text x="545" y="278" font-size="21" fill="#6b7280" text-anchor="middle">no collapsing</text>
+  <rect x="930" y="140" width="230" height="180" rx="16" fill="#fbe9e9" stroke="#c0211f" stroke-width="4"/>
+  <g fill="none" stroke="#c0211f" stroke-width="3.5" stroke-linecap="round"><ellipse cx="1045" cy="164" rx="26" ry="9"/><path d="M1019 164 V194 A26 9 0 0 0 1071 194 V164"/><path d="M1019 179 A26 9 0 0 0 1071 179"/></g>
+  <text x="1045" y="250" font-size="28" font-weight="700" fill="#c0211f" text-anchor="middle">Origin</text>
+  <rect x="965" y="264" width="160" height="38" rx="19" fill="#c0211f"/>
+  <text x="1045" y="291" font-size="23" font-weight="700" fill="#ffffff" text-anchor="middle">overloaded</text>
+  <line x1="154" y1="132" x2="436" y2="166" stroke="#1746c9" stroke-width="3" marker-end="url(#ah-blue)"/>
+  <line x1="154" y1="177" x2="436" y2="194" stroke="#1746c9" stroke-width="3" marker-end="url(#ah-blue)"/>
+  <line x1="154" y1="222" x2="436" y2="222" stroke="#1746c9" stroke-width="3" marker-end="url(#ah-blue)"/>
+  <line x1="154" y1="267" x2="436" y2="250" stroke="#1746c9" stroke-width="3" marker-end="url(#ah-blue)"/>
+  <line x1="154" y1="312" x2="436" y2="278" stroke="#1746c9" stroke-width="3" marker-end="url(#ah-blue)"/>
+  <line x1="654" y1="174" x2="926" y2="174" stroke="#9a5200" stroke-width="3" marker-end="url(#ah-amber)"/>
+  <text x="790" y="181" font-size="19" font-weight="700" fill="#9a5200" text-anchor="middle" paint-order="stroke" stroke="#f7f8fa" stroke-width="7" stroke-linejoin="round">MISS</text>
+  <line x1="654" y1="202" x2="926" y2="202" stroke="#9a5200" stroke-width="3" marker-end="url(#ah-amber)"/>
+  <text x="790" y="209" font-size="19" font-weight="700" fill="#9a5200" text-anchor="middle" paint-order="stroke" stroke="#f7f8fa" stroke-width="7" stroke-linejoin="round">MISS</text>
+  <line x1="654" y1="230" x2="926" y2="230" stroke="#9a5200" stroke-width="3" marker-end="url(#ah-amber)"/>
+  <text x="790" y="237" font-size="19" font-weight="700" fill="#9a5200" text-anchor="middle" paint-order="stroke" stroke="#f7f8fa" stroke-width="7" stroke-linejoin="round">MISS</text>
+  <line x1="654" y1="258" x2="926" y2="258" stroke="#9a5200" stroke-width="3" marker-end="url(#ah-amber)"/>
+  <text x="790" y="265" font-size="19" font-weight="700" fill="#9a5200" text-anchor="middle" paint-order="stroke" stroke="#f7f8fa" stroke-width="7" stroke-linejoin="round">MISS</text>
+  <line x1="654" y1="286" x2="926" y2="286" stroke="#9a5200" stroke-width="3" marker-end="url(#ah-amber)"/>
+  <text x="790" y="293" font-size="19" font-weight="700" fill="#9a5200" text-anchor="middle" paint-order="stroke" stroke="#f7f8fa" stroke-width="7" stroke-linejoin="round">MISS</text>
+  <text x="790" y="122" font-size="24" font-weight="700" fill="#9a5200" text-anchor="middle">same number of requests</text>
+  <text x="790" y="350" font-size="24" font-weight="700" fill="#c0211f" text-anchor="middle">all hit the origin</text>
+  <text x="600" y="420" font-size="23" font-style="italic" fill="#4b5563" text-anchor="middle">also called thundering herd, dogpile</text>
+  <!-- ===== Panel: collapsing ===== -->
+  <rect x="10" y="460" width="1180" height="430" rx="20" fill="#f7f8fa" stroke="#d3d8e0" stroke-width="2.5"/>
+  <text x="38" y="506" font-size="34" font-weight="700" fill="#1f2937">Request collapsing</text>
+  <use href="#user" x="130" y="590"/>
+  <use href="#user" x="130" y="635"/>
+  <use href="#user" x="130" y="680"/>
+  <use href="#user" x="130" y="725"/>
+  <use href="#user" x="130" y="770"/>
+  <text x="130" y="822" font-size="22" font-weight="700" fill="#1746c9" text-anchor="middle">thousands of requests</text>
+  <rect x="440" y="590" width="210" height="180" rx="16" fill="#e3f1f2" stroke="#0b6f7c" stroke-width="4"/>
+  <text x="545" y="620" font-size="28" font-weight="700" fill="#0b6f7c" text-anchor="middle">Edge</text>
+  <rect x="470" y="632" width="150" height="32" rx="16" fill="#fdf1e0" stroke="#9a5200" stroke-width="2.5" stroke-dasharray="6 5"/>
+  <text x="545" y="655" font-size="21" font-weight="600" fill="#9a5200" text-anchor="middle">cache: expired</text>
+  <rect x="465" y="682" width="160" height="72" rx="10" fill="#ffffff" stroke="#0b6f7c" stroke-width="2.5"/>
+  <rect x="477" y="692" width="28" height="16" rx="4" fill="#1746c9" opacity="0.8"/>
+  <rect x="513" y="692" width="28" height="16" rx="4" fill="#1746c9" opacity="0.8"/>
+  <rect x="549" y="692" width="28" height="16" rx="4" fill="#1746c9" opacity="0.8"/>
+  <rect x="585" y="692" width="28" height="16" rx="4" fill="#1746c9" opacity="0.8"/>
+  <text x="545" y="741" font-size="21" font-weight="600" fill="#0b6f7c" text-anchor="middle">hold the others</text>
+  <rect x="930" y="590" width="230" height="180" rx="16" fill="#efe8f8" stroke="#6d35b5" stroke-width="4"/>
+  <g fill="none" stroke="#6d35b5" stroke-width="3.5" stroke-linecap="round"><ellipse cx="1045" cy="614" rx="26" ry="9"/><path d="M1019 614 V644 A26 9 0 0 0 1071 644 V614"/><path d="M1019 629 A26 9 0 0 0 1071 629"/></g>
+  <text x="1045" y="700" font-size="28" font-weight="700" fill="#6d35b5" text-anchor="middle">Origin</text>
+  <text x="1045" y="741" font-size="23" fill="#6b7280" text-anchor="middle">calm</text>
+  <line x1="154" y1="582" x2="436" y2="616" stroke="#1746c9" stroke-width="3" marker-end="url(#ah-blue)"/>
+  <line x1="438" y1="632" x2="154" y2="598" stroke="#12733b" stroke-width="3" marker-end="url(#ah-green)"/>
+  <line x1="154" y1="627" x2="436" y2="644" stroke="#1746c9" stroke-width="3" marker-end="url(#ah-blue)"/>
+  <line x1="438" y1="660" x2="154" y2="643" stroke="#12733b" stroke-width="3" marker-end="url(#ah-green)"/>
+  <line x1="154" y1="672" x2="436" y2="672" stroke="#1746c9" stroke-width="3" marker-end="url(#ah-blue)"/>
+  <line x1="438" y1="688" x2="154" y2="688" stroke="#12733b" stroke-width="3" marker-end="url(#ah-green)"/>
+  <line x1="154" y1="717" x2="436" y2="700" stroke="#1746c9" stroke-width="3" marker-end="url(#ah-blue)"/>
+  <line x1="438" y1="716" x2="154" y2="733" stroke="#12733b" stroke-width="3" marker-end="url(#ah-green)"/>
+  <line x1="154" y1="762" x2="436" y2="728" stroke="#1746c9" stroke-width="3" marker-end="url(#ah-blue)"/>
+  <line x1="438" y1="744" x2="154" y2="778" stroke="#12733b" stroke-width="3" marker-end="url(#ah-green)"/>
+  <line x1="654" y1="650" x2="926" y2="650" stroke="#9a5200" stroke-width="4" marker-end="url(#ah-amber)"/>
+  <text x="790" y="636" font-size="26" font-weight="700" fill="#9a5200" text-anchor="middle">1 request</text>
+  <line x1="926" y1="710" x2="654" y2="710" stroke="#12733b" stroke-width="4" marker-end="url(#ah-green)"/>
+  <text x="790" y="742" font-size="26" font-weight="700" fill="#12733b" text-anchor="middle">1 response</text>
+  <text x="790" y="800" font-size="24" font-weight="700" fill="#6d35b5" text-anchor="middle">one request hits the origin</text>
+  <text x="600" y="870" font-size="23" font-weight="600" fill="#12733b" text-anchor="middle">answer all from one response</text>
+</svg>

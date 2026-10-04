@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <title>Three paths to a subscriber: via transit, via peering at an IXP, and from a cache embedded inside the ISP</title>
+  <defs>
+    <marker id="ah-grey" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8a919c"/>
+    </marker>
+    <marker id="ah-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.4" markerHeight="4.4" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#1746c9"/>
+    </marker>
+    <marker id="ah-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#12733b"/>
+    </marker>
+    <marker id="ah-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#6d35b5"/>
+    </marker>
+
+    <!-- CDN PoP: teal hexagon with cache icon -->
+    <g id="pop">
+      <polygon points="0,-42 37,-21 37,21 0,42 -37,21 -37,-21" fill="#e3f1f2" stroke="#0b6f7c" stroke-width="4" stroke-linejoin="round"/>
+      <ellipse cx="0" cy="-10" rx="14" ry="6" fill="none" stroke="#0b6f7c" stroke-width="3"/>
+      <path d="M-14 -10 V11 A14 6 0 0 0 14 11 V-10" fill="none" stroke="#0b6f7c" stroke-width="3"/>
+      <path d="M-14 0.5 A14 6 0 0 0 14 0.5" fill="none" stroke="#0b6f7c" stroke-width="3"/>
+    </g>
+
+    <!-- User: blue circle with person -->
+    <g id="user">
+      <circle r="42" fill="#ffffff" stroke="#1746c9" stroke-width="4"/>
+      <circle cx="0" cy="-9" r="10" fill="none" stroke="#1746c9" stroke-width="4"/>
+      <path d="M-20 22 A20 17 0 0 1 20 22" fill="none" stroke="#1746c9" stroke-width="4" stroke-linecap="round"/>
+    </g>
+  </defs>
+
+  <!-- Lane bands -->
+  <g fill="#f4f6fa" stroke="#d6dbe4" stroke-width="2">
+    <rect x="20" y="40" width="550" height="260" rx="22"/>
+    <rect x="20" y="320" width="550" height="260" rx="22"/>
+    <rect x="20" y="600" width="550" height="260" rx="22"/>
+  </g>
+
+  <!-- ISP network box -->
+  <rect x="590" y="40" width="580" height="820" rx="28" fill="#ffffff" stroke="#6b7280" stroke-width="4"/>
+  <text x="880" y="84" text-anchor="middle" font-size="24" font-weight="700" letter-spacing="3" fill="#6b7280">ISP NETWORK</text>
+
+  <!-- Lane headers -->
+  <g font-size="26" font-weight="700" fill="#1a2233">
+    <circle cx="54" cy="80" r="18" fill="#6b7280"/>
+    <circle cx="54" cy="360" r="18" fill="#1746c9"/>
+    <circle cx="54" cy="640" r="18" fill="#12733b"/>
+    <text x="84" y="89">Via transit</text>
+    <text x="84" y="369">Peering</text>
+    <text x="84" y="649">Embedded cache</text>
+  </g>
+  <g font-size="22" font-weight="700" fill="#ffffff" text-anchor="middle">
+    <text x="54" y="88">1</text>
+    <text x="54" y="368">2</text>
+    <text x="54" y="648">3</text>
+  </g>
+
+  <!-- Lane 1: via transit (grey, many hops) -->
+  <g fill="none" stroke="#8a919c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M152 175 H266" marker-end="url(#ah-grey)"/>
+    <path d="M492 175 H780 C 920 175, 930 427, 1051 427" marker-end="url(#ah-grey)"/>
+  </g>
+  <g fill="#ffffff" stroke="#8a919c" stroke-width="3.5">
+    <circle cx="186" cy="175" r="7"/>
+    <circle cx="226" cy="175" r="7"/>
+    <circle cx="534" cy="175" r="7"/>
+    <circle cx="660" cy="175" r="7"/>
+    <circle cx="740" cy="175" r="7"/>
+  </g>
+
+  <!-- Lane 2: peering at an IXP (blue, fewer hops) -->
+  <g fill="none" stroke="#1746c9" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M152 455 H296" marker-end="url(#ah-blue)"/>
+    <path d="M442 455 H1043" marker-end="url(#ah-blue)"/>
+  </g>
+
+  <!-- Lane 3: cache inside the ISP (green, shortest) -->
+  <path d="M870 735 C 970 735, 940 483, 1051 483" fill="none" stroke="#12733b" stroke-width="7" stroke-linecap="round" marker-end="url(#ah-green)"/>
+
+  <!-- Netflix fills the embedded cache off-peak -->
+  <path d="M196 735 H632" fill="none" stroke="#6d35b5" stroke-width="3" stroke-dasharray="12 9" stroke-linecap="round" marker-end="url(#ah-purple)"/>
+  <text x="414" y="715" text-anchor="middle" font-size="22" font-style="italic" fill="#6d35b5">filled during off-peak hours</text>
+
+  <!-- Nodes -->
+  <use href="#pop" x="110" y="175"/>
+  <use href="#pop" x="110" y="455"/>
+  <text x="110" y="244" text-anchor="middle" font-size="22" font-weight="600" fill="#0b6f7c">CDN PoP</text>
+  <text x="110" y="524" text-anchor="middle" font-size="22" font-weight="600" fill="#0b6f7c">CDN PoP</text>
+
+  <!-- Transit cloud -->
+  <path d="M290 210 H450 A32 32 0 0 0 455 146 A48 48 0 0 0 370 128 A40 40 0 0 0 300 150 A30 30 0 0 0 290 210 Z" fill="#ffffff" stroke="#8a919c" stroke-width="4" stroke-linejoin="round"/>
+  <text x="372" y="177" text-anchor="middle" font-size="22" font-weight="600" fill="#4b5563">Transit</text>
+  <text x="372" y="203" text-anchor="middle" font-size="22" font-weight="600" fill="#4b5563">providers</text>
+
+  <!-- IXP -->
+  <rect x="302" y="418" width="134" height="74" rx="14" fill="#ffffff" stroke="#1746c9" stroke-width="4"/>
+  <text x="369" y="466" text-anchor="middle" font-size="30" font-weight="700" fill="#1746c9">IXP</text>
+
+  <!-- Netflix origin -->
+  <rect x="40" y="703" width="156" height="64" rx="14" fill="#f1eafa" stroke="#6d35b5" stroke-width="4"/>
+  <text x="118" y="744" text-anchor="middle" font-size="26" font-weight="700" fill="#6d35b5">Netflix</text>
+
+  <!-- Embedded cache inside the ISP -->
+  <rect x="636" y="680" width="234" height="110" rx="16" fill="#e3f1f2" stroke="#0b6f7c" stroke-width="4"/>
+  <text x="753" y="720" text-anchor="middle" font-size="24" font-weight="700" fill="#0b6f7c">Embedded cache</text>
+  <text x="753" y="749" text-anchor="middle" font-size="18" fill="#1a2233">e.g. Netflix Open Connect</text>
+  <text x="753" y="772" text-anchor="middle" font-size="18" fill="#1a2233">appliance</text>
+
+  <!-- User at home -->
+  <use href="#user" x="1085" y="455"/>
+  <text x="1085" y="524" text-anchor="middle" font-size="22" font-weight="600" fill="#1746c9">User at home</text>
+
+  <!-- Lane notes -->
+  <text x="40" y="282" font-size="24" font-style="italic" fill="#4b5563">slow, costly for the ISP</text>
+  <text x="40" y="562" font-size="24" font-weight="600" fill="#1746c9">direct link at an Internet exchange</text>
+  <text x="880" y="822" text-anchor="middle" font-size="24" font-weight="700" fill="#12733b">video served from inside your carrier</text>
+  <text x="880" y="848" text-anchor="middle" font-size="20" fill="#12733b">never leaves the ISP network</text>
+</svg>

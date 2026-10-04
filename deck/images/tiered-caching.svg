@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <title>Tiered caching: without an upper tier every PoP calls the origin; with one, only a few nodes do</title>
+  <defs>
+    <marker id="ah-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#9a5200"/>
+    </marker>
+
+    <!-- Edge PoP: small teal box -->
+    <g id="pop">
+      <rect x="-48" y="-25" width="96" height="50" rx="12" fill="#e3f1f2" stroke="#0b6f7c" stroke-width="3"/>
+      <text x="0" y="7" text-anchor="middle" font-size="22" font-weight="600" fill="#0b6f7c">PoP</text>
+    </g>
+  </defs>
+
+  <!-- ===== Panel A: without tiering ===== -->
+  <rect x="20" y="15" width="1160" height="375" rx="22" fill="#f4f6fa" stroke="#d6dbe4" stroke-width="2"/>
+  <text x="50" y="62" font-size="30" font-weight="700" fill="#1f2937">Without tiering</text>
+  <text x="1150" y="62" text-anchor="end" font-size="22" font-style="italic" fill="#6b7280">hundreds of PoPs</text>
+
+  <!-- 8 PoPs -->
+  <use href="#pop" x="130" y="115"/>
+  <use href="#pop" x="270" y="115"/>
+  <use href="#pop" x="410" y="115"/>
+  <use href="#pop" x="550" y="115"/>
+  <use href="#pop" x="690" y="115"/>
+  <use href="#pop" x="830" y="115"/>
+  <use href="#pop" x="970" y="115"/>
+  <use href="#pop" x="1110" y="115"/>
+
+  <!-- MISS arrows: every PoP straight to the origin -->
+  <g fill="none" stroke="#9a5200" stroke-width="2.5" stroke-dasharray="10 7" stroke-linecap="round" marker-end="url(#ah-amber)">
+    <path d="M130 142 L508 292" marker-end="url(#ah-amber)"/>
+    <path d="M270 142 L534 292" marker-end="url(#ah-amber)"/>
+    <path d="M410 142 L560 292" marker-end="url(#ah-amber)"/>
+    <path d="M550 142 L586 292" marker-end="url(#ah-amber)"/>
+    <path d="M690 142 L614 292" marker-end="url(#ah-amber)"/>
+    <path d="M830 142 L640 292" marker-end="url(#ah-amber)"/>
+    <path d="M970 142 L666 292" marker-end="url(#ah-amber)"/>
+    <path d="M1110 142 L692 292" marker-end="url(#ah-amber)"/>
+  </g>
+
+  <!-- Overloaded origin: thick amber outline -->
+  <rect x="480" y="298" width="240" height="70" rx="14" fill="#efe7f8" stroke="#9a5200" stroke-width="7"/>
+  <text x="600" y="342" text-anchor="middle" font-size="28" font-weight="700" fill="#6d35b5">Origin</text>
+  <text x="750" y="326" font-size="24" font-weight="700" fill="#9a5200">one expired object =</text>
+  <text x="750" y="356" font-size="24" font-weight="700" fill="#9a5200">hundreds of origin requests</text>
+
+  <!-- ===== Panel B: with upper tier / origin shield ===== -->
+  <rect x="20" y="405" width="1160" height="385" rx="22" fill="#f4f6fa" stroke="#d6dbe4" stroke-width="2"/>
+  <text x="50" y="452" font-size="30" font-weight="700" fill="#1f2937">With an upper tier / origin shield</text>
+  <text x="1150" y="452" text-anchor="end" font-size="22" font-style="italic" fill="#6b7280">hundreds of PoPs</text>
+
+  <!-- same 8 PoPs -->
+  <use href="#pop" x="130" y="505"/>
+  <use href="#pop" x="270" y="505"/>
+  <use href="#pop" x="410" y="505"/>
+  <use href="#pop" x="550" y="505"/>
+  <use href="#pop" x="690" y="505"/>
+  <use href="#pop" x="830" y="505"/>
+  <use href="#pop" x="970" y="505"/>
+  <use href="#pop" x="1110" y="505"/>
+
+  <!-- PoPs -> upper tier (amber MISS) -->
+  <g fill="none" stroke="#9a5200" stroke-width="2.5" stroke-dasharray="10 7" stroke-linecap="round">
+    <path d="M130 532 L350 596" marker-end="url(#ah-amber)"/>
+    <path d="M270 532 L378 596" marker-end="url(#ah-amber)"/>
+    <path d="M410 532 L406 596" marker-end="url(#ah-amber)"/>
+    <path d="M550 532 L434 596" marker-end="url(#ah-amber)"/>
+    <path d="M690 532 L766 596" marker-end="url(#ah-amber)"/>
+    <path d="M830 532 L794 596" marker-end="url(#ah-amber)"/>
+    <path d="M970 532 L822 596" marker-end="url(#ah-amber)"/>
+    <path d="M1110 532 L850 596" marker-end="url(#ah-amber)"/>
+  </g>
+
+  <!-- Upper tier: 2 larger teal nodes -->
+  <rect x="290" y="600" width="220" height="68" rx="14" fill="#e3f1f2" stroke="#0b6f7c" stroke-width="4"/>
+  <text x="400" y="632" text-anchor="middle" font-size="24" font-weight="700" fill="#0b6f7c">Upper tier</text>
+  <text x="400" y="658" text-anchor="middle" font-size="20" fill="#0b6f7c">(a few)</text>
+
+  <rect x="690" y="600" width="220" height="68" rx="14" fill="#e3f1f2" stroke="#0b6f7c" stroke-width="7"/>
+  <text x="800" y="632" text-anchor="middle" font-size="24" font-weight="700" fill="#0b6f7c">Upper tier</text>
+  <text x="800" y="658" text-anchor="middle" font-size="20" fill="#0b6f7c">(a few)</text>
+
+  <!-- Shield tag -->
+  <rect x="945" y="597" width="215" height="74" rx="14" fill="#0b6f7c"/>
+  <text x="1052" y="628" text-anchor="middle" font-size="22" font-weight="700" fill="#ffffff">Origin shield:</text>
+  <text x="1052" y="656" text-anchor="middle" font-size="20" fill="#ffffff">the only gateway</text>
+  <path d="M910 634 L945 634" fill="none" stroke="#0b6f7c" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- left upper tier -> shield -->
+  <path d="M512 634 L686 634" fill="none" stroke="#9a5200" stroke-width="2.5" stroke-dasharray="10 7" stroke-linecap="round" marker-end="url(#ah-amber)"/>
+
+  <!-- ONE arrow into the origin -->
+  <path d="M800 670 L800 722" fill="none" stroke="#9a5200" stroke-width="5" stroke-linecap="round" marker-end="url(#ah-amber)"/>
+
+  <rect x="690" y="725" width="220" height="50" rx="14" fill="#efe7f8" stroke="#6d35b5" stroke-width="4"/>
+  <text x="800" y="759" text-anchor="middle" font-size="28" font-weight="700" fill="#6d35b5">Origin</text>
+  <text x="660" y="745" text-anchor="end" font-size="24" font-weight="700" fill="#9a5200">only upper-tier misses</text>
+  <text x="660" y="773" text-anchor="end" font-size="24" font-weight="700" fill="#9a5200">reach the origin</text>
+
+  <!-- ===== Path as text ===== -->
+  <rect x="60" y="808" width="1080" height="64" rx="16" fill="#ffffff" stroke="#d6dbe4" stroke-width="2"/>
+  <text x="600" y="849" text-anchor="middle" font-size="26" font-weight="600" fill="#6b7280">
+    <tspan fill="#1746c9">User</tspan>
+    <tspan> → </tspan>
+    <tspan fill="#0b6f7c">Edge PoP</tspan><tspan font-weight="400"> (hundreds)</tspan>
+    <tspan> → </tspan>
+    <tspan fill="#0b6f7c">Upper tier</tspan><tspan font-weight="400"> (a few)</tspan>
+    <tspan> → </tspan>
+    <tspan fill="#6d35b5">Origin</tspan>
+  </text>
+</svg>
