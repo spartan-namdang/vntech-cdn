@@ -18,7 +18,7 @@ python3 tools/check_slides.py                  # run after every edit to deck/in
 - at most 55 slides, all top-level (no nested `<section>`)
 - every slide has `<aside class="notes">`
 - no line of main text over 8 words; no slide over 8 lines (target is 6 lines × 6 words)
-- every `.img-slot` has a `<!-- DIAGRAM: file.png ... -->` comment above it and a row in `deck/images/README.md`
+- every `.img-slot` has a `<!-- DIAGRAM: file.svg ... -->` comment above it and a row in `deck/images/README.md`
 - no hard-coded colours and no `style="..."` in `index.html`
 
 "Main text" is `<li>` and `<p>` in the slide body. Titles, eyebrows, tables, `<pre>`, SVG, figures, notes, and the classes in `SKIP_CLASSES` (chips, stats, card kickers, …) are not counted, so moving text into those is how a dense slide legitimately passes.

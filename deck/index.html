@@ -140,26 +140,26 @@
   </header>
   <div class="s-body">
     <div class="fig-row">
-      <!-- DIAGRAM: cdn-overview.png
+      <!-- DIAGRAM: cdn-overview.svg
            Idea to convey: the origin stays in ONE place, while users everywhere talk to an edge near them.
            Draw a simplified world map (or just three regions left to right: Asia, Europe, US).
            Components:
              - One ORIGIN server (purple), placed in the US West. Label: "Origin (one place)".
-             - Edge servers (teal hexagons) scattered over the map: at least Hanoi, Singapore, Frankfurt, one in the US.
-             - Two users (blue): "User in Hanoi" and "User in Frankfurt".
+             - Edge servers (teal hexagons) scattered over the map: at least Hanoi, Singapore, Paris, one in the US.
+             - Two users (blue): "User in Hanoi" and "User in Paris".
            Arrows, in this order:
              1. User in Hanoi -> edge in Hanoi: short solid blue arrow, label "~20 ms".
-             2. User in Frankfurt -> edge in Frankfurt: short solid blue arrow, label "~20 ms".
+             2. User in Paris -> edge in Paris: short solid blue arrow, label "~20 ms".
              3. Each of those two edges -> origin: long thin dashed arrow, label "only on a cache MISS".
              4. For contrast, one faded grey arrow from the Hanoi user straight to the origin, label "without a CDN: ~200 ms per round trip".
            Emphasise: the short arrows (thick) versus the long ones (thin, dashed). Each edge has a small "cache" badge.
            Small inset in a corner: "Cache next to the origin (Varnish, Nginx): less load, same distance". -->
       <figure class="img-slot">
-        <img src="images/cdn-overview.png" alt="Users in Hanoi and Frankfurt each reach a nearby edge; the single origin is contacted only on a cache miss" />
+        <img src="images/cdn-overview.svg" alt="Users in Hanoi and Paris each reach a nearby edge; the single origin is contacted only on a cache miss" />
         <figcaption>
           <svg class="icon icon-l"><use href="#i-image"/></svg>
-          <span class="slot-file">images/cdn-overview.png</span>
-          <span class="slot-desc">Map: one origin, many edges, users in Hanoi and Frankfurt each reaching a nearby edge</span>
+          <span class="slot-file">images/cdn-overview.svg</span>
+          <span class="slot-desc">Map: one origin, many edges, users in Hanoi and Paris each reaching a nearby edge</span>
         </figcaption>
       </figure>
       <div class="col">
@@ -175,7 +175,7 @@
   </div>
   <aside class="notes">
     <p>CDN là một mạng phân tán gồm các edge server nằm giữa user và origin của mình.</p>
-    <p>Mỗi edge giữ bản sao nội dung và trả lời request từ vị trí gần user nhất. Origin vẫn chỉ ở một chỗ; user ở Hà Nội và user ở Frankfurt mỗi người nói chuyện với một edge gần họ.</p>
+    <p>Mỗi edge giữ bản sao nội dung và trả lời request từ vị trí gần user nhất. Origin vẫn chỉ ở một chỗ; user ở Hà Nội và user ở Paris mỗi người nói chuyện với một edge gần họ.</p>
     <p>So sánh với cache đặt cạnh origin như Varnish hay Nginx: loại đó giảm tải cho origin nhưng không giảm khoảng cách. CDN giảm được cả hai.</p>
     <p>Định nghĩa gọn: CDN là một caching reverse proxy, được triển khai ở rất nhiều nơi, trả lời thay cho origin.</p>
   </aside>
@@ -354,7 +354,7 @@
   </header>
   <div class="s-body">
     <div class="fig-row">
-      <!-- DIAGRAM: request-lifecycle.png
+      <!-- DIAGRAM: request-lifecycle.svg
            Idea to convey: the same request takes two very different paths. HIT stops at the edge; MISS goes to the origin once and is stored.
            Draw a sequence diagram with four vertical lifelines, left to right:
              "Browser" (blue), "DNS" (grey), "Edge" (teal), "Origin" (purple).
@@ -370,10 +370,10 @@
            Optional thin third frame "EXPIRED" (grey): Edge -> Origin: "If-None-Match" ; Origin -> Edge: "304" (see 3.3).
            Emphasise: the HIT frame is visibly shorter than the MISS frame. -->
       <figure class="img-slot">
-        <img src="images/request-lifecycle.png" alt="Sequence diagram of a request: DNS, connect, cache lookup, then HIT at the edge or MISS to the origin" />
+        <img src="images/request-lifecycle.svg" alt="Sequence diagram of a request: DNS, connect, cache lookup, then HIT at the edge or MISS to the origin" />
         <figcaption>
           <svg class="icon icon-l"><use href="#i-image"/></svg>
-          <span class="slot-file">images/request-lifecycle.png</span>
+          <span class="slot-file">images/request-lifecycle.svg</span>
           <span class="slot-desc">Sequence diagram: DNS, connect, lookup, then the HIT path next to the MISS path</span>
         </figcaption>
       </figure>
@@ -477,7 +477,7 @@
   </header>
   <div class="s-body">
     <div class="fig-row">
-      <!-- DIAGRAM: tiered-caching.png
+      <!-- DIAGRAM: tiered-caching.svg
            Idea to convey: without a middle layer every PoP calls the origin on expiry; with it, only a few upper-tier nodes do.
            Draw two panels side by side (or stacked), same components in both.
            Panel A, title "Without tiering":
@@ -494,10 +494,10 @@
            Under the panels, the path as text: User -> Edge PoP (hundreds) -> Upper tier (a few) -> Origin.
            Emphasise: the arrow count into the origin, many versus one. -->
       <figure class="img-slot">
-        <img src="images/tiered-caching.png" alt="Without tiering every PoP calls the origin; with an upper tier only a few nodes do" />
+        <img src="images/tiered-caching.svg" alt="Without tiering every PoP calls the origin; with an upper tier only a few nodes do" />
         <figcaption>
           <svg class="icon icon-l"><use href="#i-image"/></svg>
-          <span class="slot-file">images/tiered-caching.png</span>
+          <span class="slot-file">images/tiered-caching.svg</span>
           <span class="slot-desc">Two panels: every PoP calling the origin, versus PoPs calling a small upper tier</span>
         </figcaption>
       </figure>
@@ -535,7 +535,7 @@
   </header>
   <div class="s-body">
     <div class="fig-row">
-      <!-- DIAGRAM: isp-embedded-cache.png
+      <!-- DIAGRAM: isp-embedded-cache.svg
            Idea to convey: three ways for content to reach a subscriber, each one shorter than the last.
            Components, left to right: "CDN PoP" (teal), a cloud labelled "Transit providers", an "IXP" node,
            a large rounded box "ISP network" containing "Embedded cache (e.g. Netflix Open Connect appliance)" (teal)
@@ -547,10 +547,10 @@
            Extra: a dashed arrow from "Netflix" into the embedded cache, labelled "filled during off-peak hours".
            Emphasise: lane 3 never leaves the ISP box. -->
       <figure class="img-slot">
-        <img src="images/isp-embedded-cache.png" alt="Three paths to a subscriber: via transit, via peering at an exchange, and from a cache embedded inside the ISP" />
+        <img src="images/isp-embedded-cache.svg" alt="Three paths to a subscriber: via transit, via peering at an exchange, and from a cache embedded inside the ISP" />
         <figcaption>
           <svg class="icon icon-l"><use href="#i-image"/></svg>
-          <span class="slot-file">images/isp-embedded-cache.png</span>
+          <span class="slot-file">images/isp-embedded-cache.svg</span>
           <span class="slot-desc">Three lanes: via transit, via peering at an IXP, and from a cache inside the ISP</span>
         </figcaption>
       </figure>
@@ -871,7 +871,7 @@ Cache-Control: max-age=60, stale-while-revalidate=300, stale-if-error=86400
   </header>
   <div class="s-body">
     <div class="fig-row">
-      <!-- DIAGRAM: cache-stampede.png
+      <!-- DIAGRAM: cache-stampede.svg
            Idea to convey: at the moment a hot object expires, thousands of identical requests hit the origin, unless the edge collapses them into one.
            Draw two panels, left "Stampede" and right "Request collapsing", same components in both:
              a crowd of users on the left (blue, write "thousands of requests"), one Edge in the middle (teal) with a cache
@@ -889,10 +889,10 @@ Cache-Control: max-age=60, stale-while-revalidate=300, stale-if-error=86400
              - Origin drawn calm (purple).
            Emphasise: the arrow count between edge and origin, many versus one. -->
       <figure class="img-slot">
-        <img src="images/cache-stampede.png" alt="A stampede sends every request to the origin; request collapsing sends one and answers all of them" />
+        <img src="images/cache-stampede.svg" alt="A stampede sends every request to the origin; request collapsing sends one and answers all of them" />
         <figcaption>
           <svg class="icon icon-l"><use href="#i-image"/></svg>
-          <span class="slot-file">images/cache-stampede.png</span>
+          <span class="slot-file">images/cache-stampede.svg</span>
           <span class="slot-desc">Two panels: thousands of misses hitting the origin, versus one collapsed request</span>
         </figcaption>
       </figure>
@@ -1333,7 +1333,7 @@ HTTP/1.1 206 Partial Content
   </header>
   <div class="s-body">
     <div class="fig-row">
-      <!-- DIAGRAM: connection-pool.png
+      <!-- DIAGRAM: connection-pool.svg
            Idea to convey: thousands of short user connections end at the edge; only a few long-lived, warm connections cross the long distance to the origin.
            Components, left to right:
              - A column of many users (blue), label "thousands of users".
@@ -1349,10 +1349,10 @@ HTTP/1.1 206 Partial Content
              - Fix note in green: "origin and load balancer timeout > CDN timeout".
            Emphasise: few thick lines on the long leg; the red 502 in the pitfall panel. -->
       <figure class="img-slot">
-        <img src="images/connection-pool.png" alt="Many short user connections end at the edge; a few persistent warm connections carry all requests to the origin" />
+        <img src="images/connection-pool.svg" alt="Many short user connections end at the edge; a few persistent warm connections carry all requests to the origin" />
         <figcaption>
           <svg class="icon icon-l"><use href="#i-image"/></svg>
-          <span class="slot-file">images/connection-pool.png</span>
+          <span class="slot-file">images/connection-pool.svg</span>
           <span class="slot-desc">Many short user connections into the edge, a few warm ones to the origin, plus the timeout pitfall</span>
         </figcaption>
       </figure>
@@ -1606,7 +1606,7 @@ Cookie: session=victim
   </header>
   <div class="s-body">
     <div class="fig-row">
-      <!-- DIAGRAM: cloudfront-hooks.png
+      <!-- DIAGRAM: cloudfront-hooks.svg
            Idea to convey: there are four places to attach code around the cache, and where you attach decides how often the code runs.
            Components on one horizontal line: "Viewer" (blue, left), "Edge cache" (teal, centre, draw it as a box with a cache badge),
            "Origin" (purple, right).
@@ -1621,10 +1621,10 @@ Cookie: session=victim
            versus "MISS: go on to the origin" (amber).
            Emphasise: hooks 1 and 4 (every request) in a bold outline; hooks 2 and 3 (MISS only) in a lighter outline. -->
       <figure class="img-slot">
-        <img src="images/cloudfront-hooks.png" alt="Four CloudFront hook points around the edge cache: viewer request, origin request, origin response, viewer response" />
+        <img src="images/cloudfront-hooks.svg" alt="Four CloudFront hook points around the edge cache: viewer request, origin request, origin response, viewer response" />
         <figcaption>
           <svg class="icon icon-l"><use href="#i-image"/></svg>
-          <span class="slot-file">images/cloudfront-hooks.png</span>
+          <span class="slot-file">images/cloudfront-hooks.svg</span>
           <span class="slot-desc">Viewer, edge cache and origin with the four hook points numbered on the arrows</span>
         </figcaption>
       </figure>
