@@ -64,4 +64,8 @@ Path ids are document-wide, so prefix them per diagram (`ov-`, `rl-`, `tc-`, `is
 
 Diagrams kept as image files (none at the moment; every diagram is inline) are `<figure class="img-slot">` blocks. The drawing spec is the `<!-- DIAGRAM: ... -->` comment directly above the slot, and `deck/images/README.md` is the index (file name, slide, description, format and colour guidance). The slot background stays white in both themes, so images are drawn for a light background. Adding a slot means: copy an existing figure block with its `DIAGRAM` comment, change the file name, add a row to `deck/images/README.md`.
 
-`demo/` is reserved for the live demo and is currently empty.
+## Live demo
+
+`demo/` is a Docker Compose lab, separate from the deck and not deployed: a slow Python origin (`origin/server.py`) behind Varnish as the edge (`edge/default.vcl`), plus a console (`console/server.py`, port 8090) that serves a full-screen dashboard (`console/dashboard.html`, at `/`), and generates the simulated shop traffic behind it. The dashboard is a standalone page with its own styles; the deck's tokens and `check_slides.py` do not apply to it. `demo/README.md` is the scene-by-scene runbook.
+
+The "Demo · Live dashboard" slide only links to the dashboard; its speaker notes are the demo script.

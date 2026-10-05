@@ -2342,6 +2342,36 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
      SECTION 10: CLOSING (10.1 split in two slides, Kahoot, closing)
      ====================================================================== -->
 
+<!-- LIVE DEMO =============================================================
+     The demo is a separate full-screen dashboard served by the lab in demo/
+     (docker compose up -d, see demo/README.md). This slide only links to it.
+     ====================================================================== -->
+<section class="l-bullets" data-section="10 · Closing">
+  <header class="s-head">
+    <p class="eyebrow">Demo · Live dashboard</p>
+    <h2>A real edge in front of a small shop: change a setting, watch the graphs</h2>
+  </header>
+  <div class="s-body">
+    <p class="lead">Open <a href="http://127.0.0.1:8090/" target="_blank" rel="noopener"><code>127.0.0.1:8090</code></a></p>
+    <ol class="steps">
+      <li><b>Private data:</b> fix the cached account page</li>
+      <li><b>Cache key:</b> ignore <code>utm_*</code></li>
+      <li><b>No cache:</b> switch it off, then on</li>
+      <li><b>Outage:</b> crash the origin, serve stale</li>
+      <li><b>Flash sale:</b> with and without merging</li>
+    </ol>
+  </div>
+  <aside class="notes">
+    <p>Demo trực tiếp trên dashboard, mở ở tab riêng: 127.0.0.1:8090. Trước buổi nói chạy docker compose up -d trong thư mục demo. Bật công tắc Simulated shoppers để lab tự đóng vai khách của một shop nhỏ, khoảng 20 request mỗi giây qua một edge Varnish thật.</p>
+    <p>Một, dữ liệu riêng: ngay từ đầu ô "Wrong account shown" đã đỏ, vì trang tài khoản bị đánh dấu public nên khách thấy tài khoản của người khác. Bật "Account page is private": con số về 0, đổi lại origin phải trả lời mọi lượt xem trang tài khoản.</p>
+    <p>Hai, cache key: bật "Ignore utm_* in the cache key". Tỉ lệ cache tăng và đường request tới origin tụt xuống, vì các link quảng cáo giờ dùng chung một bản.</p>
+    <p>Ba, tắt "Cache at the edge": hai đường request chập làm một, origin gánh toàn bộ traffic. Bật lại và chỉ vào khoảng cách giữa hai đường: đó là phần việc CDN làm thay origin.</p>
+    <p>Bốn, bấm Crash the origin. Khoảng 10 giây sau, khi cache hết hạn, lỗi lên gần 100%. Bật "Serve stale if the origin fails": phần lớn lỗi đổi thành STALE. Phần còn lỗi là trang chưa từng được cache và trang cá nhân. Nhớ bấm Restart the origin.</p>
+    <p>Năm, bấm Start a flash sale: traffic tăng vọt nhưng origin gần như không đổi. Tắt "Merge identical requests" rồi flash sale lần nữa: ô Origin load báo hàng chục request đang xử lý và thời gian phản hồi lên vài giây.</p>
+    <p>Ghi chú cho người trình bày: mỗi lần đổi cấu hình để lại một vạch có nhãn trên biểu đồ. Nút Reset the demo đưa mọi thứ về mặc định.</p>
+  </aside>
+</section>
+
 <!-- 10.1 (1/2) questions -->
 <section class="l-bullets" data-section="10 · Closing">
   <header class="s-head">

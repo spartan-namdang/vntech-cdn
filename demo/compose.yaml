@@ -1,0 +1,58 @@
+services:
+  origin:
+    image: python:3.13-alpine
+    command: python -u /app/server.py
+    init: true
+    stop_grace_period: 1s
+    volumes:
+      - ./origin:/app:ro
+    environment:
+      ORIGIN_DELAY_MS: "200"
+      TZ: "ICT-7"
+    ports:
+      - "127.0.0.1:9000:9000"
+    networks:
+      lab:
+        ipv4_address: 172.31.90.10
+
+  edge:
+    image: varnish:7.6
+    # No implicit stale window: only what the origin's Cache-Control asks for.
+    command: ["-p", "default_grace=0"]
+    volumes:
+      - ./edge:/etc/varnish:ro
+    tmpfs:
+      - /var/lib/varnish/varnishd:exec
+    ports:
+      - "127.0.0.1:8080:80"
+    networks:
+      lab:
+        ipv4_address: 172.31.90.20
+    depends_on:
+      - origin
+
+  # Serves the dashboard and plays the shoppers that send traffic to the edge.
+  console:
+    image: python:3.13-alpine
+    command: python -u /app/server.py
+    init: true
+    stop_grace_period: 1s
+    volumes:
+      - ./console:/app:ro
+    environment:
+      TZ: "ICT-7"
+    ports:
+      - "127.0.0.1:8090:8090"
+    networks:
+      lab:
+        ipv4_address: 172.31.90.30
+    depends_on:
+      - edge
+
+# Fixed addresses: Varnish resolves "origin" once at startup, so the origin
+# must come back on the same address after a restart.
+networks:
+  lab:
+    ipam:
+      config:
+        - subnet: 172.31.90.0/24

@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Edge dashboard · shop.vn</title>
+<style>
+  :root {
+    --page: #f4f4f1; --surface: #ffffff; --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+    --grid: #e1e0d9; --axis: #c3c2b7; --rule: #dcdbd4; --accent: #1746c9;
+    --edge: #2a78d6; --origin: #eb6834; --miss: #eda100; --stale: #1baf7a; --bad: #d03b3b; --leak: #4a3aa7; --soft: #86b6ef;
+    --good: #0ca30c;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { display: grid; grid-template-rows: auto minmax(0, 1fr); background: var(--page); color: var(--ink);
+         font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+
+  /* top bar */
+  header { display: flex; align-items: center; gap: 16px; padding: 10px 20px; background: var(--surface); border-bottom: 1px solid var(--rule); }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; }
+  .brand svg { width: 26px; height: 26px; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; }
+  .zone { padding: 3px 12px; border: 1px solid var(--rule); border-radius: 999px; font-family: var(--mono); color: var(--ink-2); }
+  .crumb { color: var(--muted); }
+  .pill { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; padding: 4px 14px; border-radius: 999px;
+          border: 1px solid var(--rule); font-weight: 600; }
+  .pill::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--good); }
+  .pill.is-bad { border-color: var(--bad); color: var(--bad); }
+  .pill.is-bad::before { background: var(--bad); }
+  .pill.is-off { color: var(--muted); }
+  .pill.is-off::before { background: var(--muted); }
+
+  .layout { display: grid; grid-template-columns: 330px minmax(0, 1fr); min-height: 0; }
+
+  /* settings column */
+  aside { overflow: auto; padding: 12px 14px; border-right: 1px solid var(--rule); background: var(--surface); }
+  .group + .group { margin-top: 12px; }
+  .group h2 { margin: 0 0 6px; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .setting { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 1px 12px; padding: 7px 12px;
+             border: 1px solid var(--rule); border-radius: 8px; }
+  .setting + .setting, .setting + .row, .row + .setting { margin-top: 6px; }
+  .setting b { font-weight: 600; }
+  .setting small { grid-column: 1; color: var(--ink-2); font-size: 12.5px; }
+  .switch { grid-row: 1 / span 2; grid-column: 2; position: relative; width: 44px; height: 24px; padding: 0; border: 0; border-radius: 999px;
+            background: var(--axis); transition: background .15s; }
+  .switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: left .15s; }
+  .switch[aria-checked="true"] { background: var(--accent); }
+  .switch[aria-checked="true"]::after { left: 23px; }
+  .row { display: flex; gap: 8px; }
+  .btn { flex: 1; padding: 8px 12px; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); font-weight: 600; }
+  .btn:hover { background: var(--page); }
+  .btn.is-danger { border-color: var(--bad); color: var(--bad); }
+  .btn.is-primary { border-color: var(--accent); background: var(--accent); color: #fff; }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .rate { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; }
+  .rate input { flex: 1; accent-color: var(--accent); }
+  .rate output { font-family: var(--mono); min-width: 5.5em; text-align: right; }
+
+  /* main column */
+  main { display: grid; grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr) auto; gap: 12px; padding: 14px 16px; min-height: 0; min-width: 0; }
+  .kpis { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+  .card { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; }
+  .kpi { padding: 10px 14px; }
+  .kpi .label { color: var(--ink-2); font-size: 12.5px; white-space: nowrap; }
+  .kpi .value { font-size: 28px; font-weight: 700; line-height: 1.15; font-variant-numeric: tabular-nums; }
+  .kpi .value small { font-size: 14px; font-weight: 500; color: var(--ink-2); margin-left: 3px; }
+  .kpi .sub { color: var(--muted); font-size: 12px; white-space: nowrap; }
+  .kpi.is-bad { border-color: var(--bad); }
+  .kpi.is-bad .sub { color: var(--bad); font-weight: 600; }
+  .kpi.is-bad .sub::before { content: "▲ "; }
+
+  .charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; min-height: 0; }
+  .chart { display: grid; grid-template-rows: auto minmax(0, 1fr); padding: 10px 12px 6px; min-height: 0; }
+  .chart-head { display: flex; align-items: baseline; gap: 12px; }
+  .chart-head h3 { margin: 0; font-size: 14px; font-weight: 600; }
+  .legend { display: flex; gap: 12px; margin-left: auto; color: var(--ink-2); font-size: 12.5px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+  .plot { position: relative; min-height: 0; }
+  .plot svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .plot text { font: 11px system-ui, sans-serif; fill: var(--muted); }
+  .plot .ev { fill: var(--ink-2); font-weight: 600; }
+  .tip { position: absolute; z-index: 2; top: 6px; padding: 6px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface);
+         box-shadow: 0 4px 14px rgba(0, 0, 0, .08); font-size: 12.5px; white-space: nowrap; pointer-events: none; }
+  .tip b { font-variant-numeric: tabular-nums; }
+  .tip div i { display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 6px; }
+
+  .recent { padding: 8px 12px 6px; overflow: hidden; }
+  .recent h3 { margin: 0 0 4px; font-size: 14px; font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; table-layout: fixed; }
+  th { text-align: left; font-weight: 500; color: var(--muted); padding: 2px 8px 2px 0; }
+  td { padding: 2px 8px 2px 0; border-top: 1px solid var(--grid); font-family: var(--mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  th:nth-child(1), th:nth-child(2) { width: 84px; } th:nth-child(4) { width: 150px; } th:nth-child(5) { width: 70px; }
+  .tag { display: inline-flex; align-items: center; gap: 6px; }
+  .tag i { width: 9px; height: 9px; border-radius: 3px; }
+  .warn { color: var(--bad); font-weight: 600; }
+  .offline { display: none; margin: 0 0 10px; padding: 8px 12px; border: 1px solid var(--bad); border-radius: 8px; color: var(--bad); font-weight: 600; }
+  body.is-offline .offline { display: block; }
+</style>
+</head>
+<body>
+<header>
+  <span class="brand"><svg viewBox="0 0 24 24"><path d="M12 2.5l8.2 4.75v9.5L12 21.5l-8.2-4.75v-9.5z"/><circle cx="12" cy="12" r="2.5"/></svg>Edge</span>
+  <span class="zone">shop.vn</span>
+  <span class="crumb">Overview · last 2 minutes · live</span>
+  <span class="pill is-off" id="traffic-pill">Traffic paused</span>
+  <span class="pill" id="origin-pill">Origin healthy</span>
+</header>
+
+<div class="layout">
+  <aside>
+    <div class="offline">Lab is not answering. Run docker compose up -d in demo/.</div>
+
+    <div class="group">
+      <h2>Traffic</h2>
+      <div class="setting">
+        <b>Simulated shoppers</b><small>Product pages, ad links, stock API, account pages</small>
+        <button class="switch" role="switch" data-set="traffic" aria-label="Simulated shoppers"></button>
+        <div class="rate"><input type="range" id="rate" min="5" max="60" step="5" aria-label="Requests per second"><output id="rate-out"></output></div>
+      </div>
+      <div class="row"><button class="btn" data-do="flash" id="flash">Start a flash sale</button></div>
+    </div>
+
+    <div class="group">
+      <h2>Caching</h2>
+      <div class="setting">
+        <b>Cache at the edge</b><small>Off: every request goes to the origin</small>
+        <button class="switch" role="switch" data-set="cache" aria-label="Cache at the edge"></button>
+      </div>
+      <div class="setting">
+        <b>Ignore utm_* in the cache key</b><small>Ad links share one copy of a page</small>
+        <button class="switch" role="switch" data-set="strip_utm" aria-label="Ignore utm in the cache key"></button>
+      </div>
+      <div class="setting">
+        <b>Merge identical requests</b><small>One origin fetch for a crowd waiting on the same page</small>
+        <button class="switch" role="switch" data-set="collapse" aria-label="Merge identical requests"></button>
+      </div>
+      <div class="row"><button class="btn" data-do="purge">Purge everything</button></div>
+    </div>
+
+    <div class="group">
+      <h2>Resilience</h2>
+      <div class="setting">
+        <b>Serve stale if the origin fails</b><small>Expired copies instead of errors</small>
+        <button class="switch" role="switch" data-set="stale" aria-label="Serve stale if the origin fails"></button>
+      </div>
+      <div class="row"><button class="btn is-danger" id="crash">Crash the origin</button></div>
+    </div>
+
+    <div class="group">
+      <h2>Origin app</h2>
+      <div class="setting">
+        <b>Account page is private</b><small>Off is the bug: <code>Cache-Control: public</code></small>
+        <button class="switch" role="switch" data-set="private" aria-label="Account page is private"></button>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="row"><button class="btn" data-do="reset">Reset the demo</button></div>
+    </div>
+  </aside>
+
+  <main>
+    <section class="kpis" id="kpis"></section>
+
+    <section class="charts">
+      <div class="card chart" id="c-req"></div>
+      <div class="card chart" id="c-cache"></div>
+    </section>
+    <section class="charts">
+      <div class="card chart" id="c-time"></div>
+      <div class="card chart" id="c-bad"></div>
+    </section>
+
+    <section class="card recent">
+      <h3>Latest requests</h3>
+      <table>
+        <thead><tr><th>Time</th><th>Visitor</th><th>URL</th><th>Edge</th><th>Took</th></tr></thead>
+        <tbody id="recent"></tbody>
+      </table>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var css = getComputedStyle(document.documentElement);
+  function color(name) { return css.getPropertyValue('--' + name).trim(); }
+  function $(id) { return document.getElementById(id); }
+  function api(path) { return fetch(path, { cache: 'no-store' }).then(function (r) { return r.json(); }); }
+
+  var KIND = {
+    hit: { label: 'HIT', color: color('edge') },
+    stale: { label: 'STALE', color: color('stale') },
+    miss: { label: 'MISS', color: color('miss') },
+    err: { label: 'ERROR', color: color('bad') }
+  };
+  var CHARTS = {
+    'c-req': { title: 'Requests per second', unit: '/s', series: [
+      { key: 'req', label: 'Reaching the edge', color: color('edge') },
+      { key: 'origin', label: 'Reaching the origin', color: color('origin') }] },
+    'c-cache': { title: 'How the edge answered', unit: '/s', stacked: true, series: [
+      { key: 'hit', label: KIND.hit.label, color: KIND.hit.color },
+      { key: 'stale', label: KIND.stale.label, color: KIND.stale.color },
+      { key: 'miss', label: KIND.miss.label, color: KIND.miss.color },
+      { key: 'err', label: KIND.err.label, color: KIND.err.color }] },
+    'c-time': { title: 'Response time', unit: ' ms', floor: 300, series: [
+      { key: 'p95', label: 'Slowest 5% (p95)', color: color('edge') },
+      { key: 'p50', label: 'Typical (p50)', color: color('soft') }] },
+    'c-bad': { title: 'What visitors should never see', unit: '/s', floor: 10, series: [
+      { key: 'err', label: 'Error pages', color: color('bad') },
+      { key: 'wrong', label: "Someone else's account", color: color('leak') }] }
+  };
+  var S = null;                 // latest /api/state
+  var hover = { id: null, i: 0 };
+
+  // ---- charts: one svg per card, redrawn every second ----
+  function nice(max) {
+    var steps = [4, 10, 20, 40, 60, 100, 200, 300, 500, 1000, 2000, 5000, 10000];
+    for (var i = 0; i < steps.length; i++) if (max <= steps[i]) return steps[i];
+    return Math.ceil(max / 5000) * 5000;
+  }
+  function clock(t) { return new Date(t * 1000).toTimeString().slice(0, 8); }
+  function setup(id) {
+    var spec = CHARTS[id];
+    var legend = spec.series.map(function (s) { return '<span><i style="background:' + s.color + '"></i>' + s.label + '</span>'; }).join('');
+    $(id).innerHTML = '<div class="chart-head"><h3>' + spec.title + '</h3><div class="legend">' + legend + '</div></div><div class="plot"></div>';
+    var plot = $(id).querySelector('.plot');
+    plot.addEventListener('mousemove', function (e) {
+      var box = plot.getBoundingClientRect();
+      var n = S ? S.series.length : 1;
+      hover.id = id;
+      hover.i = Math.max(0, Math.min(n - 1, Math.round((e.clientX - box.left - 40) / (box.width - 50) * (n - 1))));
+      draw(id);
+    });
+    plot.addEventListener('mouseleave', function () { hover.id = null; draw(id); });
+  }
+  function draw(id) {
+    if (!S) return;
+    var spec = CHARTS[id], plot = $(id).querySelector('.plot'), rows = S.series, n = rows.length;
+    var W = plot.clientWidth, H = plot.clientHeight;
+    if (W < 50 || H < 50) return;
+    var L = 40, R = 10, T = 30, B = 20;
+    function x(i) { return L + i * (W - L - R) / (n - 1); }
+    function val(row, k) { return row.req === undefined || row[k] == null ? null : row[k]; }
+
+    // stacked charts add each series on top of the ones before it
+    var top = spec.series.map(function () { return []; });
+    var max = spec.floor || 4;
+    rows.forEach(function (row, i) {
+      var sum = 0;
+      spec.series.forEach(function (s, k) {
+        var v = val(row, s.key);
+        if (v !== null && spec.stacked) { sum += v; v = sum; }
+        top[k][i] = v;
+        if (v !== null) max = Math.max(max, v);
+      });
+    });
+    max = nice(max);
+    function y(v) { return T + (H - T - B) * (1 - v / max); }
+
+    var out = [];
+    [0, max / 2, max].forEach(function (g) {
+      out.push('<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(g) + '" y2="' + y(g) + '" stroke="' + color(g ? 'grid' : 'axis') + '"/>');
+      out.push('<text x="' + (L - 6) + '" y="' + (y(g) + 4) + '" text-anchor="end">' + g + '</text>');
+    });
+    [[0, '2 min ago', 'start'], [(n - 1) / 2, '1 min ago', 'middle'], [n - 1, 'now', 'end']].forEach(function (t) {
+      out.push('<text x="' + x(t[0]) + '" y="' + (H - 5) + '" text-anchor="' + t[2] + '">' + t[1] + '</text>');
+    });
+
+    // runs of seconds that have data, so a pause leaves a gap instead of a line to zero
+    function runs(k) {
+      var list = [], run = null;
+      for (var i = 0; i < n; i++) {
+        if (top[k][i] === null) { run = null; continue; }
+        if (!run) { run = []; list.push(run); }
+        run.push(i);
+      }
+      return list;
+    }
+    for (var k = spec.series.length - 1; k >= 0; k--) {
+      var s = spec.series[k];
+      runs(k).forEach(function (run) {
+        var line = run.map(function (i) { return x(i).toFixed(1) + ' ' + y(top[k][i]).toFixed(1); });
+        if (spec.stacked) {
+          var base = run.slice().reverse().map(function (i) { return x(i).toFixed(1) + ' ' + y(k ? top[k - 1][i] : 0).toFixed(1); });
+          out.push('<path d="M' + line.concat(base).join('L') + 'Z" fill="' + s.color + '" stroke="' + color('surface') + '" stroke-width="1"/>');
+        } else {
+          out.push('<path d="M' + line.join('L') + '" fill="none" stroke="' + s.color + '" stroke-width="2" stroke-linejoin="round"/>');
+        }
+      });
+    }
+
+    // what was changed, and when
+    var t0 = rows[0].t, lane = 0;
+    S.events.forEach(function (e) {
+      var i = e.t - t0;
+      if (i < 0 || i >= n) return;
+      var ex = x(i), end = ex > W - 90;
+      out.push('<line x1="' + ex + '" x2="' + ex + '" y1="' + (T - 4) + '" y2="' + (H - B) + '" stroke="' + color('muted') + '" stroke-dasharray="3 3"/>');
+      out.push('<text class="ev" x="' + (ex + (end ? -4 : 4)) + '" y="' + (11 + (lane++ % 2) * 12) + '" text-anchor="' + (end ? 'end' : 'start') + '">' + e.label + '</text>');
+    });
+
+    var tip = '';
+    if (hover.id === id) {
+      var hx = x(hover.i), row = rows[hover.i];
+      out.push('<line x1="' + hx + '" x2="' + hx + '" y1="' + T + '" y2="' + (H - B) + '" stroke="' + color('ink-2') + '"/>');
+      tip = '<div class="tip" style="' + (hx > W / 2 ? 'right:' + (W - hx + 10) : 'left:' + (hx + 10)) + 'px"><b>' + clock(row.t) + '</b>';
+      spec.series.forEach(function (s, k) {
+        var v = val(row, s.key);
+        if (v !== null && !spec.stacked) out.push('<circle cx="' + hx + '" cy="' + y(top[k][hover.i]) + '" r="4" fill="' + s.color + '" stroke="' + color('surface') + '" stroke-width="2"/>');
+        tip += '<div><i style="background:' + s.color + '"></i>' + s.label + ' <b>' + (v === null ? '–' : v + spec.unit) + '</b></div>';
+      });
+      tip += '</div>';
+    }
+    plot.innerHTML = '<svg role="img" aria-label="' + spec.title + '">' + out.join('') + '</svg>' + tip;
+  }
+
+  // ---- headline numbers over the last 10 seconds ----
+  function kpis() {
+    var rows = S.series.slice(-10).filter(function (r) { return r.req !== undefined; });
+    function sum(k) { return rows.reduce(function (a, r) { return a + (r[k] || 0); }, 0); }
+    var secs = rows.length || 1, req = sum('req'), origin = sum('origin'), err = sum('err'), wrong = sum('wrong');
+    var p95 = rows.reduce(function (a, r) { return Math.max(a, r.p95 || 0); }, 0);
+    function pct(a, b) { return b ? Math.round(100 * a / b) : 0; }
+    var tiles = [
+      ['Requests', req ? (req / secs).toFixed(0) : '–', '/s', 'reaching the edge'],
+      ['Served from cache', req ? pct(sum('hit') + sum('stale'), req) : '–', '%', 'hit ratio'],
+      ['Origin load', req ? (origin / secs).toFixed(0) : '–', '/s', S.origin.active + ' in progress right now', S.origin.active > 20],
+      ['Response time', req ? p95 : '–', 'ms', 'slowest 5% (p95)', p95 > 1000],
+      ['Errors', req ? pct(err, req) : '–', '%', err ? err + ' error pages' : 'no error pages', err > 0],
+      ['Wrong account shown', req ? wrong : '–', '', wrong ? 'personal data leaked' : 'none in the last 10 s', wrong > 0]
+    ];
+    $('kpis').innerHTML = tiles.map(function (t) {
+      return '<div class="card kpi' + (t[4] ? ' is-bad' : '') + '"><div class="label">' + t[0] + '</div><div class="value">' + t[1] +
+        '<small>' + t[2] + '</small></div><div class="sub">' + t[3] + '</div></div>';
+    }).join('');
+  }
+  function recent() {
+    $('recent').innerHTML = S.recent.slice(0, 6).map(function (r) {
+      var k = KIND[r.kind];
+      return '<tr><td>' + r.t + '</td><td>' + (r.user || '–') + '</td><td>' + r.path + '</td><td><span class="tag"><i style="background:' + k.color + '"></i>' +
+        (r.kind === 'err' ? (r.status || 'no reply') : k.label) + (r.wrong ? ' <span class="warn">wrong user</span>' : '') + '</span></td><td>' + r.ms + ' ms</td></tr>';
+    }).join('');
+  }
+  function controls() {
+    document.querySelectorAll('[data-set]').forEach(function (el) { el.setAttribute('aria-checked', String(!!S.cfg[el.getAttribute('data-set')])); });
+    if (document.activeElement !== $('rate')) $('rate').value = S.cfg.rate;
+    $('rate-out').textContent = S.cfg.rate + ' req/s';
+    $('flash').disabled = S.sale > 0 || !S.cfg.traffic;
+    $('flash').textContent = S.sale > 0 ? 'Flash sale: ' + S.sale + ' s left' : 'Start a flash sale';
+    $('crash').textContent = S.origin.down ? 'Restart the origin' : 'Crash the origin';
+    $('crash').className = 'btn ' + (S.origin.down ? 'is-primary' : 'is-danger');
+    $('origin-pill').textContent = S.origin.down ? 'Origin down' : 'Origin healthy';
+    $('origin-pill').className = 'pill' + (S.origin.down ? ' is-bad' : '');
+    $('traffic-pill').textContent = S.cfg.traffic ? 'Traffic live' : 'Traffic paused';
+    $('traffic-pill').className = 'pill' + (S.cfg.traffic ? '' : ' is-off');
+  }
+  function refresh() {
+    return api('/api/state').then(function (state) {
+      S = state;
+      document.body.classList.remove('is-offline');
+      controls(); kpis(); recent();
+      Object.keys(CHARTS).forEach(draw);
+    }).catch(function () { document.body.classList.add('is-offline'); });
+  }
+
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('button');
+    if (!el || !S) return;
+    var key = el.getAttribute('data-set'), action = el.getAttribute('data-do');
+    if (el.id === 'crash') action = S.origin.down ? 'restart' : 'crash';
+    if (key) api('/api/set?' + key + '=' + (S.cfg[key] ? 0 : 1)).then(refresh);
+    else if (action) api('/api/do?action=' + action).then(refresh);
+  });
+  $('rate').addEventListener('input', function () { $('rate-out').textContent = this.value + ' req/s'; });
+  $('rate').addEventListener('change', function () { api('/api/set?rate=' + this.value).then(refresh); });
+  window.addEventListener('resize', function () { Object.keys(CHARTS).forEach(draw); });
+
+  Object.keys(CHARTS).forEach(setup);
+  refresh();
+  setInterval(refresh, 1000);
+})();
+</script>
+</body>
+</html>

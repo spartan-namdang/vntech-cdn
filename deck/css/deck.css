@@ -166,6 +166,7 @@ html, body, .reveal-viewport { background: var(--bg); }
 .lead { font-size: var(--fs-body); color: var(--ink); }
 .caption { font-size: var(--fs-caption); color: var(--muted); line-height: 1.35; }
 .caption b { color: var(--ink-2); }
+.reveal a { color: var(--accent); text-decoration: none; }
 
 .reveal ul.points, .reveal ol.steps { display: flex; flex-direction: column; gap: 13px; margin: 0; padding: 0; list-style: none; }
 .points li, .steps li { position: relative; padding-left: 30px; font-size: var(--fs-body); line-height: 1.28; }
