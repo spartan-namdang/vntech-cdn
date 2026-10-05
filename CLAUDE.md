@@ -58,10 +58,10 @@ Most diagrams are inline `<svg class="dg dg-anim">` in a `figure.fig`, drawn wit
 - `data-show="1 4, 5.7 7.4"` makes an element visible only in those windows (badges, lit markers, error states).
 - `<g data-scene="name" data-loop="5">` groups are alternative states of one diagram. The first is the default; the last visible `.fragment[data-scene]` on the slide (a bullet, or the group itself) switches to it, so the clicker steps through them.
 
-Path ids are document-wide, so prefix them per diagram (`rl-`, `tc-`, `isp-`, `st-`, `cp-`, `hk-`). Keep labels to a word or two; the presenter explains the rest.
+Path ids are document-wide, so prefix them per diagram (`ov-`, `rl-`, `tc-`, `isp-`, `st-`, `cp-`, `hk-`). Keep labels to a word or two; the presenter explains the rest.
 
 ## Image slots
 
-Diagrams kept as image files (currently only `cdn-overview.svg` on 1.2) are `<figure class="img-slot">` blocks. The drawing spec is the `<!-- DIAGRAM: ... -->` comment directly above the slot, and `deck/images/README.md` is the index (file name, slide, description, format and colour guidance). The slot background stays white in both themes, so images are drawn for a light background. Adding a slot means: copy an existing figure block with its `DIAGRAM` comment, change the file name, add a row to `deck/images/README.md`.
+Diagrams kept as image files (none at the moment; every diagram is inline) are `<figure class="img-slot">` blocks. The drawing spec is the `<!-- DIAGRAM: ... -->` comment directly above the slot, and `deck/images/README.md` is the index (file name, slide, description, format and colour guidance). The slot background stays white in both themes, so images are drawn for a light background. Adding a slot means: copy an existing figure block with its `DIAGRAM` comment, change the file name, add a row to `deck/images/README.md`.
 
 `demo/` is reserved for the live demo and is currently empty.

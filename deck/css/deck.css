@@ -391,6 +391,7 @@ html, body, .reveal-viewport { background: var(--bg); }
    toggles .is-on on timed elements and .is-active on the current scene */
 .dg .wire { fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .dg .wire-warm { stroke: var(--c-edge); stroke-width: 2.5; }
+.dg .wire-rare { stroke-dasharray: 2 7; }
 .dg .wire-dead { stroke: var(--c-error); stroke-dasharray: 5 7; }
 .dg .rail { fill: none; stroke: none; }
 .dg .zone { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 6; }

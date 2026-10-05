@@ -140,27 +140,49 @@
   </header>
   <div class="s-body">
     <div class="fig-row">
-      <!-- DIAGRAM: cdn-overview.svg
-           Idea to convey: the origin stays in ONE place, while users everywhere talk to an edge near them.
-           Draw a simplified world map (or just three regions left to right: Asia, Europe, US).
-           Components:
-             - One ORIGIN server (purple), placed in the US West. Label: "Origin (one place)".
-             - Edge servers (teal hexagons) scattered over the map: at least Hanoi, Singapore, Paris, one in the US.
-             - Two users (blue): "User in Hanoi" and "User in Paris".
-           Arrows, in this order:
-             1. User in Hanoi -> edge in Hanoi: short solid blue arrow, label "~20 ms".
-             2. User in Paris -> edge in Paris: short solid blue arrow, label "~20 ms".
-             3. Each of those two edges -> origin: long thin dashed arrow, label "only on a cache MISS".
-             4. For contrast, one faded grey arrow from the Hanoi user straight to the origin, label "without a CDN: ~200 ms per round trip".
-           Emphasise: the short arrows (thick) versus the long ones (thin, dashed). Each edge has a small "cache" badge.
-           Small inset in a corner: "Cache next to the origin (Varnish, Nginx): less load, same distance". -->
-      <figure class="img-slot is-bare">
-        <img src="images/cdn-overview.svg" alt="Users in Hanoi and Paris each reach a nearby edge; the single origin is contacted only on a cache miss" />
-        <figcaption>
-          <svg class="icon icon-l"><use href="#i-image"/></svg>
-          <span class="slot-file">images/cdn-overview.svg</span>
-          <span class="slot-desc">Map: one origin, many edges, users in Hanoi and Paris each reaching a nearby edge</span>
-        </figcaption>
+      <figure class="fig">
+        <svg class="dg dg-anim" viewBox="0 0 640 400" role="img" aria-label="Without a CDN every request crosses the world to the single origin; with one, users in Hanoi and Paris each reach a nearby edge and the origin is contacted only on a cache miss">
+          <rect class="box box-origin" x="490" y="170" width="130" height="60" rx="12"/>
+          <use href="#i-server" x="504" y="188" width="24" height="24" class="ic ic-origin"/>
+          <text x="538" y="207" class="t-strong">Origin</text>
+
+          <g data-scene="direct" data-loop="4.6">
+            <path id="ov-d0" class="wire" d="M60 90L490 190"/>
+            <path id="ov-d1" class="wire" d="M60 310L490 210"/>
+            <circle class="pkt" r="6" data-along="#ov-d0" data-at="0.3" data-dur="1.6"/>
+            <circle class="pkt pkt-miss" r="6" data-along="#ov-d0" data-at="2.1" data-dur="1.6" data-rev/>
+            <circle class="pkt" r="6" data-along="#ov-d1" data-at="0.6" data-dur="1.6"/>
+            <circle class="pkt pkt-miss" r="6" data-along="#ov-d1" data-at="2.4" data-dur="1.6" data-rev/>
+          </g>
+
+          <g class="fragment" data-scene="cdn" data-loop="8">
+            <path id="ov-u0" class="wire" d="M60 90H130"/>
+            <path id="ov-o0" class="wire wire-rare" d="M250 90L490 190"/>
+            <path id="ov-u1" class="wire" d="M60 310H130"/>
+            <path id="ov-o1" class="wire wire-rare" d="M250 310L490 210"/>
+            <circle class="pkt" r="6" data-along="#ov-u0" data-at="0.3, 4.3, 5.5, 6.7" data-dur="0.3"/>
+            <circle class="pkt pkt-miss" r="6" data-along="#ov-o0" data-at="0.7" data-dur="1.2"/>
+            <circle class="pkt pkt-miss" r="6" data-along="#ov-o0" data-at="2" data-dur="1.2" data-rev/>
+            <circle class="pkt pkt-miss" r="6" data-along="#ov-u0" data-at="3.3" data-dur="0.3" data-rev/>
+            <circle class="pkt pkt-hit" r="6" data-along="#ov-u0" data-at="4.65, 5.85, 7.05" data-dur="0.3" data-rev/>
+            <circle class="pkt" r="6" data-along="#ov-u1" data-at="0.6, 4.6, 5.8, 7" data-dur="0.3"/>
+            <circle class="pkt pkt-miss" r="6" data-along="#ov-o1" data-at="1" data-dur="1.2"/>
+            <circle class="pkt pkt-miss" r="6" data-along="#ov-o1" data-at="2.3" data-dur="1.2" data-rev/>
+            <circle class="pkt pkt-miss" r="6" data-along="#ov-u1" data-at="3.6" data-dur="0.3" data-rev/>
+            <circle class="pkt pkt-hit" r="6" data-along="#ov-u1" data-at="4.95, 6.15, 7.35" data-dur="0.3" data-rev/>
+            <rect class="box box-edge" x="130" y="60" width="120" height="60" rx="12"/>
+            <use href="#i-edge" x="144" y="78" width="24" height="24" class="ic ic-edge"/>
+            <text x="178" y="97" class="t-strong">Edge</text>
+            <rect class="box box-edge" x="130" y="280" width="120" height="60" rx="12"/>
+            <use href="#i-edge" x="144" y="298" width="24" height="24" class="ic ic-edge"/>
+            <text x="178" y="317" class="t-strong">Edge</text>
+          </g>
+
+          <use href="#i-user" x="24" y="78" width="24" height="24" class="ic ic-user"/>
+          <text x="36" y="124" text-anchor="middle" class="t-small t-muted">Hanoi</text>
+          <use href="#i-user" x="24" y="298" width="24" height="24" class="ic ic-user"/>
+          <text x="36" y="344" text-anchor="middle" class="t-small t-muted">Paris</text>
+        </svg>
       </figure>
       <div class="col">
         <ul class="points">

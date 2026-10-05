@@ -6,7 +6,7 @@ The full drawing spec for each image is the `<!-- DIAGRAM: ... -->` comment dire
 
 | File | Slide | What to draw |
 |---|---|---|
-| `cdn-overview.svg` | 3 · 1.2 What a CDN is | Map with one origin and many edges; users in Hanoi and Paris each reach a nearby edge, and edges call the origin only on a MISS. |
+| *(none at the moment)* | | Every diagram is currently an inline animated SVG in `../index.html`. |
 
 ## Format
 
