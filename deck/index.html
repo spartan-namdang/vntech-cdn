@@ -436,7 +436,7 @@
           <li><b>Respond:</b> <code>Age</code>, <code>X-Cache</code> tell the story</li>
         </ol>
         <ul class="points">
-          <li>Cached but expired: revalidate (3.3)</li>
+          <li>Cached but expired: revalidate</li>
           <li>First requester per PoP pays full price</li>
         </ul>
       </div>
@@ -470,7 +470,7 @@
         <tr><th>Examples</th><td>Akamai, CloudFront (mostly)</td><td>Cloudflare</td></tr>
       </tbody>
     </table>
-    <p class="caption">Anycast also spreads attack traffic across PoPs (6.1)</p>
+    <p class="caption">Anycast also spreads attack traffic across PoPs</p>
   </div>
   <aside class="notes">
     <p>Làm sao user tới được edge gần nhất? Có hai cách.</p>
@@ -607,7 +607,7 @@
           <li>An edge MISS asks the upper tier first</li>
           <li>Origin shield: one PoP is the only gateway</li>
           <li>Higher hit ratio, fewer origin connections</li>
-          <li>Stampedes collapse at one point (3.8)</li>
+          <li>Stampedes collapse at one point</li>
           <li>Cost: one extra hop, usually a fee</li>
         </ul>
         <div class="chips">
@@ -785,7 +785,7 @@ varies:   Accept-Language
         </code></pre>
         <ul class="points">
           <li>Users get the wrong language</li>
-          <li>Worse: private data (9.2), poisoning (6.5)</li>
+          <li>Worse: private data, poisoning</li>
         </ul>
       </div>
     </div>
@@ -955,7 +955,7 @@ Cache-Control: max-age=60, stale-while-revalidate=300, stale-if-error=86400
             <tr><td>TTL too short</td><td>Raise it; fingerprints make long TTLs safe</td></tr>
             <tr><td>Fragmented cache key</td><td>Drop tracking params, sort queries, trim <code>Vary</code></td></tr>
             <tr><td><code>Set-Cookie</code>, or no <code>Cache-Control</code></td><td>Strip cookies on static paths; declare the policy</td></tr>
-            <tr><td>Traffic thin over many PoPs</td><td>Enable tiered caching (2.5)</td></tr>
+            <tr><td>Traffic thin over many PoPs</td><td>Enable tiered caching</td></tr>
             <tr><td>Frequent or full purges</td><td>Purge selectively; use cache tags</td></tr>
           </tbody>
         </table>
@@ -1092,7 +1092,7 @@ Cache-Control: max-age=60, stale-while-revalidate=300, stale-if-error=86400
       <div class="col fragment">
         <h3 class="col-title is-good"><svg class="icon"><use href="#i-check"/></svg>Prevention</h3>
         <ul class="points is-good">
-          <li>Upload assets before HTML (8.2)</li>
+          <li>Upload assets before HTML</li>
           <li>Short error TTLs; seconds for <code>5xx</code></li>
           <li>Explicit <code>Cache-Control</code> on error responses</li>
         </ul>
@@ -1129,7 +1129,7 @@ Cache-Control: max-age=60, stale-while-revalidate=300, stale-if-error=86400
       <div class="card">
         <svg class="icon icon-l"><use href="#i-image"/></svg>
         <h3>Images</h3>
-        <p>Most page weight; optimize at edge (4.5)</p>
+        <p>Most page weight; optimize at edge</p>
       </div>
       <div class="card">
         <svg class="icon icon-l"><use href="#i-type"/></svg>
@@ -1231,13 +1231,13 @@ Cache-Control: max-age=60, stale-while-revalidate=300, stale-if-error=86400
           <text x="180" y="332" text-anchor="middle" class="t-mono t-small t-muted">200 ms</text>
           <text x="340" y="332" text-anchor="middle" class="t-mono t-small t-muted">400 ms</text>
           <text x="500" y="332" text-anchor="middle" class="t-mono t-small t-muted">600 ms</text>
-          <text x="20" y="368" class="t-small t-muted">Same example as 1.1: origin RTT 200 ms, edge RTT 20 ms</text>
+          <text x="20" y="368" class="t-small t-muted">Same example as before: origin RTT 200 ms, edge RTT 20 ms</text>
         </svg>
       </figure>
       <div class="col">
         <ul class="points">
           <li>Handshakes happen with a nearby edge</li>
-          <li>Edge reuses warm origin connections (5.2)</li>
+          <li>Edge reuses warm origin connections</li>
           <li>Public routing follows policy and cost</li>
           <li>CDNs use backbones or measure paths</li>
           <li>Farther users gain more</li>
@@ -1583,12 +1583,12 @@ HTTP/1.1 206 Partial Content
       <thead><tr><th>Layer attacked</th><th>Example</th><th>How the CDN helps</th></tr></thead>
       <tbody>
         <tr><td>Network (L3/L4)</td><td>SYN floods, UDP amplification</td><td>Very large total capacity. Anycast splits the attack across PoPs near its sources. Junk packets are dropped at the edge.</td></tr>
-        <tr><td>Application (L7)</td><td>HTTP floods</td><td>Cached content is answered at almost no cost. Uncacheable endpoints (search, login) still reach the origin: add rate limiting and a WAF (6.2).</td></tr>
+        <tr><td>Application (L7)</td><td>HTTP floods</td><td>Cached content is answered at almost no cost. Uncacheable endpoints (search, login) still reach the origin: add rate limiting and a WAF.</td></tr>
       </tbody>
     </table>
     <div class="callout is-error">
       <svg class="icon"><use href="#i-alert"/></svg>
-      <p><b>Precondition:</b> the origin's real address is unreachable (6.3)</p>
+      <p><b>Precondition:</b> the origin's real address is unreachable</p>
     </div>
   </div>
   <aside class="notes">
@@ -1960,7 +1960,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
       <div class="col">
         <ol class="steps">
           <li><b>Point DNS:</b> CNAME to the CDN hostname</li>
-          <li><b>Configure origin:</b> address, HTTPS, <code>Host</code>, auth (6.3)</li>
+          <li><b>Configure origin:</b> address, HTTPS, <code>Host</code>, auth</li>
           <li><b>Set cache rules</b> per path</li>
         </ol>
         <ul class="points">
@@ -2011,7 +2011,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
       </ol>
       <ul class="points fragment">
         <li>New HTML, new names: nothing to purge</li>
-        <li>Swap steps 1 and 2: cached <code>404</code> (3.9)</li>
+        <li>Swap steps 1 and 2: cached <code>404</code></li>
         <li>CDN-cached HTML: short <code>s-maxage</code>, then purge</li>
       </ul>
     </div>
@@ -2131,7 +2131,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
       <div class="col">
         <h3 class="col-title is-good"><svg class="icon"><use href="#i-check"/></svg>Why and how</h3>
         <ul class="points is-good">
-          <li>Survive one vendor's outage (9.4)</li>
+          <li>Survive one vendor's outage</li>
           <li>Regional strengths, price leverage</li>
           <li>DNS steers by weight, region or RUM</li>
         </ul>
@@ -2174,8 +2174,8 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
       <div class="col">
         <ul class="points">
           <li>A cache promises: no asking for N seconds</li>
-          <li>Versioned URLs: cache indefinitely (3.4)</li>
-          <li>Short TTL with <code>stale-while-revalidate</code> (3.6)</li>
+          <li>Versioned URLs: cache indefinitely</li>
+          <li>Short TTL with <code>stale-while-revalidate</code></li>
           <li>Event-driven purge for long TTLs</li>
           <li>A CDN purge never reaches the browser</li>
         </ul>
@@ -2273,7 +2273,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
     </div>
     <div class="callout">
       <svg class="icon"><use href="#i-shield"/></svg>
-      <p><b>Other reasons remain:</b> DDoS, WAF, TLS, acceleration (4.3)</p>
+      <p><b>Other reasons remain:</b> DDoS, WAF, TLS, acceleration</p>
     </div>
   </div>
   <aside class="notes">
@@ -2318,7 +2318,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
       <div class="col">
         <h3 class="col-title"><svg class="icon"><use href="#i-shield"/></svg>Options</h3>
         <ul class="points">
-          <li>Multi-CDN (8.6), if downtime costs enough</li>
+          <li>Multi-CDN, if downtime costs enough</li>
           <li>A rehearsed DNS switch to origin or standby</li>
           <li>DNS hosted apart from the CDN</li>
           <li>Or accept the risk, consciously</li>
