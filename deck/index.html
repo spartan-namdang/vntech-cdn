@@ -671,7 +671,7 @@
           <li><b>Peering:</b> direct CDN-to-ISP links at exchanges</li>
           <li>Fewer hops: faster, steadier, cheaper</li>
           <li><b>Embedded caches</b> sit inside ISP data centers</li>
-          <li>Netflix Open Connect: free appliances, filled off-peak</li>
+          <li>Netflix Open Connect: free servers, filled off-peak</li>
           <li>ISPs agree: video skips expensive transit</li>
           <li>Akamai, Google Global Cache: same idea</li>
         </ul>
@@ -682,7 +682,7 @@
     <p>Đoạn đường từ edge tới user vẫn phải đi qua mạng của ISP. CDN rút ngắn đoạn này bằng hai cách.</p>
     <p>Peering: kết nối trực tiếp giữa CDN và ISP, thường tại các Internet exchange point. Ít hop hơn nên nhanh hơn, ổn định hơn và rẻ hơn cho cả hai bên.</p>
     <p>Embedded cache: đặt cache server ngay trong data center của ISP.</p>
-    <p>Ví dụ Netflix Open Connect: Netflix tặng miễn phí appliance cho ISP. Vì catalog đã biết trước và độ phổ biến dự đoán được, nội dung được copy sẵn vào đó trong giờ thấp điểm. Khi mình bấm play, video đến từ ngay trong mạng của nhà mạng.</p>
+    <p>Ví dụ Netflix Open Connect: Netflix tặng miễn phí appliance cho ISP. Vì catalog đã biết trước và độ phổ biến dự đoán được, nội dung được copy sẵn vào đó trong giờ thấp điểm. Off-peak là khoảng thời gian ít người dùng, thường là ban đêm, khi mạng của ISP còn nhiều băng thông trống. Khi mình bấm play, video đến từ ngay trong mạng của nhà mạng.</p>
     <p>ISP đồng ý vì traffic video không còn đi qua đường transit đắt tiền của họ. Akamai và Google Global Cache cũng làm tương tự.</p>
     <p>Ý chính: chặng cuối thuộc về ISP. CDN lớn rút ngắn nó bằng cách nối trực tiếp hoặc dọn hẳn vào trong.</p>
   </aside>
@@ -1059,7 +1059,7 @@ Cache-Control: max-age=60, stale-while-revalidate=300, stale-if-error=86400
           <li class="fragment"><code>stale-while-revalidate</code>: nobody waits</li>
           <li class="fragment">Origin shield gathers stampedes</li>
           <li class="fragment">Random TTL jitter spreads expiry</li>
-          <li class="fragment">Pitfall: uncacheable responses must bypass</li>
+          <li class="fragment">Careful: uncacheable responses must bypass</li>
         </ul>
       </div>
     </div>
@@ -1077,12 +1077,12 @@ Cache-Control: max-age=60, stale-while-revalidate=300, stale-if-error=86400
 <section class="l-two-col" data-section="3 · Caching">
   <header class="s-head">
     <p class="eyebrow">3.9 · Negative caching</p>
-    <h2>Errors are cached too: a brief 404 during a deploy can outlive its cause</h2>
+    <h2>Errors are cached too: a brief 404 during a deploy can last longer than its cause</h2>
   </header>
   <div class="s-body">
     <div class="cols">
       <div class="col">
-        <h3 class="col-title is-bad"><svg class="icon"><use href="#i-alert"/></svg>The deploy pitfall</h3>
+        <h3 class="col-title is-bad"><svg class="icon"><use href="#i-alert"/></svg>The deploy mistake</h3>
         <ol class="steps">
           <li>New HTML references <code>app.9d2e.js</code></li>
           <li class="fragment">Not uploaded yet: the <code>404</code> gets cached</li>
@@ -1321,7 +1321,7 @@ Vary: Accept-Encoding
         </code></pre>
         <div class="callout is-error">
           <svg class="icon"><use href="#i-alert"/></svg>
-          <p><b>Pitfall:</b> <code>width=401</code>, <code>402</code>, <code>403</code>... Allow fixed sizes only.</p>
+          <p><b>Careful:</b> <code>width=401</code>, <code>402</code>, <code>403</code>... Allow fixed sizes only.</p>
         </div>
       </div>
     </div>
@@ -1475,6 +1475,7 @@ HTTP/1.1 206 Partial Content
   <aside class="notes">
     <p>Kết nối HTTPS của user kết thúc tại edge. Edge giữ certificate của domain, thực hiện handshake, giải mã request, rồi mở một kết nối thứ hai tới origin.</p>
     <p>Lợi ích: handshake diễn ra với server ở gần; TLS 1.3 và session resumption có sẵn; origin không phải gánh hàng nghìn handshake từ client.</p>
+    <p>Session resumption: client đã kết nối trước đó giữ lại một session ticket, lần sau dùng lại nó để bỏ qua phần lớn handshake, nên kết nối lại nhanh hơn và tốn ít CPU hơn.</p>
     <p>Quản lý certificate do CDN lo: cấp, gia hạn, và phân phối tới mọi PoP. Mình chỉ cần chứng minh quyền sở hữu domain, thường bằng một DNS record.</p>
     <p>Ba điều cần biết. Một, CDN nhìn thấy toàn bộ traffic ở dạng đã giải mã. Đó là mức độ tin tưởng mình đặt vào vendor. Hai, chặng edge tới origin cũng phải được mã hóa và có verify certificate. Chỉ mã hóa chặng user tới edge tạo cảm giác an toàn giả. Ba, origin vẫn cần certificate riêng và phải tự gia hạn. Certificate origin hết hạn là một nguyên nhân quen thuộc của lỗi 502.</p>
     <p>Ý chính: HTTPS có hai chặng, và cả hai đều phải được mã hóa.</p>
@@ -1554,7 +1555,7 @@ HTTP/1.1 206 Partial Content
           <li>No handshakes on the longest leg</li>
           <li>Warm: already past slow start</li>
           <li>Origin sees few stable connections</li>
-          <li class="fragment" data-scene="pitfall">Pitfall: shorter origin timeout, random <code>502</code> errors</li>
+          <li class="fragment" data-scene="pitfall">Careful: shorter origin timeout, random <code>502</code> errors</li>
           <li class="fragment" data-scene="pool">Fix: origin and LB timeout above the CDN's</li>
         </ul>
       </div>
@@ -1576,7 +1577,7 @@ HTTP/1.1 206 Partial Content
 <section class="l-table" data-section="6 · Security">
   <header class="s-head">
     <p class="eyebrow">6.1 · DDoS absorption</p>
-    <h2>The CDN takes the blow for the origin, as long as nobody can call the origin directly</h2>
+    <h2>The CDN takes the attack instead of the origin, as long as nobody can call the origin directly</h2>
   </header>
   <div class="s-body">
     <table class="tbl">
@@ -1594,6 +1595,7 @@ HTTP/1.1 206 Partial Content
   <aside class="notes">
     <p>Tấn công DDoS tìm cách làm cạn bandwidth, connection hoặc CPU của mình. CDN giúp thế nào tùy vào tầng bị tấn công.</p>
     <p>Tầng network, L3/L4, ví dụ SYN flood hay UDP amplification: tổng capacity của CDN rất lớn, và với Anycast thì đợt tấn công bị chia ra các PoP gần nguồn phát. Packet rác bị drop ngay tại edge.</p>
+    <p>UDP amplification: attacker gửi request nhỏ tới các server UDP mở (DNS, NTP) với IP nguồn giả là IP của nạn nhân. Server trả response lớn hơn nhiều lần về phía nạn nhân, nên lưu lượng tấn công được khuếch đại.</p>
     <p>Tầng application, L7, ví dụ HTTP flood: request tới nội dung đã cache được trả lời với chi phí gần như bằng không. Nhưng request tới endpoint không cache được như search hay login vẫn tới origin, nên cần thêm rate limiting và WAF, slide 6.2.</p>
     <p>Điều kiện tiên quyết: attacker không biết hoặc không tới được địa chỉ thật của origin. Nếu tới được, họ chỉ việc đi vòng qua CDN. Slide 6.3 nói cách bảo vệ.</p>
   </aside>
@@ -1964,7 +1966,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
           <li><b>Set cache rules</b> per path</li>
         </ol>
         <ul class="points">
-          <li>Apex domain: ALIAS or CNAME flattening</li>
+          <li>Root domain (<code>example.com</code>): ALIAS or CNAME flattening</li>
           <li>Let the origin decide; keep CDN rules minimal</li>
         </ul>
       </div>
@@ -2062,7 +2064,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
 <section class="l-table" data-section="8 · Using it in practice">
   <header class="s-head">
     <p class="eyebrow">8.4 · What to monitor</p>
-    <h2>Four numbers: how much is cached, how long users wait, origin spared, error source</h2>
+    <h2>Four numbers: how much is cached, how long users wait, origin load saved, error source</h2>
   </header>
   <div class="s-body">
     <table class="tbl">
@@ -2083,7 +2085,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
     <p>Bốn metric cần theo dõi.</p>
     <p>Cache hit ratio: tỉ lệ request và tỉ lệ byte được phục vụ từ cache. Tín hiệu: tụt đột ngột sau một lần deploy nghĩa là cache key hoặc header đã thay đổi.</p>
     <p>TTFB: time to first byte, đo từ phía user. Xem p50, p95, p99 và theo region. Tín hiệu: p95 cao ở một region nghĩa là không có PoP gần đó, hoặc region đó toàn miss.</p>
-    <p>Origin offload: tỉ lệ request hoặc byte không bao giờ tới origin. Đây là con số quyết định tải và chi phí của origin.</p>
+    <p>Origin offload: tỉ lệ request hoặc byte không bao giờ tới origin. Đây là con số quyết định tải và chi phí của origin. Offload nghĩa là phần việc CDN gánh thay origin; nhiều dashboard của CDN dùng đúng tên này.</p>
     <p>Error rate: 4xx và 5xx, tách thành lỗi do origin trả về và lỗi do edge sinh ra (502, 503, 504). Tín hiệu: 5xx của edge tăng nghĩa là origin chậm, quá tải, hoặc connection cấu hình sai.</p>
     <p>Ngoài ra theo dõi egress volume vì nó quy ra tiền, origin latency nhìn từ edge, và số lần purge.</p>
     <p>Log và metric của CDN cho thấy những gì edge thấy. Real user monitoring (RUM) cho thấy trải nghiệm thật của user, gồm cả DNS và chặng network cuối. Số liệu CDN đẹp không đảm bảo trải nghiệm nhanh.</p>
@@ -2100,7 +2102,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
     <table class="tbl">
       <thead><tr><th>Vendor</th><th>Strengths</th><th>Edge compute</th><th>Good fit</th></tr></thead>
       <tbody>
-        <tr><td>Cloudflare</td><td>Wide Anycast network. Free plan, unmetered bandwidth. Security, DNS, CDN in one.</td><td>Workers</td><td>Any size; one integrated platform, quick setup</td></tr>
+        <tr><td>Cloudflare</td><td>Wide Anycast network. Free plan, no bandwidth fee. Security, DNS, CDN in one.</td><td>Workers</td><td>Any size; one integrated platform, quick setup</td></tr>
         <tr><td>Amazon CloudFront</td><td>Deep AWS integration: S3, ALB, ACM, WAF, IAM. No transfer fee from AWS origins.</td><td>Lambda@Edge, CloudFront Functions</td><td>Systems already on AWS</td></tr>
         <tr><td>Fastly</td><td>Programmable config (VCL). Near-instant purge. Surrogate keys. Real-time logs.</td><td>Compute (Wasm)</td><td>Fast-changing content: news, e-commerce</td></tr>
         <tr><td>Akamai</td><td>Oldest, largest network, deep inside ISPs. Strong in media and enterprise.</td><td>EdgeWorkers</td><td>Large enterprises, global video. More complex contracts.</td></tr>
@@ -2133,7 +2135,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
         <ul class="points is-good">
           <li>Survive one vendor's outage</li>
           <li>Regional strengths, price leverage</li>
-          <li>DNS steers by weight, region or RUM</li>
+          <li>DNS directs traffic by weight, region or RUM</li>
         </ul>
       </div>
       <div class="col">
@@ -2147,7 +2149,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
     </div>
     <div class="callout">
       <svg class="icon"><use href="#i-layers"/></svg>
-      <p><b>Lighter option:</b> one active CDN, one preconfigured standby</p>
+      <p><b>Lighter option:</b> one active CDN, one ready backup</p>
     </div>
   </div>
   <aside class="notes">
@@ -2160,11 +2162,11 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
 </section>
 
 <!-- ======================================================================
-     SECTION 9: TRADE-OFFS AND PITFALLS (9.1 – 9.4)
+     SECTION 9: TRADE-OFFS AND COMMON MISTAKES (9.1 – 9.4)
      ====================================================================== -->
 
 <!-- 9.1 -->
-<section class="l-two-col" data-section="9 · Trade-offs and pitfalls">
+<section class="l-two-col" data-section="9 · Trade-offs and common mistakes">
   <header class="s-head">
     <p class="eyebrow">9.1 · Freshness vs speed</p>
     <h2>Decide up front how stale each content type may be; the TTL is that number</h2>
@@ -2203,10 +2205,10 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
 </section>
 
 <!-- 9.2 -->
-<section class="l-two-col" data-section="9 · Trade-offs and pitfalls">
+<section class="l-two-col" data-section="9 · Trade-offs and common mistakes">
   <header class="s-head">
     <p class="eyebrow">9.2 · Accidentally caching private data</p>
-    <h2>Default to caching nothing behind login; caching must be a deliberate choice per route</h2>
+    <h2>Default to caching nothing behind login; caching must be a clear choice per route</h2>
   </header>
   <div class="s-body">
     <div class="cols">
@@ -2214,7 +2216,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
         <h3 class="col-title is-bad"><svg class="icon"><use href="#i-alert"/></svg>How it happens</h3>
         <ul class="points is-bad">
           <li>"Cache everything" covers <code>/account</code>, <code>/api/me</code></li>
-          <li>A cached <code>Set-Cookie</code> hands out a session</li>
+          <li>A cached <code>Set-Cookie</code> gives everyone the same session</li>
           <li>Per-user response, URL-only cache key</li>
         </ul>
       </div>
@@ -2243,7 +2245,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
 </section>
 
 <!-- 9.3 -->
-<section class="l-cards" data-section="9 · Trade-offs and pitfalls">
+<section class="l-cards" data-section="9 · Trade-offs and common mistakes">
   <header class="s-head">
     <p class="eyebrow">9.3 · When a CDN does not help</p>
     <h2>A CDN helps when content is shareable and users are far; without both, little speed gain</h2>
@@ -2288,7 +2290,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
 </section>
 
 <!-- 9.4 -->
-<section class="l-two-col" data-section="9 · Trade-offs and pitfalls">
+<section class="l-two-col" data-section="9 · Trade-offs and common mistakes">
   <header class="s-head">
     <p class="eyebrow">9.4 · The CDN as a single point of failure</p>
     <h2>A CDN is one more component every request must cross; know your plan for when it fails</h2>
@@ -2308,7 +2310,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
           </div>
         </div>
         <ul class="points is-bad">
-          <li>May: a latent bug ships</li>
+          <li>May: a hidden bug ships</li>
           <li>June: one valid config change triggers it</li>
         </ul>
         <div class="chips">
@@ -2319,9 +2321,9 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
         <h3 class="col-title"><svg class="icon"><use href="#i-shield"/></svg>Options</h3>
         <ul class="points">
           <li>Multi-CDN, if downtime costs enough</li>
-          <li>A rehearsed DNS switch to origin or standby</li>
+          <li>A rehearsed DNS switch to origin or backup</li>
           <li>DNS hosted apart from the CDN</li>
-          <li>Or accept the risk, consciously</li>
+          <li>Or accept the risk, as a clear choice</li>
           <li><code>stale-if-error</code> covers origin failure only</li>
         </ul>
       </div>
