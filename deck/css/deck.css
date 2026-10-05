@@ -360,7 +360,7 @@ html, body, .reveal-viewport { background: var(--bg); }
 .qr-pin.is-empty { font-size: var(--fs-statement); letter-spacing: 0; color: var(--muted); }
 
 /* 8. Inline SVG diagrams -------------------------------------------------- */
-.dg text { font-family: var(--font-sans); font-size: 20px; fill: var(--ink); }
+.dg text { font-family: var(--font-sans); font-size: 20px; fill: var(--ink); user-select: none; -webkit-user-select: none; }
 .dg .t-mono { font-family: var(--font-mono); }
 .dg .t-muted { fill: var(--muted); }
 .dg .t-strong { font-weight: 600; }
@@ -386,6 +386,40 @@ html, body, .reveal-viewport { background: var(--bg); }
 .dg .ic-edge { stroke: var(--c-edge); }
 .dg .ic-origin { stroke: var(--c-origin); }
 .dg .ic-hit { stroke: var(--c-hit); }
+
+/* animated diagrams (svg.dg-anim): deck.js moves .pkt along the wires and
+   toggles .is-on on timed elements and .is-active on the current scene */
+.dg .wire { fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.dg .wire-warm { stroke: var(--c-edge); stroke-width: 2.5; }
+.dg .wire-dead { stroke: var(--c-error); stroke-dasharray: 5 7; }
+.dg .rail { fill: none; stroke: none; }
+.dg .zone { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 6; }
+.dg .slot { fill: var(--bg); stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+.dg .hop { fill: var(--surface); stroke: var(--muted); stroke-width: 2; }
+.dg .pkt { fill: var(--c-request); stroke: var(--bg); stroke-width: 2; }
+.dg .pkt-miss { fill: var(--c-miss); }
+.dg .pkt-hit { fill: var(--c-hit); }
+.dg .pkt-err { fill: var(--c-error); }
+.dg .box-err { stroke: var(--c-error); fill: color-mix(in srgb, var(--c-error) 14%, var(--bg)); }
+.dg .ic-muted { stroke: var(--muted); }
+.dg .ic-err { stroke: var(--c-error); }
+.dg .t-err { fill: var(--c-error); }
+.dg .tag text, .dg .mark text { font-family: var(--font-mono); font-size: 16px; font-weight: 600; text-anchor: middle; }
+.dg .tag text { fill: var(--bg); }
+.dg .tag-miss rect { fill: var(--c-miss); }
+.dg .tag-hit rect { fill: var(--c-hit); }
+.dg .tag-err rect { fill: var(--c-error); }
+.dg .mark circle { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.dg .mark text { fill: var(--accent); }
+.dg .mark.is-miss circle { stroke: var(--c-miss); }
+.dg .mark.is-miss text { fill: var(--c-miss); }
+.dg .mark-lit circle { fill: var(--accent); }
+.dg .mark-lit.is-miss circle { fill: var(--c-miss); }
+.dg .mark.mark-lit text { fill: var(--bg); }
+.dg-anim [data-along], .dg-anim [data-show] { opacity: 0; transition: opacity 0.15s; }
+.dg-anim .is-on { opacity: 1; }
+.dg-anim g[data-scene] { display: none; }
+.dg-anim g[data-scene].is-active { display: inline; }
 
 /* 9. Code blocks and highlighting (follows the theme) --------------------- */
 .reveal pre {

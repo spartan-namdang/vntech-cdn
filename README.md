@@ -96,7 +96,7 @@ python3 tools/check_slides.py
 
 ### Add an image
 
-Slots for the diagrams to draw are listed in `deck/images/README.md`. Save a file with the listed name into `deck/images/` and it replaces the dashed placeholder. The drawing spec for each one is the `<!-- DIAGRAM: ... -->` comment above its slot in `index.html`.
+Most diagrams are inline animated SVG in `index.html` (`svg.dg-anim`, driven by `data-*` attributes; see CLAUDE.md). Diagrams kept as image files use slots, listed in `deck/images/README.md`. Save a file with the listed name into `deck/images/` and it replaces the dashed placeholder. The drawing spec for each one is the `<!-- DIAGRAM: ... -->` comment above its slot in `index.html`.
 
 To add a new slot, copy an existing `<figure class="img-slot">` block together with its `DIAGRAM` comment, change the file name, and add a row to `deck/images/README.md`.
 

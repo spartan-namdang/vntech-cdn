@@ -1,4 +1,4 @@
-/* CDN deck: theme switch, slide footers, image slots, Kahoot QR, Reveal setup.
+/* CDN deck: theme switch, slide footers, image slots, Kahoot QR, animated diagrams, Reveal setup.
    Loaded in <head> so the saved theme applies before first paint;
    Deck.init() is called at the end of index.html. */
 (function () {
@@ -99,6 +99,80 @@
     renderQR(slide.getAttribute('data-kahoot-url'), slide.getAttribute('data-kahoot-pin'));
   }
 
+  /* ---- Animated diagrams: <svg class="dg dg-anim" data-loop="8"> on the current slide.
+          data-along="#path" data-at="0.3, 5" data-dur="0.6" [data-rev]  a dot that travels that path
+          data-show="1 4, 5.7 7.4"                                       visible only in these windows
+          <g data-scene="name" data-loop="5">                            drawn while that scene is active:
+            the first one by default, then the last visible .fragment[data-scene] on the slide
+          Times are seconds within the loop; the loop restarts on every slide or scene change. ---- */
+  var dg = { svg: null, scene: null, items: [], t0: 0, raf: 0 };
+
+  function dgList(value) {
+    return (value || '').split(',').map(function (part) { return part.trim().split(/\s+/).map(Number); });
+  }
+  function dgScene(slide, svg) {
+    var groups = svg.querySelectorAll('g[data-scene]');
+    if (!groups.length) return '';
+    var name = groups[0].getAttribute('data-scene');
+    slide.querySelectorAll('.fragment.visible[data-scene]').forEach(function (el) {
+      name = el.getAttribute('data-scene');
+    });
+    groups.forEach(function (g) { g.classList.toggle('is-active', g.getAttribute('data-scene') === name); });
+    return name;
+  }
+  function dgTick(now) {
+    var t = (now - dg.t0) / 1000;
+    dg.items.forEach(function (it) {
+      var lt = t % it.loop;
+      var on = false;
+      if (it.path) {
+        it.at.forEach(function (a) {
+          var k = (lt - a[0]) / it.dur;
+          if (k < 0 || k >= 1) return;
+          on = true;
+          k = k * k * (3 - 2 * k);                     // ease in and out
+          var p = it.path.getPointAtLength(it.len * (it.rev ? 1 - k : k));
+          it.el.setAttribute('transform', 'translate(' + p.x.toFixed(1) + ' ' + p.y.toFixed(1) + ')');
+        });
+      } else {
+        on = it.show.some(function (w) { return lt >= w[0] && lt < w[1]; });
+      }
+      it.el.classList.toggle('is-on', on);
+    });
+    dg.raf = requestAnimationFrame(dgTick);
+  }
+  function dgStart() {
+    var slide = Reveal.getCurrentSlide();
+    var svg = slide && slide.querySelector('.dg-anim');
+    var scene = svg ? dgScene(slide, svg) : null;
+    if (svg === dg.svg && scene === dg.scene) return;
+
+    cancelAnimationFrame(dg.raf);
+    dg.items.forEach(function (it) { it.el.classList.remove('is-on'); });
+    dg.svg = svg;
+    dg.scene = scene;
+    dg.items = [];
+    if (!svg) return;
+
+    svg.querySelectorAll('[data-along], [data-show]').forEach(function (el) {
+      var group = el.closest('g[data-scene]');
+      if (group && !group.classList.contains('is-active')) return;
+      var it = { el: el, loop: Number(el.closest('[data-loop]').getAttribute('data-loop')) };
+      if (el.hasAttribute('data-along')) {
+        it.path = svg.querySelector(el.getAttribute('data-along'));
+        it.len = it.path.getTotalLength();
+        it.at = dgList(el.getAttribute('data-at'));
+        it.dur = Number(el.getAttribute('data-dur'));
+        it.rev = el.hasAttribute('data-rev');
+      } else {
+        it.show = dgList(el.getAttribute('data-show'));
+      }
+      dg.items.push(it);
+    });
+    dg.t0 = performance.now();
+    dg.raf = requestAnimationFrame(dgTick);
+  }
+
   /* ---- Reveal ---- */
   function init() {
     buildFooters();
@@ -126,6 +200,10 @@
         { keyCode: 84, key: 'T', description: 'Toggle light / dark theme' },
         toggleTheme
       );
+      ['slidechanged', 'fragmentshown', 'fragmenthidden'].forEach(function (name) {
+        Reveal.on(name, dgStart);
+      });
+      dgStart();
     });
   }
 
