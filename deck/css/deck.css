@@ -331,6 +331,9 @@ html, body, .reveal-viewport { background: var(--bg); }
 
 /* table */
 .l-table .s-body { gap: var(--sp-3); }
+/* two fragments in one place: the table fades out as the figure fades in */
+.swap { display: grid; }
+.swap > * { grid-area: 1 / 1; align-self: start; }
 
 /* code */
 .l-code .cols { flex: 0 1 auto; min-height: 0; display: grid; grid-template-columns: 5fr 6fr; gap: var(--sp-5); align-items: start; }

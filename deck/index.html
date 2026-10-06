@@ -460,7 +460,8 @@
     <h2>GeoDNS picks the PoP at lookup time; Anycast lets routing pick it</h2>
   </header>
   <div class="s-body">
-    <table class="tbl">
+    <div class="swap">
+    <table class="tbl fragment fade-out" data-fragment-index="0">
       <thead><tr><th></th><th>GeoDNS</th><th>Anycast</th></tr></thead>
       <tbody>
         <tr><th>How</th><td>DNS guesses location from the asker's IP. Each PoP has its own IP.</td><td>Every PoP announces the same IP over BGP. Routers deliver to the closest.</td></tr>
@@ -470,6 +471,97 @@
         <tr><th>Examples</th><td>Akamai, CloudFront (mostly)</td><td>Cloudflare</td></tr>
       </tbody>
     </table>
+    <figure class="fig fragment" data-fragment-index="0" data-scene="route">
+      <svg class="dg dg-anim" viewBox="0 0 1160 400" role="img" aria-label="Left, GeoDNS: DNS answers with the IP of PoP A; when PoP A fails the user keeps hitting it until the DNS TTL expires, then asks again and gets PoP B. Right, Anycast: both PoPs share one IP and the router delivers to PoP A because its path has fewer hops; when PoP A fails the route is withdrawn and the next packet goes to PoP B.">
+        <!-- empty default scene: the loop starts when the figure replaces the table -->
+        <g data-scene="idle"></g>
+        <g data-scene="route" data-loop="10.6">
+          <path class="ln" d="M580 10V390"/>
+
+          <!-- GeoDNS -->
+          <text x="10" y="32" class="t-strong">GeoDNS</text>
+          <path id="gd-q" class="wire" d="M70 170V80H200"/>
+          <path id="gd-a" class="rail" d="M130 190H360V140H420"/>
+          <path class="wire" d="M130 190H360V140H420" data-show="0 4.5"/>
+          <path class="wire wire-dead" d="M130 190H360V140H420" data-show="4.5 10.6"/>
+          <path id="gd-b" class="wire" d="M130 210H360V300H420"/>
+
+          <circle class="pkt" r="6" data-along="#gd-q" data-at="0.3, 7" data-dur="0.7"/>
+          <circle class="pkt" r="6" data-along="#gd-q" data-at="1, 7.7" data-dur="0.7" data-rev/>
+          <circle class="pkt" r="6" data-along="#gd-a" data-at="2" data-dur="0.9"/>
+          <circle class="pkt pkt-hit" r="6" data-along="#gd-a" data-at="2.9" data-dur="0.9" data-rev/>
+          <circle class="pkt pkt-err" r="6" data-along="#gd-a" data-at="5.2, 6.1" data-dur="0.9"/>
+          <circle class="pkt" r="6" data-along="#gd-b" data-at="8.5" data-dur="0.9"/>
+          <circle class="pkt pkt-hit" r="6" data-along="#gd-b" data-at="9.4" data-dur="0.9" data-rev/>
+
+          <rect class="box" x="200" y="50" width="120" height="60" rx="12"/>
+          <use href="#i-compass" x="214" y="68" width="24" height="24" class="ic ic-muted"/>
+          <text x="248" y="87" class="t-strong">DNS</text>
+          <text x="260" y="134" text-anchor="middle" class="t-mono t-small t-muted" data-show="1.4 8.1">→ PoP A</text>
+          <text x="260" y="134" text-anchor="middle" class="t-mono t-small t-fast" data-show="8.1 10.6">→ PoP B</text>
+          <rect class="box box-user" x="10" y="170" width="120" height="60" rx="12"/>
+          <use href="#i-user" x="24" y="188" width="24" height="24" class="ic ic-user"/>
+          <text x="58" y="207" class="t-strong">User</text>
+          <text x="485" y="100" text-anchor="middle" class="t-mono t-small t-muted">192.0.2.1</text>
+          <rect class="box box-edge" x="420" y="110" width="130" height="60" rx="12"/>
+          <use href="#i-edge" x="434" y="128" width="24" height="24" class="ic ic-edge"/>
+          <text x="468" y="147" class="t-strong">PoP A</text>
+          <g data-show="4.5 10.6">
+            <rect class="box box-err" x="420" y="110" width="130" height="60" rx="12"/>
+            <use href="#i-x" x="434" y="128" width="24" height="24" class="ic ic-err"/>
+            <text x="468" y="147" class="t-strong t-err">PoP A</text>
+          </g>
+          <text x="485" y="260" text-anchor="middle" class="t-mono t-small t-muted">198.51.100.1</text>
+          <rect class="box box-edge" x="420" y="270" width="130" height="60" rx="12"/>
+          <use href="#i-edge" x="434" y="288" width="24" height="24" class="ic ic-edge"/>
+          <text x="468" y="307" class="t-strong">PoP B</text>
+          <g class="tag tag-miss" data-show="4.8 8.1">
+            <rect x="20" y="250" width="100" height="28" rx="14"/>
+            <text x="70" y="269.5">DNS TTL</text>
+          </g>
+
+          <!-- Anycast -->
+          <text x="610" y="32" class="t-strong">Anycast</text>
+          <path class="wire" d="M730 200H840V300H1020"/>
+          <path id="an-a" class="rail" d="M730 200H840V140H1020"/>
+          <path id="an-b" class="rail" d="M730 200H840V300H1020"/>
+          <path class="wire" d="M840 200V140H1020" data-show="0 4.5"/>
+          <path class="wire wire-dead" d="M840 200V140H1020" data-show="4.5 10.6"/>
+
+          <circle class="pkt" r="6" data-along="#an-a" data-at="0.5, 2.5" data-dur="0.9"/>
+          <circle class="pkt pkt-hit" r="6" data-along="#an-a" data-at="1.4, 3.4" data-dur="0.9" data-rev/>
+          <circle class="pkt" r="6" data-along="#an-b" data-at="5.2, 8" data-dur="1.3"/>
+          <circle class="pkt pkt-hit" r="6" data-along="#an-b" data-at="6.5, 9.3" data-dur="1.3" data-rev/>
+
+          <circle class="hop" cx="840" cy="200" r="10"/>
+          <text x="826" y="186" text-anchor="end" class="t-mono t-small t-muted">BGP</text>
+          <circle class="hop" cx="930" cy="140" r="8"/>
+          <text x="930" y="122" text-anchor="middle" class="t-mono t-small t-fast">2 hops</text>
+          <circle class="hop" cx="885" cy="300" r="8"/>
+          <circle class="hop" cx="930" cy="300" r="8"/>
+          <circle class="hop" cx="975" cy="300" r="8"/>
+          <text x="930" y="332" text-anchor="middle" class="t-mono t-small t-slow">4 hops</text>
+          <text x="826" y="230" text-anchor="end" class="t-mono t-small t-fast" data-show="4.9 10.6">rerouted</text>
+          <rect class="box box-user" x="610" y="170" width="120" height="60" rx="12"/>
+          <use href="#i-user" x="624" y="188" width="24" height="24" class="ic ic-user"/>
+          <text x="658" y="207" class="t-strong">User</text>
+          <text x="1085" y="100" text-anchor="middle" class="t-mono t-small t-muted">203.0.113.1</text>
+          <rect class="box box-edge" x="1020" y="110" width="130" height="60" rx="12"/>
+          <use href="#i-edge" x="1034" y="128" width="24" height="24" class="ic ic-edge"/>
+          <text x="1068" y="147" class="t-strong">PoP A</text>
+          <g data-show="4.5 10.6">
+            <rect class="box box-err" x="1020" y="110" width="130" height="60" rx="12"/>
+            <use href="#i-x" x="1034" y="128" width="24" height="24" class="ic ic-err"/>
+            <text x="1068" y="147" class="t-strong t-err">PoP A</text>
+          </g>
+          <text x="1085" y="260" text-anchor="middle" class="t-mono t-small t-muted">203.0.113.1</text>
+          <rect class="box box-edge" x="1020" y="270" width="130" height="60" rx="12"/>
+          <use href="#i-edge" x="1034" y="288" width="24" height="24" class="ic ic-edge"/>
+          <text x="1068" y="307" class="t-strong">PoP B</text>
+        </g>
+      </svg>
+    </figure>
+    </div>
     <p class="caption">Anycast also spreads attack traffic across PoPs</p>
   </div>
   <aside class="notes">
@@ -478,6 +570,7 @@
     <p>Anycast: mọi PoP cùng quảng bá một IP qua BGP, router trên Internet đưa packet tới PoP gần nhất theo nghĩa network. Quyết định nằm ở tầng routing. Điểm yếu: "gần" trong BGP nghĩa là ít hop và theo policy của nhà mạng, chưa chắc gần về địa lý hay nhanh hơn, và khó điều khiển chính xác. Khi một PoP hỏng, nó rút route và traffic chuyển trong vài giây.</p>
     <p>Ví dụ: Akamai và phần lớn CloudFront dùng GeoDNS; Cloudflare dùng Anycast. [cần kiểm chứng: cách phân loại vendor là đơn giản hóa, thực tế nhiều CDN kết hợp cả hai]</p>
     <p>Anycast còn giúp security: traffic tấn công bị chia ra nhiều PoP thay vì dồn vào một chỗ, xem 6.1.</p>
+    <p>Bấm next: bảng đổi thành hai diagram chạy song song. Bên trái là GeoDNS: user hỏi DNS, nhận IP của PoP A rồi đi tới đó. Khi PoP A hỏng, user vẫn giữ câu trả lời cũ nên request tiếp tục chết ở PoP A cho tới khi DNS TTL hết, lúc đó mới hỏi lại và được đưa sang PoP B. Bên phải là Anycast: hai PoP cùng một IP, router chọn PoP A vì đường tới đó ít hop hơn (2 so với 4), chứ không phải vì gần về địa lý. Khi PoP A hỏng, route bị rút và packet kế tiếp sang PoP B ngay, user không phải làm gì.</p>
   </aside>
 </section>
 
