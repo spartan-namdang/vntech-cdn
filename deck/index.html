@@ -220,7 +220,7 @@
       <div class="card">
         <svg class="icon icon-l"><use href="#i-server"/></svg>
         <h3>Less origin load</h3>
-        <p>90%+ of requests stop at the edge</p>
+        <p>Cache hits never reach the origin</p>
         <span class="chip is-need">needs cacheable content</span>
       </div>
       <div class="card">
@@ -244,7 +244,7 @@
   <aside class="notes">
     <p>CDN mang lại năm lợi ích, nhưng mỗi cái đều có điều kiện đi kèm.</p>
     <p>Một, latency thấp hơn: handshake và nội dung đến từ nơi cách vài chục ms thay vì vài trăm ms.</p>
-    <p>Hai, giảm tải origin: với site chủ yếu là static, hơn 90% request có thể dừng ở edge. [cần kiểm chứng: con số 90% là ước lượng chung, phụ thuộc từng site]</p>
+    <p>Hai, giảm tải origin: mỗi cache hit là một request origin không phải xử lý. Tỉ lệ cụ thể phụ thuộc cache hit ratio của từng site: site chủ yếu là static thì phần lớn request dừng ở edge, site nhiều nội dung động thì ít hơn.</p>
     <p>Ba, availability cao hơn: traffic tự chuyển khi một PoP hỏng, và edge có thể trả nội dung đã cache khi origin down. Phần 3.6 sẽ nói kỹ.</p>
     <p>Bốn, giảm chi phí bandwidth: origin gửi ít byte hơn, phần còn lại được nén và tối ưu ảnh ở edge.</p>
     <p>Năm, security: edge là nơi tự nhiên để hấp thụ DDoS, chạy WAF và giấu origin. Phần 6 nói kỹ.</p>
