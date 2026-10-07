@@ -359,6 +359,7 @@
     </div>
   </div>
   <aside class="notes">
+    <p>Chuyển phần: phần 1 đã trả lời câu hỏi vì sao cần CDN: khoảng cách vật lý làm chậm, và tốc độ ảnh hưởng đo được tới doanh thu. Giờ sang phần 2 để mở cái hộp đó ra: CDN gồm những gì, và một request đi qua nó như thế nào.</p>
     <p>Bốn thành phần cốt lõi.</p>
     <p>Origin: nơi giữ bản gốc của nội dung. Có thể là web server, load balancer, hoặc object storage như S3.</p>
     <p>Edge server: một máy của CDN, nhận request của user, kiểm tra cache rồi trả lời.</p>
@@ -806,6 +807,7 @@
     </table>
   </div>
   <aside class="notes">
+    <p>Chuyển phần: tới đây mình đã biết request tìm tới edge bằng cách nào, và edge lấy nội dung từ origin ra sao. Nhưng edge chỉ có ích khi nó được phép giữ lại nội dung. Phần 3 là phần dài nhất và quan trọng nhất của buổi hôm nay: caching, tức là edge lưu cái gì, lưu bao lâu, và khi nào bỏ đi. Bắt đầu từ header điều khiển tất cả những chuyện đó.</p>
     <p>Cache-Control là response header nói cho mọi cache biết nó được phép làm gì. Bảy directive cần nhớ:</p>
     <p>max-age=N: fresh trong N giây, áp dụng cho mọi cache.</p>
     <p>s-maxage=N: giống max-age nhưng chỉ dành cho shared cache như CDN hay proxy, và ở đó nó ghi đè max-age. Đây chính là TTL dành riêng cho CDN.</p>
@@ -1241,6 +1243,7 @@ Cache-Control: max-age=60, stale-while-revalidate=300, stale-if-error=86400
     </div>
   </div>
   <aside class="notes">
+    <p>Chuyển phần: phần 3 là bộ công cụ của cache: header, cache key, TTL, invalidation. Phần 4 đem bộ công cụ đó áp vào từng loại nội dung cụ thể, đi từ dễ tới khó: static asset, API, request không cache được, ảnh, video, và cuối cùng là trang có phần cá nhân hóa.</p>
     <p>Static asset là thứ đầu tiên nên đưa lên CDN: giống nhau với mọi user và hiếm khi thay đổi.</p>
     <p>JS và CSS: build tool sinh tên file có hash, nên cache một năm kèm immutable.</p>
     <p>Ảnh: thường chiếm phần lớn dung lượng trang. Cache dài, và tối ưu thêm ở edge, xem 4.5.</p>
@@ -1566,6 +1569,7 @@ HTTP/1.1 206 Partial Content
     </div>
   </div>
   <aside class="notes">
+    <p>Chuyển phần: từ đầu tới giờ mình nói về nội dung đi qua CDN. Phần 5 ngắn, chỉ hai slide, nhìn xuống tầng bên dưới: connection. Một request qua CDN thật ra đi trên hai connection, user tới edge và edge tới origin. Ở 4.3 mình đã nhắc tới handshake ở gần và connection đã warm, giờ xem kỹ từng chặng.</p>
     <p>Kết nối HTTPS của user kết thúc tại edge. Edge giữ certificate của domain, thực hiện handshake, giải mã request, rồi mở một kết nối thứ hai tới origin.</p>
     <p>Lợi ích: handshake diễn ra với server ở gần; TLS 1.3 và session resumption có sẵn; origin không phải gánh hàng nghìn handshake từ client.</p>
     <p>Session resumption: client đã kết nối trước đó giữ lại một session ticket, lần sau dùng lại nó để bỏ qua phần lớn handshake, nên kết nối lại nhanh hơn và tốn ít CPU hơn.</p>
@@ -1686,6 +1690,7 @@ HTTP/1.1 206 Partial Content
     </div>
   </div>
   <aside class="notes">
+    <p>Chuyển phần: phần 5 cho thấy mọi connection của user đều kết thúc tại edge trước khi có gì tới được origin. Đứng ở vị trí đó, edge cũng là chỗ tự nhiên để chặn traffic xấu. Phần 6 nói về security theo hai hướng: CDN bảo vệ mình thế nào, và chính cache có thể bị tấn công ra sao.</p>
     <p>Tấn công DDoS tìm cách làm cạn bandwidth, connection hoặc CPU của mình. CDN giúp thế nào tùy vào tầng bị tấn công.</p>
     <p>Tầng network, L3/L4, ví dụ SYN flood hay UDP amplification: tổng capacity của CDN rất lớn, và với Anycast thì đợt tấn công bị chia ra các PoP gần nguồn phát. Packet rác bị drop ngay tại edge.</p>
     <p>UDP amplification: attacker gửi request nhỏ tới các server UDP mở (DNS, NTP) với IP nguồn giả là IP của nạn nhân. Server trả response lớn hơn nhiều lần về phía nạn nhân, nên lưu lượng tấn công được khuếch đại.</p>
@@ -1875,6 +1880,7 @@ Cookie: session=victim
     <p class="caption"><b>Isolates:</b> no full Node.js, no file system</p>
   </div>
   <aside class="notes">
+    <p>Chuyển phần: ở phần 6, edge chạy những thứ vendor làm sẵn: WAF, rate limiting, verify chữ ký. Bước tiếp theo là để edge chạy code do chính mình viết. Đây cũng là giai đoạn thứ ba trong lịch sử ở slide 1.4. Phần 7: edge computing.</p>
     <p>Edge compute chạy code của mình ngay trong PoP, nằm giữa request và response: gần user, và trước khi request chạm tới cache hay origin.</p>
     <p>Bốn nền tảng chính.</p>
     <p>Cloudflare Workers: V8 isolate, chạy JavaScript và WebAssembly ở mọi PoP. Khởi động gần như tức thì, không có container, dùng API chuẩn web như fetch. CPU cho mỗi request bị giới hạn.</p>
@@ -2076,6 +2082,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
     </div>
   </div>
   <aside class="notes">
+    <p>Chuyển phần: bảy phần vừa rồi là về khái niệm: CDN làm được gì và vì sao. Phần 8 chuyển sang thực hành, theo đúng thứ tự mình sẽ gặp khi đưa một site lên CDN: setup, deploy, debug, monitor, rồi chọn vendor.</p>
     <p>Setup cơ bản gồm ba bước.</p>
     <p>Một, trỏ DNS: CDN cấp cho mình một hostname, ví dụ d111abc.cloudfront.net. Tạo CNAME từ domain của mình tới đó, tức là giao quyết định "IP nào" cho DNS của CDN. Lưu ý apex domain như example.com không đặt được CNAME, nên cần ALIAS record hoặc CNAME flattening.</p>
     <p>Hai, cấu hình origin: địa chỉ, protocol (HTTPS), header Host mà edge gửi, timeout, và cách origin xác thực edge (6.3). Đăng ký domain của mình với CDN và gắn TLS certificate.</p>
@@ -2289,6 +2296,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
     </div>
   </div>
   <aside class="notes">
+    <p>Chuyển phần: tới đây CDN nghe có vẻ toàn lợi ích. Phần 9 nói về mặt còn lại: những trade-off phải chấp nhận và những lỗi hay gặp, kèm hai sự cố thật của Steam và Fastly.</p>
     <p>Mỗi cache là một lời hứa: trong N giây tới, tôi sẽ không hỏi lại. Nếu nội dung đổi trong khoảng đó, user thấy bản cũ.</p>
     <p>Câu hỏi cần trả lời là mỗi loại nội dung được phép cũ tới mức nào. Logo cũ một tuần thì không sao. Giá cũ năm phút thì tùy business. Số dư tài khoản cũ một giây là không chấp nhận được.</p>
     <p>Các công cụ thu hẹp trade-off: Versioned URL, để nội dung coi như không bao giờ đổi và cache được vô thời hạn (3.4). TTL ngắn kèm stale-while-revalidate, để giới hạn độ cũ mà vẫn nhanh (3.6). Purge theo event, cho TTL dài nhưng được xóa ngay khi dữ liệu đổi.</p>
@@ -2455,6 +2463,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
     </ol>
   </div>
   <aside class="notes">
+    <p>Chuyển phần: phần lý thuyết kết thúc ở đây. Phần cuối gồm ba việc: một demo trực tiếp để thấy lại trên biểu đồ những gì vừa nói (lộ dữ liệu riêng, cache key, stale-if-error, cache stampede), sau đó là checklist ra quyết định, rồi quiz.</p>
     <p>Demo trực tiếp trên dashboard, mở ở tab riêng: 127.0.0.1:8090. Trước buổi nói chạy docker compose up -d trong thư mục demo. Bật công tắc Simulated shoppers để lab tự đóng vai khách của một shop nhỏ, khoảng 20 request mỗi giây qua một edge Varnish thật.</p>
     <p>Một, dữ liệu riêng: ngay từ đầu ô "Wrong account shown" đã đỏ, vì trang tài khoản bị đánh dấu public nên khách thấy tài khoản của người khác. Bật "Account page is private": con số về 0, đổi lại origin phải trả lời mọi lượt xem trang tài khoản.</p>
     <p>Hai, cache key: bật "Ignore utm_* in the cache key". Tỉ lệ cache tăng và đường request tới origin tụt xuống, vì các link quảng cáo giờ dùng chung một bản.</p>
