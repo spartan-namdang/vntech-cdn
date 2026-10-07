@@ -47,7 +47,7 @@ Layout classes (one per slide): `l-cover`, `l-statement`, `l-bullets` (`ul.point
 
 - Slide text is in English; speaker notes are in Vietnamese.
 - Use `class="fragment"` only where the slide tells a sequence.
-- Slide numbers appear in several places: the `<!-- N.M -->` comment, the eyebrow, cross-references in other slides' text (e.g. "Multi-CDN (8.6)"), and the Slide column of `deck/images/README.md`. Inserting, removing or reordering slides means updating all of them.
+- Slide numbers appear in several places: the `<!-- N.M -->` comment, the eyebrow, cross-references in other slides' text (e.g. "Multi-CDN (8.5)"), and the Slide column of `deck/images/README.md`. Inserting, removing or reordering slides means updating all of them.
 
 ## Animated diagrams
 

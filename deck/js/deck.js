@@ -99,13 +99,13 @@
     renderQR(slide.getAttribute('data-kahoot-url'), slide.getAttribute('data-kahoot-pin'));
   }
 
-  /* ---- Animated diagrams: <svg class="dg dg-anim" data-loop="8"> on the current slide.
+  /* ---- Animated diagrams: <svg class="dg dg-anim" data-loop="8"> on the current slide (one or more).
           data-along="#path" data-at="0.3, 5" data-dur="0.6" [data-rev]  a dot that travels that path
           data-show="1 4, 5.7 7.4"                                       visible only in these windows
           <g data-scene="name" data-loop="5">                            drawn while that scene is active:
             the first one by default, then the last visible .fragment[data-scene] on the slide
           Times are seconds within the loop; the loop restarts on every slide or scene change. ---- */
-  var dg = { svg: null, scene: null, items: [], t0: 0, raf: 0 };
+  var dg = { slide: null, scene: null, items: [], t0: 0, raf: 0 };
 
   function dgList(value) {
     return (value || '').split(',').map(function (part) { return part.trim().split(/\s+/).map(Number); });
@@ -143,31 +143,33 @@
   }
   function dgStart() {
     var slide = Reveal.getCurrentSlide();
-    var svg = slide && slide.querySelector('.dg-anim');
-    var scene = svg ? dgScene(slide, svg) : null;
-    if (svg === dg.svg && scene === dg.scene) return;
+    var svgs = slide ? Array.prototype.slice.call(slide.querySelectorAll('.dg-anim')) : [];
+    var scene = svgs.map(function (svg) { return dgScene(slide, svg); }).join('|');
+    if (slide === dg.slide && scene === dg.scene) return;
 
     cancelAnimationFrame(dg.raf);
     dg.items.forEach(function (it) { it.el.classList.remove('is-on'); });
-    dg.svg = svg;
+    dg.slide = slide;
     dg.scene = scene;
     dg.items = [];
-    if (!svg) return;
+    if (!svgs.length) return;
 
-    svg.querySelectorAll('[data-along], [data-show]').forEach(function (el) {
-      var group = el.closest('g[data-scene]');
-      if (group && !group.classList.contains('is-active')) return;
-      var it = { el: el, loop: Number(el.closest('[data-loop]').getAttribute('data-loop')) };
-      if (el.hasAttribute('data-along')) {
-        it.path = svg.querySelector(el.getAttribute('data-along'));
-        it.len = it.path.getTotalLength();
-        it.at = dgList(el.getAttribute('data-at'));
-        it.dur = Number(el.getAttribute('data-dur'));
-        it.rev = el.hasAttribute('data-rev');
-      } else {
-        it.show = dgList(el.getAttribute('data-show'));
-      }
-      dg.items.push(it);
+    svgs.forEach(function (svg) {
+      svg.querySelectorAll('[data-along], [data-show]').forEach(function (el) {
+        var group = el.closest('g[data-scene]');
+        if (group && !group.classList.contains('is-active')) return;
+        var it = { el: el, loop: Number(el.closest('[data-loop]').getAttribute('data-loop')) };
+        if (el.hasAttribute('data-along')) {
+          it.path = svg.querySelector(el.getAttribute('data-along'));
+          it.len = it.path.getTotalLength();
+          it.at = dgList(el.getAttribute('data-at'));
+          it.dur = Number(el.getAttribute('data-dur'));
+          it.rev = el.hasAttribute('data-rev');
+        } else {
+          it.show = dgList(el.getAttribute('data-show'));
+        }
+        dg.items.push(it);
+      });
     });
     dg.t0 = performance.now();
     dg.raf = requestAnimationFrame(dgTick);

@@ -1667,7 +1667,7 @@ HTTP/1.1 206 Partial Content
 </section>
 
 <!-- ======================================================================
-     SECTION 6: SECURITY (6.1 – 6.5)
+     SECTION 6: SECURITY (6.1 – 6.5; 6.5 split in two slides)
      ====================================================================== -->
 
 <!-- 6.1 -->
@@ -1815,7 +1815,7 @@ https://cdn.example.com/reports/q3.pdf
   </aside>
 </section>
 
-<!-- 6.5 -->
+<!-- 6.5 (1/2) attacks -->
 <section class="l-two-col" data-section="6 · Security">
   <header class="s-head">
     <p class="eyebrow">6.5 · Attacks on the cache itself</p>
@@ -1857,8 +1857,140 @@ Cookie: session=victim
   </aside>
 </section>
 
+<!-- 6.5 (2/2) flows -->
+<section class="l-figure" data-section="6 · Security">
+  <header class="s-head">
+    <p class="eyebrow">6.5 · Attacks on the cache itself: step by step</p>
+    <h2>Poisoning plants a response for everyone; deception takes one victim's response out</h2>
+  </header>
+  <div class="s-body">
+    <div class="fig-row">
+      <div class="col">
+        <h3 class="col-title is-bad"><svg class="icon"><use href="#i-alert"/></svg>Cache poisoning</h3>
+        <figure class="fig">
+          <svg class="dg dg-anim" viewBox="0 36 560 304" data-loop="10" role="img" aria-label="The attacker sends a request with a forged header; the origin's harmful response is cached under the home page key and then served to every victim as a hit.">
+            <path id="ps-a" class="wire" d="M180 98H206V178H232"/>
+            <path id="ps-v" class="wire" d="M180 278H206V198H232"/>
+            <path id="ps-eo" class="wire" d="M342 188H424"/>
+            <path class="wire" d="M287 216V250"/>
+            <rect class="slot" x="257" y="250" width="60" height="44" rx="8"/>
+            <g data-show="3 10">
+              <rect class="box box-err" x="257" y="250" width="60" height="44" rx="8"/>
+              <use href="#i-file" x="275" y="260" width="24" height="24" class="ic ic-err"/>
+            </g>
+            <text x="327" y="278" class="t-small t-mono t-muted">key: /</text>
+
+            <circle class="pkt pkt-err" r="6" data-along="#ps-a" data-at="0.4" data-dur="0.6"/>
+            <circle class="pkt pkt-err" r="6" data-along="#ps-eo" data-at="1.3" data-dur="0.7"/>
+            <circle class="pkt pkt-err" r="6" data-along="#ps-eo" data-at="2.2" data-dur="0.7" data-rev/>
+            <circle class="pkt pkt-err" r="6" data-along="#ps-a" data-at="3.1" data-dur="0.6" data-rev/>
+            <circle class="pkt" r="6" data-along="#ps-v" data-at="5, 7.4" data-dur="0.6"/>
+            <circle class="pkt pkt-err" r="6" data-along="#ps-v" data-at="6.2, 8.4" data-dur="0.6" data-rev/>
+
+            <text x="10" y="58" class="t-small t-mono t-err">X-Forwarded-Host: evil</text>
+            <rect class="box box-err" x="10" y="70" width="170" height="56" rx="12"/>
+            <use href="#i-user" x="24" y="86" width="24" height="24" class="ic ic-err"/>
+            <text x="58" y="105" class="t-strong">Attacker</text>
+            <rect class="box box-user" x="10" y="250" width="170" height="56" rx="12"/>
+            <use href="#i-user" x="24" y="266" width="24" height="24" class="ic ic-user"/>
+            <text x="58" y="285" class="t-strong">Victim</text>
+            <use href="#i-alert" x="146" y="266" width="24" height="24" class="ic ic-err" data-show="6.8 10"/>
+            <text x="10" y="330" class="t-small t-mono t-muted">GET /</text>
+            <rect class="box box-edge" x="232" y="160" width="110" height="56" rx="12"/>
+            <use href="#i-edge" x="246" y="176" width="24" height="24" class="ic ic-edge"/>
+            <text x="280" y="195" class="t-strong">Edge</text>
+            <rect class="box box-origin" x="424" y="160" width="126" height="56" rx="12"/>
+            <use href="#i-server" x="438" y="176" width="24" height="24" class="ic ic-origin"/>
+            <text x="472" y="195" class="t-strong">Origin</text>
+            <text x="424" y="146" class="t-small t-mono t-err" data-show="1.9 3.6">evil script</text>
+
+            <g class="mark"><circle cx="206" cy="138" r="13"/><text x="206" y="143.5">1</text></g>
+            <g class="mark mark-lit" data-show="0.4 1.9"><circle cx="206" cy="138" r="13"/><text x="206" y="143.5">1</text></g>
+            <g class="mark"><circle cx="232" cy="272" r="13"/><text x="232" y="277.5">2</text></g>
+            <g class="mark mark-lit" data-show="3 4.4"><circle cx="232" cy="272" r="13"/><text x="232" y="277.5">2</text></g>
+            <g class="mark"><circle cx="206" cy="238" r="13"/><text x="206" y="243.5">3</text></g>
+            <g class="mark mark-lit" data-show="5 9.2"><circle cx="206" cy="238" r="13"/><text x="206" y="243.5">3</text></g>
+            <g class="tag tag-miss" data-show="1 3.1">
+              <rect x="255" y="118" width="64" height="28" rx="14"/>
+              <text x="287" y="137.5">MISS</text>
+            </g>
+            <g class="tag tag-hit" data-show="5.6 9.2">
+              <rect x="255" y="118" width="64" height="28" rx="14"/>
+              <text x="287" y="137.5">HIT</text>
+            </g>
+          </svg>
+        </figure>
+        <p class="caption">One forged request, a harmful page for everyone</p>
+      </div>
+      <div class="col">
+        <h3 class="col-title is-bad"><svg class="icon"><use href="#i-alert"/></svg>Web cache deception</h3>
+        <figure class="fig">
+          <svg class="dg dg-anim" viewBox="0 36 560 304" data-loop="10" role="img" aria-label="A logged-in victim opens a crafted URL ending in .css; the origin returns the private account page and the edge caches it as static. The attacker requests the same URL and reads it as a hit.">
+            <path id="wd-v" class="wire" d="M180 98H206V178H232"/>
+            <path id="wd-a" class="wire" d="M180 278H206V198H232"/>
+            <path id="wd-eo" class="wire" d="M342 188H424"/>
+            <path class="wire" d="M287 216V250"/>
+            <rect class="slot" x="257" y="250" width="60" height="44" rx="8"/>
+            <g data-show="3 10">
+              <rect class="box box-err" x="257" y="250" width="60" height="44" rx="8"/>
+              <use href="#i-file" x="275" y="260" width="24" height="24" class="ic ic-err"/>
+            </g>
+            <text x="327" y="278" class="t-small t-mono t-muted">key: ….css</text>
+
+            <circle class="pkt" r="6" data-along="#wd-v" data-at="0.4" data-dur="0.6"/>
+            <circle class="pkt" r="6" data-along="#wd-eo" data-at="1.3" data-dur="0.7"/>
+            <circle class="pkt pkt-miss" r="6" data-along="#wd-eo" data-at="2.2" data-dur="0.7" data-rev/>
+            <circle class="pkt pkt-miss" r="6" data-along="#wd-v" data-at="3.1" data-dur="0.6" data-rev/>
+            <circle class="pkt pkt-err" r="6" data-along="#wd-a" data-at="5" data-dur="0.6"/>
+            <circle class="pkt pkt-miss" r="6" data-along="#wd-a" data-at="6.2" data-dur="0.6" data-rev/>
+
+            <text x="10" y="58" class="t-small t-mono t-muted">/account/profile.css</text>
+            <rect class="box box-user" x="10" y="70" width="170" height="56" rx="12"/>
+            <use href="#i-user" x="24" y="86" width="24" height="24" class="ic ic-user"/>
+            <text x="58" y="105" class="t-strong">Victim</text>
+            <rect class="box box-err" x="10" y="250" width="170" height="56" rx="12"/>
+            <use href="#i-user" x="24" y="266" width="24" height="24" class="ic ic-err"/>
+            <text x="58" y="285" class="t-strong">Attacker</text>
+            <use href="#i-file" x="146" y="266" width="24" height="24" class="ic ic-err" data-show="6.8 10"/>
+            <text x="10" y="330" class="t-small t-mono t-err">same URL</text>
+            <rect class="box box-edge" x="232" y="160" width="110" height="56" rx="12"/>
+            <use href="#i-edge" x="246" y="176" width="24" height="24" class="ic ic-edge"/>
+            <text x="280" y="195" class="t-strong">Edge</text>
+            <rect class="box box-origin" x="424" y="160" width="126" height="56" rx="12"/>
+            <use href="#i-server" x="438" y="176" width="24" height="24" class="ic ic-origin"/>
+            <text x="472" y="195" class="t-strong">Origin</text>
+            <text x="424" y="146" class="t-small t-mono t-slow" data-show="1.9 3.6">account page</text>
+
+            <g class="mark"><circle cx="206" cy="138" r="13"/><text x="206" y="143.5">1</text></g>
+            <g class="mark mark-lit" data-show="0.4 1.9"><circle cx="206" cy="138" r="13"/><text x="206" y="143.5">1</text></g>
+            <g class="mark"><circle cx="232" cy="272" r="13"/><text x="232" y="277.5">2</text></g>
+            <g class="mark mark-lit" data-show="3 4.4"><circle cx="232" cy="272" r="13"/><text x="232" y="277.5">2</text></g>
+            <g class="mark"><circle cx="206" cy="238" r="13"/><text x="206" y="243.5">3</text></g>
+            <g class="mark mark-lit" data-show="5 7.6"><circle cx="206" cy="238" r="13"/><text x="206" y="243.5">3</text></g>
+            <g class="tag tag-miss" data-show="1 3.1">
+              <rect x="255" y="118" width="64" height="28" rx="14"/>
+              <text x="287" y="137.5">MISS</text>
+            </g>
+            <g class="tag tag-hit" data-show="5.6 7.6">
+              <rect x="255" y="118" width="64" height="28" rx="14"/>
+              <text x="287" y="137.5">HIT</text>
+            </g>
+          </svg>
+        </figure>
+        <p class="caption">One lured click, a private page leaks</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Slide này chạy lại hai kiểu tấn công ở slide trước theo từng bước. Cả hai đều có ba bước, đánh số 1, 2, 3 trên hình.</p>
+    <p>Bên trái, cache poisoning. Bước 1: attacker gửi GET / kèm header X-Forwarded-Host: evil. Cache chưa có nên MISS, request đi tới origin. Origin dựng URL script từ header đó và trả về trang chủ có script độc hại. Bước 2: edge lưu response này dưới key của trang chủ, vì header kia không nằm trong cache key. Bước 3: nạn nhân gửi GET / hoàn toàn bình thường, nhận HIT, và nhận bản đã bị đầu độc. Mọi user sau đó đều nhận bản này cho tới khi hết TTL hoặc được purge.</p>
+    <p>Bên phải, web cache deception, chiều ngược lại. Bước 1: nạn nhân đang đăng nhập bị dụ bấm vào /account/profile.css. Request mang cookie của nạn nhân đi tới origin. Origin bỏ qua phần đuôi lạ và trả về trang account. Bước 2: edge thấy đuôi .css, coi là static và cache lại. Bước 3: attacker mở đúng URL đó, không cần cookie, nhận HIT và đọc được trang account của nạn nhân.</p>
+    <p>Điểm khác nhau: poisoning là một request của attacker gây hại cho mọi người; deception là một cú click của nạn nhân làm lộ dữ liệu cho attacker. Điểm chung: object nằm trong cache không khớp với thứ mà cache key mô tả.</p>
+  </aside>
+</section>
+
 <!-- ======================================================================
-     SECTION 7: EDGE COMPUTING (7.1 – 7.2; each split in two slides)
+     SECTION 7: EDGE COMPUTING (7.1, split in two slides)
      ====================================================================== -->
 
 <!-- 7.1 (1/2) platforms -->
@@ -1962,89 +2094,8 @@ Cookie: session=victim
   </aside>
 </section>
 
-<!-- 7.2 (1/2) uses -->
-<section class="l-cards" data-section="7 · Edge computing">
-  <header class="s-head">
-    <p class="eyebrow">7.2 · Typical uses</p>
-    <h2>Work suits the edge when it can be decided from the request alone</h2>
-  </header>
-  <div class="s-body">
-    <div class="cards c5">
-      <div class="card">
-        <svg class="icon icon-l"><use href="#i-route"/></svg>
-        <h3>Redirects</h3>
-        <p>Thousands of rules, no origin trip</p>
-      </div>
-      <div class="card">
-        <svg class="icon icon-l"><use href="#i-pen"/></svg>
-        <h3>Header rewrites</h3>
-        <p>Add HSTS, CSP; tidy the cache key</p>
-      </div>
-      <div class="card">
-        <svg class="icon icon-l"><use href="#i-key"/></svg>
-        <h3>Auth checks</h3>
-        <p>Verify a JWT; gated content stays cacheable</p>
-      </div>
-      <div class="card">
-        <svg class="icon icon-l"><use href="#i-split"/></svg>
-        <h3>A/B tests</h3>
-        <p>Group by cookie, in the key; no flicker</p>
-      </div>
-      <div class="card">
-        <svg class="icon icon-l"><use href="#i-globe"/></svg>
-        <h3>Geo responses</h3>
-        <p>Country from IP: language, currency, blocking</p>
-      </div>
-    </div>
-  </div>
-  <aside class="notes">
-    <p>Năm use case điển hình của edge code.</p>
-    <p>Redirect: hàng nghìn rule redirect được xử lý ở edge, không cần đi tới origin.</p>
-    <p>Header rewrite: thêm security header như HSTS, CSP vào mọi response, hoặc chuẩn hóa request header để cache key gọn hơn.</p>
-    <p>Auth check: verify chữ ký JWT ngay ở edge. Request không hợp lệ bị từ chối ngay. Nội dung cần đăng nhập vẫn cache được vì quyền truy cập được kiểm tra trước cache.</p>
-    <p>A/B test: edge gán nhóm theo cookie và đưa nhóm vào cache key. Cả hai phiên bản đều được cache, và trang không bị nháy như khi test ở client.</p>
-    <p>Geo-based response: edge biết quốc gia của user từ IP, nên chọn được ngôn ngữ, tiền tệ, hoặc chặn theo khu vực.</p>
-    <p>Điểm chung: một việc hợp với edge khi nó quyết định được chỉ từ request.</p>
-  </aside>
-</section>
-
-<!-- 7.2 (2/2) code -->
-<section class="l-code is-full" data-section="7 · Edge computing">
-  <header class="s-head">
-    <p class="eyebrow">7.2 · Typical uses: a Cloudflare Worker</p>
-    <h2>A dozen lines redirect by country and add a security header</h2>
-  </header>
-  <div class="s-body">
-    <div class="cols">
-      <pre><code class="language-javascript" data-trim>
-export default {
-  async fetch(request) {
-    const url = new URL(request.url);
-    const country = request.cf?.country;
-
-    if (url.pathname === "/" &amp;&amp; country === "VN") {
-      return Response.redirect(`${url.origin}/vi/`, 302);
-    }
-
-    const upstream = await fetch(request);
-    const response = new Response(upstream.body, upstream);
-    response.headers.set("Strict-Transport-Security", "max-age=31536000");
-    return response;
-  },
-};
-      </code></pre>
-    </div>
-  </div>
-  <aside class="notes">
-    <p>Một Cloudflare Worker làm hai việc trong số các use case vừa nói.</p>
-    <p>Phần đầu: lấy URL và quốc gia của user từ request.cf.country. Nếu user vào trang chủ từ Việt Nam thì redirect 302 sang /vi/. Đây là geo-based redirect, quyết định hoàn toàn ở edge.</p>
-    <p>Phần sau: với các request còn lại, fetch từ upstream (cache hoặc origin), tạo response mới từ body đó và thêm header Strict-Transport-Security. Đây là header rewrite.</p>
-    <p>Chú ý: toàn bộ logic chỉ dùng thông tin có sẵn trong request, không cần database hay state.</p>
-  </aside>
-</section>
-
 <!-- ======================================================================
-     SECTION 8: USING IT IN PRACTICE (8.1 – 8.6)
+     SECTION 8: USING IT IN PRACTICE (8.1 – 8.5)
      ====================================================================== -->
 
 <!-- 8.1 -->
@@ -2082,7 +2133,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
     </div>
   </div>
   <aside class="notes">
-    <p>Chuyển phần: bảy phần vừa rồi là về khái niệm: CDN làm được gì và vì sao. Phần 8 chuyển sang thực hành, theo đúng thứ tự mình sẽ gặp khi đưa một site lên CDN: setup, deploy, debug, monitor, rồi chọn vendor.</p>
+    <p>Chuyển phần: bảy phần vừa rồi là về khái niệm: CDN làm được gì và vì sao. Phần 8 chuyển sang thực hành, theo đúng thứ tự mình sẽ gặp khi đưa một site lên CDN: setup, deploy, debug, rồi chọn vendor.</p>
     <p>Setup cơ bản gồm ba bước.</p>
     <p>Một, trỏ DNS: CDN cấp cho mình một hostname, ví dụ d111abc.cloudfront.net. Tạo CNAME từ domain của mình tới đó, tức là giao quyết định "IP nào" cho DNS của CDN. Lưu ý apex domain như example.com không đặt được CNAME, nên cần ALIAS record hoặc CNAME flattening.</p>
     <p>Hai, cấu hình origin: địa chỉ, protocol (HTTPS), header Host mà edge gửi, timeout, và cách origin xác thực edge (6.3). Đăng ký domain của mình với CDN và gắn TLS certificate.</p>
@@ -2163,39 +2214,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
 <!-- 8.4 -->
 <section class="l-table" data-section="8 · Using it in practice">
   <header class="s-head">
-    <p class="eyebrow">8.4 · What to monitor</p>
-    <h2>Four numbers: how much is cached, how long users wait, origin load saved, error source</h2>
-  </header>
-  <div class="s-body">
-    <table class="tbl">
-      <thead><tr><th>Metric</th><th>Meaning</th><th>Signal to watch</th></tr></thead>
-      <tbody>
-        <tr><td>Cache hit ratio</td><td>Share of requests and of bytes served from cache</td><td>Sudden drop after a deploy: the cache key or headers changed</td></tr>
-        <tr><td>TTFB</td><td>Time to first byte, from the user side: p50, p95, p99, by region</td><td>High p95 in one region: no PoP nearby, or all misses there</td></tr>
-        <tr><td>Origin offload</td><td>Share of requests or bytes that never reach the origin</td><td>The number that drives origin load and cost</td></tr>
-        <tr><td>Error rate</td><td>4xx and 5xx, split by origin errors and edge errors (502, 503, 504)</td><td>Rising edge 5xx: origin slow, overloaded, or misconfigured</td></tr>
-      </tbody>
-    </table>
-    <ul class="points">
-      <li>Also: egress volume, origin latency, purge count</li>
-      <li>CDN metrics show the edge; RUM shows users</li>
-    </ul>
-  </div>
-  <aside class="notes">
-    <p>Bốn metric cần theo dõi.</p>
-    <p>Cache hit ratio: tỉ lệ request và tỉ lệ byte được phục vụ từ cache. Tín hiệu: tụt đột ngột sau một lần deploy nghĩa là cache key hoặc header đã thay đổi.</p>
-    <p>TTFB: time to first byte, đo từ phía user. Xem p50, p95, p99 và theo region. Tín hiệu: p95 cao ở một region nghĩa là không có PoP gần đó, hoặc region đó toàn miss.</p>
-    <p>Origin offload: tỉ lệ request hoặc byte không bao giờ tới origin. Đây là con số quyết định tải và chi phí của origin. Offload nghĩa là phần việc CDN gánh thay origin; nhiều dashboard của CDN dùng đúng tên này.</p>
-    <p>Error rate: 4xx và 5xx, tách thành lỗi do origin trả về và lỗi do edge sinh ra (502, 503, 504). Tín hiệu: 5xx của edge tăng nghĩa là origin chậm, quá tải, hoặc connection cấu hình sai.</p>
-    <p>Ngoài ra theo dõi egress volume vì nó quy ra tiền, origin latency nhìn từ edge, và số lần purge.</p>
-    <p>Log và metric của CDN cho thấy những gì edge thấy. Real user monitoring (RUM) cho thấy trải nghiệm thật của user, gồm cả DNS và chặng network cuối. Số liệu CDN đẹp không đảm bảo trải nghiệm nhanh.</p>
-  </aside>
-</section>
-
-<!-- 8.5 -->
-<section class="l-table" data-section="8 · Using it in practice">
-  <header class="s-head">
-    <p class="eyebrow">8.5 · Vendor overview</p>
+    <p class="eyebrow">8.4 · Vendor overview</p>
     <h2>Choose by where your users are, what you already run, and how fast you must purge</h2>
   </header>
   <div class="s-body">
@@ -2222,10 +2241,10 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
   </aside>
 </section>
 
-<!-- 8.6 -->
+<!-- 8.5 -->
 <section class="l-two-col" data-section="8 · Using it in practice">
   <header class="s-head">
-    <p class="eyebrow">8.6 · Multi-CDN and failover</p>
+    <p class="eyebrow">8.5 · Multi-CDN and failover</p>
     <h2>Multi-CDN buys availability with complexity; worth it only when downtime is very expensive</h2>
   </header>
   <div class="s-body">
@@ -2434,7 +2453,7 @@ static.example.com.   CNAME   d111abc.cloudfront.net.
     <p>Đặt CDN ở phía trước nghĩa là mọi request đều đi qua nó. Khi nó hỏng, site của mình hỏng theo, kể cả khi origin vẫn khỏe.</p>
     <p>Fastly, ngày 8 tháng 6 năm 2021: một bản cập nhật phần mềm deploy từ tháng 5 mang theo một bug tiềm ẩn. Gần một tháng sau, một thay đổi cấu hình hoàn toàn hợp lệ của một khách hàng đã kích hoạt nó. Khoảng 85% mạng của Fastly trả về lỗi. Amazon, Reddit, The New York Times, The Guardian, trang của chính phủ Anh và nhiều site khác cùng sập. Fastly phát hiện trong vòng một phút và khôi phục phần lớn mạng trong 49 phút.</p>
     <p>Bài học: hạ tầng tập trung thì sự cố cũng tập trung. Cloudflare và Akamai cũng từng có sự cố toàn cầu tương tự.</p>
-    <p>Các lựa chọn giảm rủi ro: Multi-CDN (8.6), nếu downtime đủ đắt. Một kế hoạch đã diễn tập để chuyển DNS thẳng về origin hoặc sang CDN dự phòng; origin phải chịu được tải khi không có cache phía trước. Đặt DNS ở nhà cung cấp khác với CDN, để vẫn đổi được record khi CDN gặp sự cố. Hoặc chấp nhận rủi ro một cách có ý thức: với nhiều sản phẩm, uptime của một CDN lớn vẫn tốt hơn thứ họ tự xây được.</p>
+    <p>Các lựa chọn giảm rủi ro: Multi-CDN (8.5), nếu downtime đủ đắt. Một kế hoạch đã diễn tập để chuyển DNS thẳng về origin hoặc sang CDN dự phòng; origin phải chịu được tải khi không có cache phía trước. Đặt DNS ở nhà cung cấp khác với CDN, để vẫn đổi được record khi CDN gặp sự cố. Hoặc chấp nhận rủi ro một cách có ý thức: với nhiều sản phẩm, uptime của một CDN lớn vẫn tốt hơn thứ họ tự xây được.</p>
     <p>Lưu ý: stale-if-error bảo vệ khi origin hỏng, không bảo vệ khi chính CDN hỏng.</p>
   </aside>
 </section>
